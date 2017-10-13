@@ -461,7 +461,7 @@ static TIMER_FUNC(unit_walktoxy_timer){
 				if( npc_touch_areanpc2(md) )
 					return 0; // Warped
 			} else
-				sd->areanpc.count = 0;
+				md->areanpc_id = 0;
 			if (md->min_chase > md->db->range3)
 				md->min_chase--;
 			// Walk skills are triggered regardless of target due to the idle-walk mob state.
