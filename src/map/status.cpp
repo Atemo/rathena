@@ -53,7 +53,7 @@ static struct {
 	struct refine_cost cost[REFINE_COST_MAX];
 } refine_info[REFINE_TYPE_MAX];
 
-static int atkmods[SZ_ALL][MAX_WEAPON_TYPE];	/// ATK weapon modification for size (size_fix.txt)
+static int atkmods[SZ_ALL][MAX_WEAPON_TYPE];	/// ATK weapon modification for size (size_fix.yml)
 
 static struct eri *sc_data_ers; /// For sc_data entries
 static struct status_data dummy_status;
@@ -14492,19 +14492,68 @@ static bool status_readdb_status_disabled(char **str, int columns, int current)
 
 /**
  * Read sizefix database for attack calculations
- * @param fields: Fields passed from sv_readdb
- * @param columns: Columns passed from sv_readdb function call
- * @param current: Current row being read into atkmods array
- * @return True
  */
-static bool status_readdb_sizefix(char* fields[], int columns, int current)
-{
-	unsigned int i;
+static void status_readdb_sizefix(const std::string &directory, const std::string &file) {
+	int count = 0, weapon_type;
+	std::string weapon_type_constant;
 
-	for(i = 0; i < MAX_WEAPON_TYPE; i++)
-		atkmods[current][i] = atoi(fields[i]);
+	const std::string current_file = directory + "/" + file;
+	YAML::Node root;
 
-	return true;
+	try {
+		root = YAML::LoadFile(current_file);
+	}
+	catch (...) {
+		ShowError("Failed to read '" CL_WHITE "%s" CL_RESET "'.\n", current_file.c_str());
+		return;
+	}
+
+    for ( YAML::const_iterator it = root.begin(); it != root.end(); ++it ) {
+		try {
+			weapon_type_constant = it->first.as<std::string>();
+		} catch (...) {
+			ShowWarning("status_readdb_sizefix: Weapon type field is invalid line %d in '" CL_WHITE "%s" CL_RESET "', skipping.\n", it->first.Mark().line, current_file.c_str());
+			continue;
+		}
+		if (!script_get_constant( weapon_type_constant.c_str(), &weapon_type)) {
+			ShowWarning("status_readdb_sizefix: Invalid weapon type constant %s in \"%s\", skipping.\n", weapon_type_constant.c_str(), current_file.c_str());
+			continue;
+		}
+		if (weapon_type < W_FIST || weapon_type >= MAX_WEAPON_TYPE) {
+			ShowWarning("status_readdb_sizefix: Invalid weapon type constant %s (value: %d, min: %d, max: %d) in \"%s\", skipping.\n", weapon_type_constant.c_str(), weapon_type, W_FIST, (MAX_WEAPON_TYPE-1), current_file.c_str());
+			continue;
+		}
+		const YAML::Node &size_list = it->second;
+		std::string size_constant;
+		int size_constant_val, value;
+
+		for ( YAML::const_iterator size_it = size_list.begin(); size_it != size_list.end(); ++size_it ) {
+			try {
+				size_constant = size_it->first.as<std::string>();
+			} catch (...) {
+				ShowWarning("status_readdb_sizefix: Size field is invalid for weapon type constant %s, line %d in '" CL_WHITE "%s" CL_RESET "', skipping.\n", weapon_type_constant.c_str(), it->first.Mark().line, current_file.c_str());
+				continue;
+			}
+			if (!script_get_constant( size_constant.c_str(), &size_constant_val)) {
+				ShowWarning("status_readdb_sizefix: Invalid size constant %s for weapon type constant %s, in \"%s\", skipping.\n", size_constant.c_str(), weapon_type_constant.c_str(), current_file.c_str());
+				continue;
+			}
+			if (size_constant_val < SZ_SMALL || size_constant_val > SZ_BIG) {
+				ShowWarning("status_readdb_sizefix: Invalid size %s for weapon type constant %s (value: %d, min: %d, max: %d) in \"%s\", skipping.\n", size_constant.c_str(), weapon_type_constant.c_str(), size_constant_val, SZ_SMALL, SZ_BIG, current_file.c_str());
+				continue;
+			}
+			try {
+				value = size_it->second.as<int>();
+			} catch (...) {
+				ShowWarning("status_readdb_sizefix: Invalid field value for size %s, weapon type constant %s, line %d in '" CL_WHITE "%s" CL_RESET "', skipping.\n", size_constant.c_str(), weapon_type_constant.c_str(), it->first.Mark().line, current_file.c_str());
+				continue;
+			}
+
+			atkmods[ size_constant_val ][ weapon_type ] = value;
+			count++;
+		}
+	}
+	ShowStatus("Done reading '" CL_BLUE "%d" CL_RESET "' entries in '" CL_BLUE "%s" CL_RESET "'.\n", count, current_file.c_str());
 }
 
 /**
@@ -14680,7 +14729,7 @@ static bool status_readdb_attrfix(const char *basedir,bool silent)
  * previous functions above, separating information by delimiter
  * DBs being read:
  *	attr_fix.txt: Attribute adjustment table for attacks
- *	size_fix.txt: Size adjustment table for weapons
+ *	size_fix.yml: Size adjustment table for weapons
  *	refine_db.txt: Refining data table
  * @return 0
  */
@@ -14695,7 +14744,7 @@ int status_readdb(void)
 	// Initialize databases to default
 
 	memset(SCDisabled, 0, sizeof(SCDisabled));
-	// size_fix.txt
+	// size_fix.yml
 	for(i=0;i<ARRAYLENGTH(atkmods);i++)
 		for(j=0;j<MAX_WEAPON_TYPE;j++)
 			atkmods[i][j]=100;
@@ -14736,7 +14785,7 @@ int status_readdb(void)
 
 		status_readdb_attrfix(dbsubpath2,i > 0); // !TODO use sv_readdb ?
 		sv_readdb(dbsubpath1, "status_disabled.txt", ',', 2, 2, -1, &status_readdb_status_disabled, i > 0);
-		sv_readdb(dbsubpath1, "size_fix.txt",',',MAX_WEAPON_TYPE,MAX_WEAPON_TYPE,ARRAYLENGTH(atkmods),&status_readdb_sizefix, i > 0);
+		status_readdb_sizefix(dbsubpath1, "size_fix.yml");
 
 		status_yaml_readdb_refine(dbsubpath2, "refine_db.yml");
 		aFree(dbsubpath1);

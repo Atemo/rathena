@@ -1,0 +1,23 @@
+# Size Fix Tables
+# Contains size fixes for weapon damage.
+#
+#
+# Note:
+#    The Weapon type and size field are optionals. Size modifier value is 100 by default for all weapon type.
+#    The constant name allows to implement new weapon type and size without modify the function reading the file.
+#
+# Struture of Database:
+#######################################################################################################################################
+#
+#<Weapon type>:
+#    <size>: <value>
+#
+#######################################################################################################################################
+#
+# Description:
+#
+# <Weapon type> is the constant name of the type of weapon (see script_constants.hpp)
+# <size> is the constant name of the type of size (see script_constants.hpp)
+# <value> is the damage adjustment in percent when using a <Weapon type> against a target of <size> type
+#
+#######################################################################################################################################
