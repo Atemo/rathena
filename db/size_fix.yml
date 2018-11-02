@@ -22,6 +22,11 @@
 #
 #######################################################################################################################################
 
+W_FIST:
+    Size_Small:  100
+    Size_Medium: 100
+    Size_Large:  100
+
 W_DAGGER:
     Size_Small:  100
     Size_Medium:  75
@@ -62,6 +67,16 @@ W_MACE:
     Size_Medium: 100
     Size_Large:  100
 
+W_2HMACE:
+    Size_Small:  100
+    Size_Medium: 100
+    Size_Large:  100
+
+W_STAFF:
+    Size_Small:  100
+    Size_Medium: 100
+    Size_Large:  100
+
 W_BOW:
     Size_Small:  100
     Size_Medium: 100
@@ -91,3 +106,38 @@ W_KATAR:
     Size_Small:   75
     Size_Medium: 100
     Size_Large:   75
+
+W_REVOLVER:
+    Size_Small:  100
+    Size_Medium: 100
+    Size_Large:  100
+
+W_RIFLE:
+    Size_Small:  100
+    Size_Medium: 100
+    Size_Large:  100
+
+W_SHOTGUN:
+    Size_Small:  100
+    Size_Medium: 100
+    Size_Large:  100
+
+W_GATLING:
+    Size_Small:  100
+    Size_Medium: 100
+    Size_Large:  100
+
+W_GRENADE:
+    Size_Small:  100
+    Size_Medium: 100
+    Size_Large:  100
+
+W_HUUMA:
+    Size_Small:  100
+    Size_Medium: 100
+    Size_Large:  100
+
+W_2HSTAFF:
+    Size_Small:  100
+    Size_Medium: 100
+    Size_Large:  100
