@@ -22,6 +22,7 @@
     <ProjectGuid>{B4114A9C-EEA4-433C-A830-56119A984F24}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>mapserver</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -310,7 +311,7 @@
     <Copy SourceFiles="$(SolutionDir)db\import-tmpl\item_buyingstore.txt" DestinationFolder="$(SolutionDir)db\import\" ContinueOnError="true" Condition="!Exists('$(SolutionDir)db\import\item_buyingstore.txt')" />
     <Copy SourceFiles="$(SolutionDir)db\import-tmpl\item_cardalbum.txt" DestinationFolder="$(SolutionDir)db\import\" ContinueOnError="true" Condition="!Exists('$(SolutionDir)db\import\item_cardalbum.txt')" />
     <Copy SourceFiles="$(SolutionDir)db\import-tmpl\item_cash_db.txt" DestinationFolder="$(SolutionDir)db\import\" ContinueOnError="true" Condition="!Exists('$(SolutionDir)db\import\item_cash_db.txt')" />
-    <Copy SourceFiles="$(SolutionDir)db\import-tmpl\item_combo_db.txt" DestinationFolder="$(SolutionDir)db\import\" ContinueOnError="true" Condition="!Exists('$(SolutionDir)db\import\item_combo_db.txt')" />
+    <Copy SourceFiles="$(SolutionDir)db\import-tmpl\item_combo_db.yml" DestinationFolder="$(SolutionDir)db\import\" ContinueOnError="true" Condition="!Exists('$(SolutionDir)db\import\item_combo_db.yml')" />
     <Copy SourceFiles="$(SolutionDir)db\import-tmpl\item_db.txt" DestinationFolder="$(SolutionDir)db\import\" ContinueOnError="true" Condition="!Exists('$(SolutionDir)db\import\item_db.txt')" />
     <Copy SourceFiles="$(SolutionDir)db\import-tmpl\item_delay.txt" DestinationFolder="$(SolutionDir)db\import\" ContinueOnError="true" Condition="!Exists('$(SolutionDir)db\import\item_delay.txt')" />
     <Copy SourceFiles="$(SolutionDir)db\import-tmpl\item_flag.txt" DestinationFolder="$(SolutionDir)db\import\" ContinueOnError="true" Condition="!Exists('$(SolutionDir)db\import\item_flag.txt')" />
@@ -373,4 +374,3 @@
     <Copy SourceFiles="$(SolutionDir)db\import-tmpl\status_disabled.txt" DestinationFolder="$(SolutionDir)db\import\" ContinueOnError="true" Condition="!Exists('$(SolutionDir)db\import\status_disabled.txt')" />
   </Target>
 </Project>
-

@@ -4,6 +4,7 @@
 #include "itemdb.hpp"
 
 #include <stdlib.h>
+#include <yaml-cpp/yaml.h>
 
 #include "../common/malloc.hpp"
 #include "../common/nullpo.hpp"
@@ -936,154 +937,158 @@ static bool itemdb_read_flag(char* fields[], int columns, int current) {
 	return true;
 }
 
-/**
- * @return: amount of retrieved entries.
- **/
-static int itemdb_combo_split_atoi (char *str, int *val) {
-	int i;
 
-	for (i=0; i<MAX_ITEMS_PER_COMBO; i++) {
-		if (!str) break;
+static int itemdb_read_combos_sub(const YAML::Node &node, int count, const std::string &current_file) {
+	int items_id[100][100];
+	struct item_data * id = NULL;
+	int idx = 0, num_combos, num_item_per_combo[100];
 
-		val[i] = atoi(str);
+	uint8 i, j;
 
-		str = strchr(str,':');
+	std::string aegis_item;
 
-		if (str)
-			*str++=0;
+	if (!node["Combos"]) {
+		ShowWarning("itemdb_read_combos: Missing Combos field line %d in '" CL_WHITE "%s" CL_RESET "', skipping.\n", node.Mark().line, current_file.c_str());
+		return false;
+	}
+	if (!node["Combos"].IsSequence()) {
+		ShowWarning("itemdb_read_combos: Invalid Combos format line %d in \"%s\"\n", node.Mark().line, current_file.c_str());
+		return false;
 	}
 
-	if( i == 0 ) //No data found.
-		return 0;
+	for ( num_combos = 0; num_combos < node["Combos"].size(); num_combos++ ) {
+		if (!node["Combos"][num_combos].IsSequence() || node["Combos"][num_combos].size() < 2) {
+			ShowWarning("itemdb_read_combos: Invalid Combos format line %d in \"%s\"\n", node["Combos"].Mark().line, current_file.c_str());
+			return false;
+		}
+		if (node["Combos"][num_combos].size() > MAX_ITEMS_PER_COMBO) {
+			ShowWarning("itemdb_read_combos: Too many item per combo, max %d found %d line %d in \"%s\"\n", MAX_ITEMS_PER_COMBO, node["Combos"][num_combos].size(), node["Combos"][num_combos].Mark().line, current_file.c_str());
+			return false;
+		}
+		for ( num_item_per_combo[ num_combos ] = 0; num_item_per_combo[ num_combos ] < node["Combos"][num_combos].size(); num_item_per_combo[ num_combos ]++ ) {
+			try {
+				aegis_item = node["Combos"][num_combos][ num_item_per_combo[num_combos] ].as<std::string>();
+			} catch (...) {
+				ShowWarning("itemdb_read_combos: invalid Combos field line %d in '" CL_WHITE "%s" CL_RESET "', skipping.\n", node["Combos"][num_combos][ num_item_per_combo[num_combos] ].Mark().line, current_file.c_str());
+				return false;
+			}
+			id = itemdb_exists( atoi(aegis_item.c_str()) );
+			if (id == NULL) {
+				id = itemdb_searchname1( aegis_item.c_str(), true );
+				if (id == NULL) {
+					ShowWarning( "itemdb_read_combos: Non-existant item '%s' line %d in '" CL_WHITE "%s" CL_RESET "'\n", node["Combos"][num_combos][ num_item_per_combo[num_combos] ].Mark().line, aegis_item.c_str(), current_file.c_str() );
+					return false;
+				}
+			}
+			items_id[num_combos][ num_item_per_combo[num_combos] ] = id->nameid;
+		}
+	}
 
-	return i;
+	struct script_code *code = NULL, *equip_code = NULL, *unequip_code = NULL;
+
+	if (node["Script"]) {
+		try {
+			code = parse_script( node["Script"].as<std::string>().c_str(), current_file.c_str(), node["Script"].Mark().line, 0 );
+		}
+		catch (...) {
+			ShowError("itemdb_read_combos: Invalid Script field line %d in \"%s\"\n", node["Script"].Mark().line, current_file.c_str());
+			return false;
+		}
+	}
+	if (node["OnEquip"]) {
+		try {
+			equip_code = parse_script( node["OnEquip"].as<std::string>().c_str(), current_file.c_str(), node["OnEquip"].Mark().line, 0 );
+		}
+		catch (...) {
+			ShowError("itemdb_read_combos: Invalid OnEquip field line %d in \"%s\"\n", node["OnEquip"].Mark().line, current_file.c_str());
+			return false;
+		}
+	}
+	if (node["OnUnEquip"]) {
+		try {
+			unequip_code = parse_script( node["OnUnEquip"].as<std::string>().c_str(), current_file.c_str(), node["OnUnEquip"].Mark().line, 0 );
+		}
+		catch (...) {
+			ShowError("itemdb_read_combos: Invalid OnUnEquip field line %d in \"%s\"\n", node["OnUnEquip"].Mark().line, current_file.c_str());
+			return false;
+		}
+	}
+
+	for ( i = 0; i < num_combos; i++ ) {
+		id = itemdb_exists(items_id[i][0]);
+		idx = id->combos_count;
+		/* first entry, create */
+		if( id->combos == NULL ) {
+			CREATE(id->combos, struct item_combo*, 1);
+			id->combos_count = 1;
+		} else {
+			RECREATE(id->combos, struct item_combo*, ++id->combos_count);
+		}
+		CREATE(id->combos[idx],struct item_combo,1);
+		id->combos[idx]->nameid = (unsigned short*)aMalloc( num_item_per_combo[i] * sizeof(unsigned short) );
+		id->combos[idx]->count = num_item_per_combo[i];
+
+
+		id->combos[idx]->script = code;
+		id->combos[idx]->equip_script = equip_code;
+		id->combos[idx]->unequip_script = unequip_code;
+		id->combos[idx]->id = count;
+		id->combos[idx]->isRef = false;
+		/* populate ->nameid field */
+		
+		for( j = 0; j < num_item_per_combo[i]; j++ ) {
+			id->combos[idx]->nameid[j] = items_id[i][j];
+		}
+
+		/* populate the children to refer to this combo */
+		for ( j = 1; j < num_item_per_combo[i]; j++ ) {
+			struct item_data * it;
+			int index;
+			it = itemdb_exists(items_id[i][j]);
+			index = it->combos_count;
+			if( it->combos == NULL ) {
+				CREATE(it->combos, struct item_combo*, 1);
+				it->combos_count = 1;
+			} else {
+				RECREATE(it->combos, struct item_combo*, ++it->combos_count);
+			}
+			CREATE(it->combos[index],struct item_combo,1);
+			/* we copy previously alloc'd pointers and just set it to reference */
+			memcpy(it->combos[index],id->combos[idx],sizeof(struct item_combo));
+			/* we flag this way to ensure we don't double-dealloc same data */
+			it->combos[index]->isRef = true;
+		}
+		
+		uidb_put(itemdb_combo,id->combos[idx]->id,id->combos[idx]);
+		
+	}
+	return num_combos;
 }
 
-/**
- * <combo{:combo{:combo:{..}}}>,<{ script }>
- **/
-static void itemdb_read_combos(const char* basedir, bool silent) {
-	uint32 lines = 0, count = 0;
-	char line[1024];
 
-	char path[256];
-	FILE* fp;
+static void itemdb_read_combos(const std::string &directory, const std::string &file) {
+	int count = 0, total_combo = 0, combo = 0;
 
-	sprintf(path, "%s/%s", basedir, "item_combo_db.txt");
+	const std::string current_file = directory + "/" + file;
+	YAML::Node root;
 
-	if ((fp = fopen(path, "r")) == NULL) {
-		if(silent==0) ShowError("itemdb_read_combos: File not found \"%s\".\n", path);
+	try {
+		root = YAML::LoadFile(current_file);
+	}
+	catch (...) {
+		ShowError("Failed to read '" CL_WHITE "%s" CL_RESET "'.\n", current_file.c_str());
 		return;
 	}
-
-	// process rows one by one
-	while(fgets(line, sizeof(line), fp)) {
-		char *str[2], *p;
-
-		lines++;
-
-		if (line[0] == '/' && line[1] == '/')
-			continue;
-
-		memset(str, 0, sizeof(str));
-
-		p = line;
-
-		p = trim(p);
-
-		if (*p == '\0')
-			continue;// empty line
-
-		if (!strchr(p,','))
-		{
-			/* is there even a single column? */
-			ShowError("itemdb_read_combos: Insufficient columns in line %d of \"%s\", skipping.\n", lines, path);
-			continue;
+	for ( const auto &node : root ) {
+		if (node) {
+			combo = itemdb_read_combos_sub(node, count, current_file);
+			if (combo) {
+				total_combo += combo;
+				count++;
+			}
 		}
-
-		str[0] = p;
-		p = strchr(p,',');
-		*p = '\0';
-		p++;
-
-		str[1] = p;
-		p = strchr(p,',');
-		p++;
-
-		if (str[1][0] != '{') {
-			ShowError("itemdb_read_combos(#1): Invalid format (Script column) in line %d of \"%s\", skipping.\n", lines, path);
-			continue;
-		}
-		/* no ending key anywhere (missing \}\) */
-		if ( str[1][strlen(str[1])-1] != '}' ) {
-			ShowError("itemdb_read_combos(#2): Invalid format (Script column) in line %d of \"%s\", skipping.\n", lines, path);
-			continue;
-		} else {
-			int items[MAX_ITEMS_PER_COMBO];
-			int v = 0, retcount = 0;
-			struct item_data * id = NULL;
-			int idx = 0;
-			if((retcount = itemdb_combo_split_atoi(str[0], items)) < 2) {
-				ShowError("itemdb_read_combos: line %d of \"%s\" doesn't have enough items to make for a combo (min:2), skipping.\n", lines, path);
-				continue;
-			}
-			/* validate */
-			for(v = 0; v < retcount; v++) {
-				if( !itemdb_exists(items[v]) ) {
-					ShowError("itemdb_read_combos: line %d of \"%s\" contains unknown item ID %d, skipping.\n", lines, path,items[v]);
-					break;
-				}
-			}
-			/* failed at some item */
-			if( v < retcount )
-				continue;
-			id = itemdb_exists(items[0]);
-			idx = id->combos_count;
-			/* first entry, create */
-			if( id->combos == NULL ) {
-				CREATE(id->combos, struct item_combo*, 1);
-				id->combos_count = 1;
-			} else {
-				RECREATE(id->combos, struct item_combo*, ++id->combos_count);
-			}
-			CREATE(id->combos[idx],struct item_combo,1);
-			id->combos[idx]->nameid = (unsigned short*)aMalloc( retcount * sizeof(unsigned short) );
-			id->combos[idx]->count = retcount;
-			id->combos[idx]->script = parse_script(str[1], path, lines, 0);
-			id->combos[idx]->id = count;
-			id->combos[idx]->isRef = false;
-			/* populate ->nameid field */
-			for( v = 0; v < retcount; v++ ) {
-				id->combos[idx]->nameid[v] = items[v];
-			}
-
-			/* populate the children to refer to this combo */
-			for( v = 1; v < retcount; v++ ) {
-				struct item_data * it;
-				int index;
-				it = itemdb_exists(items[v]);
-				index = it->combos_count;
-				if( it->combos == NULL ) {
-					CREATE(it->combos, struct item_combo*, 1);
-					it->combos_count = 1;
-				} else {
-					RECREATE(it->combos, struct item_combo*, ++it->combos_count);
-				}
-				CREATE(it->combos[index],struct item_combo,1);
-				/* we copy previously alloc'd pointers and just set it to reference */
-				memcpy(it->combos[index],id->combos[idx],sizeof(struct item_combo));
-				/* we flag this way to ensure we don't double-dealloc same data */
-				it->combos[index]->isRef = true;
-			}
-			uidb_put(itemdb_combo,id->combos[idx]->id,id->combos[idx]);
-		}
-		count++;
 	}
-	fclose(fp);
-
-	ShowStatus("Done reading '" CL_WHITE "%u" CL_RESET "' entries in '" CL_WHITE "%s" CL_RESET "'.\n",count,path);
-
-	return;
+	ShowStatus("Done reading '" CL_BLUE "%d" CL_RESET "' entries (%d combos) in '" CL_RED "%s" CL_RESET "'\n", count, total_combo, current_file.c_str());
 }
 
 /**
@@ -1830,7 +1835,7 @@ static void itemdb_read(void) {
 #ifdef RENEWAL
 		sv_readdb(dbsubpath2, "item_package.txt",		',', 2, 10, -1, &itemdb_read_group, i > 0);
 #endif
-		itemdb_read_combos(dbsubpath2,i > 0); //TODO change this to sv_read ? id#script ?
+		itemdb_read_combos(dbsubpath2, "item_combo_db.yml");
 		itemdb_read_randomopt(dbsubpath2, i > 0);
 		sv_readdb(dbsubpath2, "item_noequip.txt",       ',', 2, 2, -1, &itemdb_read_noequip, i > 0);
 		sv_readdb(dbsubpath2, "item_trade.txt",         ',', 3, 3, -1, &itemdb_read_itemtrade, i > 0);

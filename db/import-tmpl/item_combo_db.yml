@@ -1,0 +1,32 @@
+########################################################################################################################
+#
+# Item Combos Database
+#   Structure of Database:
+#
+########################################################################################################################
+#
+#-  Combos:
+#       - [ <item>, <item>,.. ]          Sequence of aegis item name / ID required to execute the bonus.
+#       - (.. iterate)                   More sequence can be iterated for the same bonus.
+#       - (.. iterate)
+#   Script: |
+#       {
+#           <bonus script>
+#       }
+#   OnEquip: |
+#       {
+#           <bonus script>
+#       }
+#   OnUnEquip: |
+#       {
+#           <bonus script>
+#       }
+#
+#-  (.. iterate)
+#
+########################################################################################################################
+#
+# Script, OnEquip and OnUnEquip are optionnals, however one field is required.
+#
+########################################################################################################################
+

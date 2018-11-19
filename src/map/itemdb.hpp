@@ -743,6 +743,8 @@ enum e_itemshop_restrictions {
 struct item_combo
 {
 	struct script_code *script;
+	struct script_code *equip_script;
+	struct script_code *unequip_script;
 	unsigned short *nameid;/* nameid array */
 	unsigned char count;
 	unsigned short id;/* id of this combo */

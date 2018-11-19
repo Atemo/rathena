@@ -9713,6 +9713,9 @@ static int pc_checkcombo(struct map_session_data *sd, struct item_data *data) {
 		sd->combos.id[idx] = data->combos[i]->id;
 		/* save pos of combo*/
 		sd->combos.pos[idx] = pos;
+
+		if (data->combos[i]->equip_script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(data,sd->bl.m)))
+			run_script(data->combos[i]->equip_script, 0, sd->bl.id, fake_nd->bl.id);
 		success++;
 	}
 	return success;
@@ -9741,6 +9744,9 @@ static int pc_removecombo(struct map_session_data *sd, struct item_data *data ) 
 		sd->combos.id[x] = 0;
 		sd->combos.pos[x] = 0;
 		retval++;
+
+		if (data->combos[i]->unequip_script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(data,sd->bl.m)))
+			run_script(data->combos[i]->unequip_script, 0, sd->bl.id, fake_nd->bl.id);
 
 		/* check if combo requirements still fit */
 		if( pc_checkcombo( sd, data ) )

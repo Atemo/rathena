@@ -1,0 +1,6678 @@
+########################################################################################################################
+#
+# Structure of Database
+#
+########################################################################################################################
+#
+#-  Combos:
+#       - [ <item>, <item>,.. ]             Sequence of aegis item name / ID required to execute the bonus.
+#       - (.. iterate)                      (optional) more sequence can be iterated for the same bonus.
+#       - (.. iterate)
+#   Script: |                               (optional)
+#       {
+#           <bonus script>
+#       }
+#   OnEquip: |                              (optional)
+#       {
+#           <bonus script>
+#       }
+#   OnUnEquip: |                            (optional)
+#       {
+#           <bonus script>
+#       }
+#
+#-  (.. iterate)
+#
+########################################################################################################################
+
+
+-   Combos:
+        - [ S_Bearers_Armor, S_Bearers_Shoes, S_Bearers_Shield, S_Bearers_Weapon, S_Bearers_Earring, S_Bearers_Pendent ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_SHADOW_ARMOR) + getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_SHIELD) + getequiprefinerycnt(EQI_SHADOW_SHOES) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L);
+            bonus bAllStats,1;
+            if (.@r >= 45) {
+                bonus bMaxHPrate,(.@r-60);
+                sc_start4 SC_ENDURE,1,10,0,0,1;
+            }
+        }
+    OnUnEquip: |
+        {
+            sc_end SC_ENDURE;
+        }
+
+
+-   Combos:
+        - [ Dragon_Breath, Dragon_Slayer ]
+        - [ Dragon_Breath, Dragon_Slayer_ ]
+        - [ Dragon_Breath, Gae_Bolg ]
+        - [ Dragon_Breath, Gae_Bolg_ ]
+        - [ Dragon_Breath, Dragon_Killer ]
+        - [ Dragon_Breath, Dragon_Killer_ ]
+    Script: |
+        {
+            bonus2 bAddRace,RC_Dragon,5;
+        }
+
+
+-   Combos:
+        - [ Dragon_Breath, Helm_Of_Dragoon, Dragon_Slayer ]
+        - [ Dragon_Breath, Helm_Of_Dragoon, Dragon_Slayer_ ]
+        - [ Dragon_Breath, Helm_Of_Dragoon, Gae_Bolg ]
+        - [ Dragon_Breath, Helm_Of_Dragoon, Gae_Bolg_ ]
+        - [ Dragon_Breath, Helm_Of_Dragoon, Dragon_Killer ]
+        - [ Dragon_Breath, Helm_Of_Dragoon, Dragon_Killer_ ]
+    Script: |
+        {
+            bonus2 bAddRace,RC_Dragon,25;
+        }
+
+
+-   Combos:
+        - [ Durga, Whikebain_Suit ]
+    Script: |
+        {
+            if (getequiprefinerycnt(EQI_HAND_R) >= 7) {
+                autobonus "{ bonus bIgnoreDefClass,Class_Normal; }",1000,3000,BF_SHORT,BF_NORMAL;   /* Confirm: Success rate */
+            }
+        }
+
+
+-   Combos:
+        - [ Illusion_War_Axe, Illusion_Shoes ]
+    Script: |
+        {
+            bonus bBaseAtk,40;
+            .@eq = getequiprefinerycnt(EQI_SHOES);
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            if (.@eq >= 7 && .@weapon >= 7)
+                bonus2 bSkillAtk,"NC_AXEBOOMERANG",15;
+            if ((.@eq + .@weapon) >= 18) {
+                bonus2 bAddClass,Class_All,10;
+                if ((.@eq + .@weapon) >= 22)
+                    bonus bLongAtkRate,10;
+            }
+        }
+
+
+-   Combos:
+        - [ Hoplite_Helmet, Gladius ]
+        - [ Hoplite_Helmet, Gladius_ ]
+        - [ Hoplite_Helmet, Gladius__ ]
+        - [ Hoplite_Helmet, Pike ]
+        - [ Hoplite_Helmet, Pike_ ]
+        - [ Hoplite_Helmet, Pike__ ]
+    Script: |
+        {
+            bonus2 bAddClass,Class_All,3;
+        }
+
+
+-   Combos:
+        - [ Helm_Of_Dragoon, Inverse_Scale ]
+        - [ Helm_Of_Dragoon, Dragon_Wing ]
+        - [ Helm_Of_Dragoon, Legacy_Of_Dragon ]
+    Script: |
+        {
+            bonus bAspd,1;
+            bonus bFlee2,3;
+        }
+
+
+-   Combos:
+        - [ 1284, 2892 ]
+    Script: |
+        {
+            bonus2 bSkillAtk,"AS_SONICBLOW",50;
+            bonus bBaseAtk,50;
+            bonus bFlee,-30;
+        }
+
+
+-   Combos:
+        - [ 1285, 2892 ]
+    Script: |
+        {
+            bonus bCritical,4;
+            bonus bCritAtkRate,40;
+            bonus bMaxHPRate,-10;
+        }
+
+
+-   Combos:
+        - [ 1287, 15123 ]
+    Script: |
+        {
+            if (getequiprefinerycnt(EQI_HAND_R) >= 7)
+                autobonus "{ bonus bIgnoreDefClass,Class_Normal; }",1000,3000,BF_SHORT,BF_NORMAL; /* Confirm: Success rate */
+        }
+
+
+-   Combos:
+        - [ 1326, 22133 ]
+    Script: |
+        {
+            bonus bBaseAtk,40;
+            .@eq = getequiprefinerycnt(EQI_SHOES);
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            if (.@eq >= 7 && .@weapon >= 7)
+                bonus2 bSkillAtk,"NC_AXEBOOMERANG",15;
+            if ((.@eq + .@weapon) >= 18) {
+                bonus2 bAddClass,Class_All,10;
+                if ((.@eq + .@weapon) >= 22)
+                    bonus bLongAtkRate,10;
+            }
+        }
+
+
+-   Combos:
+        - [ 1387, 19021 ]
+    Script: |
+        {
+            bonus2 bSkillAtk,"WS_CARTTERMINATION", 15 + getequiprefinerycnt(EQI_HAND_R)*5;
+        }
+
+
+-   Combos:
+        - [ 1420, 2115 ]
+    Script: |
+        {
+            bonus3 bAutoSpellWhenHit,"HP_ASSUMPTIO",2,5;
+        }
+
+
+-   Combos:
+        - [ 1420, 2133 ]
+        - [ 1421, 2133 ]
+        - [ 1422, 2133 ]
+    Script: |
+        {
+            bonus2 bAddClass,Class_All,4;
+            bonus bDef,2;
+        }
+
+
+-   Combos:
+        - [ 1428, 2115 ]
+    Script: |
+        {
+            bonus3 bAutoSpellWhenHit,"HP_ASSUMPTIO",2,5;
+        }
+
+
+-   Combos:
+        - [ 1433, 2153 ]
+    Script: |
+        {
+            bonus2 bSkillAtk,"LG_RAYOFGENESIS",10;
+            bonus2 bSkillAtk,"CR_GRANDCROSS",10;
+        }
+
+
+-   Combos:
+        - [ 1433, 2153, 18823 ]
+    Script: |
+        {
+            bonus2 bSkillAtk,"LG_BANISHINGPOINT",20;
+            bonus2 bSkillAtk,"LG_CANNONSPEAR",20;
+            bonus2 bSkillAtk,"LG_SHIELDPRESS",20;
+        }
+
+
+-   Combos:
+        - [ 1433, 2153, 18823, 28372 ]
+    Script: |
+        {
+            bonus2 bSkillUseSP,"LG_BANISHINGPOINT",-15;
+            bonus2 bSkillUseSP,"LG_CANNONSPEAR",-10;
+            bonus2 bSkillUseSP,"CR_GRANDCROSS",-30;
+            bonus2 bSkillUseSP,"LG_SHIELDPRESS",-5;
+        }
+
+
+-   Combos:
+        - [ 1433, 28372 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HAND_R)/2*7;
+            bonus2 bSkillAtk,"LG_CANNONSPEAR",.@r;
+            bonus2 bSkillAtk,"LG_BANISHINGPOINT",.@r;
+        }
+
+
+-   Combos:
+        - [ 1472, 2677 ]
+    Script: |
+        {
+            bonus bMatkRate,6;
+            bonus bDex,2;
+            bonus bVariableCastrate,-getequiprefinerycnt(EQI_HEAD_TOP);
+        }
+
+
+-   Combos:
+        - [ 1472, 2711 ]
+    Script: |
+        {
+            bonus bMatkRate,6;
+            bonus bDex,2;
+            bonus bVariableCastrate,-getequiprefinerycnt(EQI_HAND_R);
+        }
+
+
+-   Combos:
+        - [ 1473, 2677 ]
+    Script: |
+        {
+            bonus bMatkRate,6;
+            bonus bDex,2;
+            bonus bVariableCastrate,-getequiprefinerycnt(EQI_HEAD_TOP);
+        }
+
+
+-   Combos:
+        - [ 1473, 2711 ]
+    Script: |
+        {
+            bonus bMatkRate,6;
+            bonus bDex,2;
+            bonus bVariableCastrate,-getequiprefinerycnt(EQI_HAND_R);
+        }
+
+
+-   Combos:
+        - [ 1477, 2700 ]
+    Script: |
+        {
+            bonus2 bResEff,Eff_Confusion,9500;
+        }
+
+
+-   Combos:
+        - [ 1479, 2700 ]
+    Script: |
+        {
+            bonus2 bResEff,Eff_Confusion,9500;
+        }
+
+
+-   Combos:
+        - [ 1490, 19021 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HAND_R);
+            bonus2 bSkillAtk,"LK_SPIRALPIERCE",.@r*5;
+            bonus4 bAutoSpellOnSkill,"LK_JOINTBEAT","LK_SPIRALPIERCE",max(getskilllv("LK_SPIRALPIERCE"),1),50+.@r*5; /* Confirm: Success rate */
+        }
+
+
+-   Combos:
+        - [ 15141, 19033 ]
+    Script: |
+        {
+            bonus bMaxSP,100;
+            bonus bNoCastCancel;
+        }
+
+
+-   Combos:
+        - [ 15141, 20779, 22075 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_ARMOR) + getequiprefinerycnt(EQI_GARMENT) + getequiprefinerycnt(EQI_SHOES);
+            bonus bMaxHP,1000;
+            bonus bHealPower,min(5+.@r,30);
+            bonus bHealPower2,min(5+.@r,30);
+        }
+
+
+-   Combos:
+        - [ 15186, 19168 ]
+    Script: |
+        {
+            bonus2 bExpAddClass,Class_All,5;
+            bonus2 bDropAddClass,Class_All,5;
+        }
+
+
+-   Combos:
+        - [ 1535, 4361 ]
+    Script: |
+        {
+            bonus bBreakArmorRate,900;
+            bonus bBreakWeaponRate,900;
+        }
+
+
+-   Combos:
+        - [ 1558, 27085 ]
+    Script: |
+        {
+            bonus bBaseAtk,100;
+            bonus bMatk,100;
+        }
+
+
+-   Combos:
+        - [ 1564, 2186 ]
+    Script: |
+        {
+            bonus bAspdRate,getequiprefinerycnt(EQI_HAND_R);
+        }
+
+
+-   Combos:
+        - [ 1572, 2716, 2717 ]
+    Script: |
+        {
+            bonus bInt,5;
+            bonus bMaxHP,700;
+            bonus bAspdRate,5;
+        }
+
+
+-   Combos:
+        - [ 1573, 2334 ]
+    Script: |
+        {
+            bonus bMdef,8;
+            bonus bMaxSPRate,10;
+            bonus bInt,4;
+        }
+
+
+-   Combos:
+        - [ 1573, 2372 ]
+    Script: |
+        {
+            bonus bMdef,8;
+            bonus bMaxSPRate,10;
+            bonus bInt,4;
+        }
+
+
+-   Combos:
+        - [ 1573, 2716, 2717 ]
+    Script: |
+        {
+            bonus bInt,5;
+            bonus bMaxHP,700;
+            bonus bAspdRate,5;
+        }
+
+
+-   Combos:
+        - [ 1580, 2186 ]
+    Script: |
+        {
+            bonus bAspdRate,15;
+        }
+
+
+-   Combos:
+        - [ 1615, 18539 ]
+    Script: |
+        {
+            bonus bMatk,10*getequiprefinerycnt(EQI_HAND_R);
+            bonus bVariableCastrate,-10;
+        }
+
+
+-   Combos:
+        - [ 1616, 2515 ]
+    Script: |
+        {
+            bonus bSpeedRate,25;
+        }
+
+
+-   Combos:
+        - [ 1617, 19020 ]
+        - [ 1620, 19020 ]
+        - [ 1619, 19020 ]
+        - [ 1618, 19020 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            bonus bMatk,.@r;
+            if (.@r >= 10) {
+                autobonus "{ bonus bVariableCastrate,-50; }",100,5000,BF_MAGIC; /* Confirm: Success rate? */
+            }
+        }
+
+
+-   Combos:
+        - [ 1618, 2509 ]
+    Script: |
+        {
+            bonus bMaxHP,300;
+            bonus bMatkRate,min(5, getequiprefinerycnt(EQI_HAND_R)-5);
+            bonus2 bSubEle,Ele_Neutral,min(30, getequiprefinerycnt(EQI_GARMENT)*3);
+        }
+
+
+-   Combos:
+        - [ 1618, 2535 ]
+    Script: |
+        {
+            bonus bMatkRate,5;
+            bonus2 bSubEle,Ele_Neutral,25;
+        }
+
+
+-   Combos:
+        - [ 1618, 20847 ]
+    Script: |
+        {
+            .@eq = min(getequiprefinerycnt(EQI_GARMENT),10);
+            .@weapon = min(getequiprefinerycnt(EQI_HAND_R),10);
+            bonus bMaxHP,1000;
+            bonus bMatk,(-50+(20*.@weapon));
+            bonus bDelayrate,-(3*(.@weapon/3));
+            bonus2 bSubEle,Ele_Neutral,(.@eq/2);
+        }
+
+
+-   Combos:
+        - [ 1620, 2509 ]
+    Script: |
+        {
+            .@bonus = min( getequiprefinerycnt(EQI_GARMENT)*3, 30 );
+            bonus bMaxHP,300;
+            bonus bMatkRate,getequiprefinerycnt(EQI_HAND_R)-5;
+            bonus2 bSubEle,Ele_Neutral,.@bonus;
+        }
+
+
+-   Combos:
+        - [ 1620, 2535 ]
+    Script: |
+        {
+            bonus bMatkRate,5;
+            bonus2 bSubEle,Ele_Neutral,25;
+        }
+
+
+-   Combos:
+        - [ 1629, 5045 ]
+    Script: |
+        {
+            bonus bDex,2;
+            bonus bInt,2;
+            bonus bSPrecovRate,5;
+            bonus bMatkRate,getequiprefinerycnt(EQI_HAND_R);
+        }
+
+
+-   Combos:
+        - [ 1631, 2129 ]
+    Script: |
+        {
+            bonus2 bSkillAtk,"PR_MAGNUS",20;
+            bonus3 bAutoSpellWhenHit,"PR_TURNUNDEAD",1,20;
+        }
+
+
+-   Combos:
+        - [ 1636, 18539 ]
+    Script: |
+        {
+            bonus bMatk,10*getequiprefinerycnt(EQI_HAND_R);
+            bonus bVariableCastrate,-10;
+        }
+
+
+-   Combos:
+        - [ 1646, 2161 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HAND_L)*4;
+            bonus2 bVariableCastrate,"WZ_STORMGUST",-.@r;
+            bonus2 bVariableCastrate,"WL_FROSTMISTY",-.@r;
+            bonus2 bVariableCastrate,"WL_JACKFROST",-.@r;
+        }
+
+
+-   Combos:
+        - [ 1647, 5968 ]
+    Script: |
+        {
+            if (BaseClass == Job_Acolyte) {
+                bonus bHealPower,getequiprefinerycnt(EQI_HAND_R)*4;
+            }
+        }
+
+
+-   Combos:
+        - [ 1649, 2198 ]
+    Script: |
+        {
+            .@r_1649 = getequiprefinerycnt(EQI_HAND_R);
+            if (getequiprefinerycnt(EQI_HAND_L) > 9) {
+                bonus bMatk,15 * .@r_1649;
+                if (.@r_1649 >= 10) {
+                    bonus bMatk,50;
+                    bonus bVariableCastrate,-10;
+                }
+            }
+        }
+
+
+-   Combos:
+        - [ 1657, 2471, 2569, 15029 ]
+    Script: |
+        {
+            bonus bHealPower,25;
+            bonus2 bSkillUseSP,"AL_HEAL",-20;
+            bonus2 bSkillCooldown,"AB_SECRAMENT",-2000;
+            bonus2 bSkillCooldown,"AB_LAUDAAGNUS",-2000;
+            bonus2 bSkillCooldown,"AB_LAUDARAMUS",-2000;
+        }
+
+
+-   Combos:
+        - [ 1659, 5920 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HAND_R);
+            bonus2 bSkillUseSP,"AL_HEAL",6*.@r;
+            bonus2 bSkillUseSP,"AB_CHEAL",10*.@r;
+            bonus2 bSkillUseSP,"AB_HIGHNESSHEAL",14*.@r;
+        }
+
+
+-   Combos:
+        - [ 1660, 2471, 2569, 15029 ]
+    Script: |
+        {
+            bonus bHealPower,45;
+            bonus2 bSkillUseSP,"AL_HEAL",-50;
+            bonus3 bAutoSpellWhenHit,"AB_SILENTIUM",1,100;
+            bonus2 bSkillCooldown,"AB_CLEARANCE",-3000;
+            bonus2 bSkillCooldown,"AB_LAUDAAGNUS",-3000;
+            bonus2 bSkillCooldown,"AB_LAUDARAMUS",-3000;
+        }
+
+
+-   Combos:
+        - [ 1668, 15089 ]
+    Script: |
+        {
+            .@bonus = -10 -min(getequiprefinerycnt(EQI_HAND_R),10);
+            if (.@bonus > 0)
+                bonus bDelayrate,.@bonus;
+        }
+
+
+-   Combos:
+        - [ 1670, 2968 ]
+    Script: |
+        {
+            bonus bMatkRate,getequiprefinerycnt(EQI_HAND_R)*5;
+        }
+
+
+-   Combos:
+        - [ 1670, 2968, 2969 ]
+    Script: |
+        {
+            bonus bMatkRate,-(getequiprefinerycnt(EQI_HAND_R)*5);
+        }
+
+
+-   Combos:
+        - [ 1670, 2969 ]
+    Script: |
+        {
+            bonus bMatkRate,getequiprefinerycnt(EQI_HAND_R)*5;
+        }
+
+
+-   Combos:
+        - [ 1718, 1774 ]
+        - [ 1746, 1773 ]
+        - [ 1734, 1753 ]
+        - [ 1726, 1774 ]
+        - [ 1774, 18174 ]
+    Script: |
+        {
+            bonus bLongAtkRate,50;
+        }
+
+
+-   Combos:
+        - [ 1723, 2718 ]
+    Script: |
+        {
+            bonus bDex,1;
+            bonus bMaxSP,50;
+            bonus bSPrecovRate,10;
+        }
+
+
+-   Combos:
+        - [ 1730, 1752 ]
+        - [ 18138, 1754 ]
+        - [ 18137, 1752 ]
+        - [ 1731, 1754 ]
+    Script: |
+        {
+            bonus bLongAtkRate,25;
+        }
+
+
+-   Combos:
+        - [ 1730, 1752, 19048 ]
+    Script: |
+        {
+            bonus bLongAtkRate,20;
+            bonus2 bSubEle,Ele_Fire,-10;
+            if (getequiprefinerycnt(EQI_HAND_R) >= 10)
+                bonus bAspd,1;
+        }
+
+
+-   Combos:
+        - [ 1730, 19019 ]
+        - [ 18140, 19019 ]
+        - [ 18139, 19019 ]
+        - [ 18138, 19019 ]
+        - [ 18137, 19019 ]
+        - [ 1733, 19019 ]
+        - [ 1732, 19019 ]
+        - [ 1731, 19019 ]
+    Script: |
+        {
+            bonus bLongAtkRate,45;
+        }
+
+
+-   Combos:
+        - [ 1731, 1754, 19048 ]
+    Script: |
+        {
+            bonus bLongAtkRate,20;
+            bonus2 bAddEff,Eff_Freeze,-1000;
+            if (getequiprefinerycnt(EQI_HAND_R) >= 10)
+                bonus bAspd,1;
+        }
+
+
+-   Combos:
+        - [ 1732, 1756 ]
+    Script: |
+        {
+            bonus bLongAtkRate,25;
+            bonus2 bAddEff,Eff_Stone,1000;
+        }
+
+
+-   Combos:
+        - [ 1732, 1756, 19048 ]
+    Script: |
+        {
+            bonus bLongAtkRate,20;
+            bonus2 bAddEff,Eff_Stone,-1000;
+            if (getequiprefinerycnt(EQI_HAND_R) >= 10)
+                bonus bAspd,1;
+        }
+
+
+-   Combos:
+        - [ 1733, 1755 ]
+    Script: |
+        {
+            bonus bLongAtkRate,25;
+            bonus3 bAutoSpell,"NJ_HUUJIN",5,(readparam(bInt)>39) ? 300 : 100;
+        }
+
+
+-   Combos:
+        - [ 1733, 1755, 19048 ]
+    Script: |
+        {
+            bonus bLongAtkRate,20;
+            bonus3 bAutoSpell,"NJ_HUUJIN",5,(readparam(bInt)>39) ? -300 : -100;
+            if (getequiprefinerycnt(EQI_HAND_R) >= 10)
+                bonus bAspd,1;
+        }
+
+
+-   Combos:
+        - [ 1741, 2748 ]
+    Script: |
+        {
+            bonus bBaseAtk,25;
+            bonus3 bAddEff,Eff_Curse,200,ATF_WEAPON|ATF_LONG|ATF_TARGET;
+        }
+
+
+-   Combos:
+        - [ 1775, 18114 ]
+    Script: |
+        {
+            bonus bLongAtkRate,70;
+        }
+
+
+-   Combos:
+        - [ 1776, 18114 ]
+    Script: |
+        {
+            bonus bLongAtkRate,40;
+        }
+
+
+-   Combos:
+        - [ 1846, 20838 ]
+    Script: |
+        {
+            bonus bBaseAtk,40;
+            .@eq = getequiprefinerycnt(EQI_GARMENT);
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            if (.@eq >= 7 && .@weapon >= 7)
+                .@val = 20;
+            if ((.@eq + .@weapon) >= 18) {
+                bonus2 bSkillCooldown,"SR_FLASHCOMBO",-1000;
+                if ((.@eq + .@weapon) >= 22)
+                    .@val += 15;
+            }
+            if (.@val)
+                bonus2 bSkillAtk,"SR_TIGERCANNON",.@val;
+        }
+
+
+-   Combos:
+        - [ 1935, 2988 ]
+    Script: |
+        {
+            bonus2 bSkillAtk,"CG_ARROWVULCAN",200;
+            bonus2 bSkillUseSP,"CG_ARROWVULCAN",50;
+        }
+
+
+-   Combos:
+        - [ 1990, 2989 ]
+    Script: |
+        {
+            bonus2 bSkillAtk,"CG_ARROWVULCAN",200;
+        }
+
+
+-   Combos:
+        - [ 2001, 2677 ]
+    Script: |
+        {
+            bonus bMatkRate,10;
+            bonus bDex,2;
+            bonus2 bSubRace,RC_Demon,10;
+            bonus2 bSubRace,RC_Undead,10;
+        }
+
+
+-   Combos:
+        - [ 2001, 2711 ]
+    Script: |
+        {
+            bonus bMatkRate,10;
+            bonus bDex,2;
+            bonus2 bSubRace,RC_Demon,10;
+            bonus2 bSubRace,RC_Undead,10;
+        }
+
+
+-   Combos:
+        - [ 2007, 2467, 2859, 15025 ]
+    Script: |
+        {
+            bonus2 bMagicAtkEle,Ele_Wind,40;
+            bonus2 bMagicAtkEle,Ele_Earth,-30;
+            bonus2 bSubEle,Ele_Earth,-50;
+        }
+
+
+-   Combos:
+        - [ 2008, 2468, 2860, 15026 ]
+    Script: |
+        {
+            bonus2 bMagicAtkEle,Ele_Water,40;
+            bonus2 bMagicAtkEle,Ele_Wind,-30;
+            bonus2 bSubEle,Ele_Wind,-50;
+        }
+
+
+-   Combos:
+        - [ 2009, 2469, 2861, 15027 ]
+    Script: |
+        {
+            bonus2 bMagicAtkEle,Ele_Fire,40;
+            bonus2 bMagicAtkEle,Ele_Water,-30;
+            bonus2 bSubEle,Ele_Water,-50;
+        }
+
+
+-   Combos:
+        - [ 2010, 2470, 2862, 15028 ]
+    Script: |
+        {
+            bonus2 bMagicAtkEle,Ele_Earth,40;
+            bonus2 bMagicAtkEle,Ele_Fire,-30;
+            bonus2 bSubEle,Ele_Fire,-50;
+        }
+
+
+-   Combos:
+        - [ 2011, 2467, 2859, 15025 ]
+    Script: |
+        {
+            bonus2 bMagicAtkEle,Ele_Wind,60;
+            bonus2 bMagicAtkEle,Ele_Earth,-60;
+            bonus2 bSubEle,Ele_Earth,-50;
+        }
+
+
+-   Combos:
+        - [ 2012, 2468, 2860, 15026 ]
+    Script: |
+        {
+            bonus2 bMagicAtkEle,Ele_Water,60;
+            bonus2 bMagicAtkEle,Ele_Wind,-60;
+            bonus2 bSubEle,Ele_Wind,-50;
+        }
+
+
+-   Combos:
+        - [ 2013, 2469, 2861, 15027 ]
+    Script: |
+        {
+            bonus2 bMagicAtkEle,Ele_Fire,60;
+            bonus2 bMagicAtkEle,Ele_Water,-60;
+            bonus2 bSubEle,Ele_Water,-50;
+        }
+
+
+-   Combos:
+        - [ 2014, 2470, 2862, 15028 ]
+    Script: |
+        {
+            bonus2 bMagicAtkEle,Ele_Earth,60;
+            bonus2 bMagicAtkEle,Ele_Fire,-60;
+            bonus2 bSubEle,Ele_Fire,-50;
+        }
+
+
+-   Combos:
+        - [ 2039, 20847 ]
+    Script: |
+        {
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            .@eq = getequiprefinerycnt(EQI_GARMENT);
+            bonus2 bSkillAtk,"WL_CRIMSONROCK",10;
+            if (.@eq >= 7 && .@weapon >= 7)
+                bonus2 bSkillAtk,"WL_HELLINFERNO",40;
+            if ((.@eq + .@weapon) >= 18) {
+                bonus2 bMagicAtkEle,Ele_Wind,10;
+                bonus2 bMagicAtkEle,Ele_Dark,10;
+                if ((.@eq + .@weapon) >= 22)
+                    bonus2 bMagicAtkEle,Ele_Fire,10;
+            }
+        }
+
+
+-   Combos:
+        - [ 2051, 20847 ]
+    Script: |
+        {
+            bonus bMatk,50;
+            .@eq = getequiprefinerycnt(EQI_GARMENT);
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            if (.@eq >= 7 && .@weapon >= 7) {
+                bonus2 bMagicAtkEle,Ele_Water,10;
+                bonus2 bMagicAtkEle,Ele_Wind,10;
+                bonus2 bMagicAtkEle,Ele_Earth,10;
+                bonus2 bMagicAtkEle,Ele_Fire,10;
+            }
+            if ((.@eq + .@weapon) >= 18) {
+                bonus2 bMagicAddEle,Ele_Water,15;
+                bonus2 bMagicAddEle,Ele_Wind,15;
+                bonus2 bMagicAddEle,Ele_Earth,15;
+                bonus2 bMagicAddEle,Ele_Fire,15;
+                if ((.@eq + .@weapon) >= 22)
+                    bonus bDelayrate,-15;
+            }   
+        }
+
+
+-   Combos:
+        - [ 2109, 2239, 2717 ]
+        - [ 2109, 2971, 5135 ]
+        - [ 2109, 2971, 18874 ]
+        - [ 2121, 2239, 2717 ]
+        - [ 2121, 2971, 5135 ]
+        - [ 2121, 2971, 18874 ]
+    Script: |
+        {
+            bonus bHPrecovRate,15;
+            bonus bSPrecovRate,15;
+            bonus bMatkRate,7;
+        }
+
+
+-   Combos:
+        - [ 2114, 2353, 5122 ]
+    Script: |
+        {
+            bonus bStr,2;
+            bonus bDef,5;
+            bonus bMdef,5;
+            if (BaseClass == Job_Swordman)
+                bonus bDef,6;
+        }
+
+
+-   Combos:
+        - [ 2115, 2353, 5124 ]
+    Script: |
+        {
+            bonus bDef, 2 - getequiprefinerycnt(EQI_HAND_L) - getequiprefinerycnt(EQI_HEAD_TOP);
+            bonus bMdef, 5 + getequiprefinerycnt(EQI_HAND_L) + getequiprefinerycnt(EQI_HEAD_TOP);
+        }
+
+
+-   Combos:
+        - [ 2116, 2355, 2420, 2521, 5125 ]
+    Script: |
+        {
+            bonus bMaxHP,900;
+            bonus bMaxSP,100;
+            bonus3 bAutoSpellWhenHit,"HP_ASSUMPTIO",1,30;
+        }
+
+
+-   Combos:
+        - [ 2123, 2701 ]
+    Script: |
+        {
+            bonus bVariableCastrate,-10;
+        }
+
+
+-   Combos:
+        - [ 2123, 2881 ]
+    Script: |
+        {
+            bonus bMatkRate,getequiprefinerycnt(EQI_HAND_L)*2;
+        }
+
+
+-   Combos:
+        - [ 2124, 2702 ]
+    Script: |
+        {
+            bonus bAspdRate,10;
+            bonus bShortWeaponDamageReturn,5;
+        }
+
+
+-   Combos:
+        - [ 2124, 22064 ]
+    Script: |
+        {
+            bonus bAspd,getequiprefinerycnt(EQI_HAND_L)/3;
+        }
+
+
+-   Combos:
+        - [ 2125, 5782 ]
+    Script: |
+        {
+            bonus bDef,2;
+            bonus2 bSubEle,Ele_Neutral,5;
+            bonus2 bSubEle,Ele_Fire,5;
+            bonus2 bSubEle,Ele_Water,5;
+            bonus2 bSubEle,Ele_Wind,5;
+            bonus2 bSubEle,Ele_Earth,5;
+            bonus2 bSubEle,Ele_Dark,5;
+            bonus2 bSubEle,Ele_Holy,5;
+            bonus2 bSubEle,Ele_Ghost,5;
+        }
+
+
+-   Combos:
+        - [ 2135, 2426 ]
+    Script: |
+        {
+            bonus2 bAddEff,Eff_Blind,500;
+            autobonus "{ bonus bFlee,20; }",200,10000,BF_WEAPON,"{ specialeffect2 EF_INCAGILITY; }";
+        }
+
+
+-   Combos:
+        - [ 2137, 2353, 5124 ]
+    Script: |
+        {
+            bonus bDef,2-getequiprefinerycnt(EQI_HAND_L)-getequiprefinerycnt(EQI_HEAD_TOP);
+            bonus bMdef,5+getequiprefinerycnt(EQI_HAND_L)+getequiprefinerycnt(EQI_HEAD_TOP);
+        }
+
+
+-   Combos:
+        - [ 2153, 28372 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HAND_R);
+            bonus2 bSkillAtk,"LG_SHIELDPRESS",.@r > 5 ? (.@r - 5) * 8 : 0;
+        }
+
+
+-   Combos:
+        - [ 2160, 19021 ]
+    Script: |
+        {
+            bonus2 bSubSize,Size_Large,5+(getequiprefinerycnt(EQI_HAND_L)*2);
+        }
+
+
+-   Combos:
+        - [ 2169, 2491, 2590, 15051 ]
+    Script: |
+        {
+            bonus2 bAddDefMonster,2311,30;
+            bonus2 bAddDefMonster,2312,30;
+            bonus2 bAddDefMonster,2320,30;
+            bonus2 bAddDefMonster,2321,30;
+            bonus2 bAddDefMonster,2322,30;
+            bonus2 bAddDefMonster,2317,30;
+            bonus2 bAddDefMonster,2318,30;
+            bonus2 bAddDefMonster,2327,30;
+            bonus2 bAddDefMonster,2319,30;
+            bonus2 bAddDefMonster,2330,30;
+            bonus2 bAddDefMonster,2329,30;
+            bonus2 bAddDefMonster,2333,30;
+            bonus2 bAddDefMonster,2332,30;
+            bonus2 bAddDefMonster,2309,30;
+            bonus2 bAddDefMonster,2310,30;
+            bonus2 bAddDefMonster,2315,30;
+            bonus2 bAddDefMonster,2316,30;
+            bonus2 bAddDefMonster,2314,30;
+            bonus2 bAddDefMonster,2313,30;
+            bonus bMaxHPrate,20;
+            bonus bMaxSPrate,10;
+        }
+
+
+-   Combos:
+        - [ 2171, 15053 ]
+    Script: |
+        {
+            bonus bAgi,2;
+        }
+
+
+-   Combos:
+        - [ 2171, 15056 ]
+    Script: |
+        {
+            bonus bAgi,2;
+        }
+
+
+-   Combos:
+        - [ 2172, 15054 ]
+    Script: |
+        {
+            bonus2 bAddClass,Class_All,10;
+            bonus bStr,2;
+        }
+
+
+-   Combos:
+        - [ 2173, 15055 ]
+    Script: |
+        {
+            bonus bFlee,10;
+            bonus bFlee2,10;
+        }
+
+
+-   Combos:
+        - [ 2177, 18574 ]
+    Script: |
+        {
+            bonus2 bAddClass,Class_Boss,5;
+            bonus2 bMagicAddClass,Class_Boss,5;
+            if (getequiprefinerycnt(EQI_HEAD_TOP) > 7) {
+                bonus2 bAddClass,Class_Boss,5;
+                bonus2 bMagicAddClass,Class_Boss,5;
+            }
+        }
+
+
+-   Combos:
+        - [ 2183, 15068 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Neutral,5;
+        }
+
+
+-   Combos:
+        - [ 2183, 15068, 18776, 20710, 22015 ]
+    Script: |
+        {
+            bonus bMaxHP,900;
+            bonus bMaxSP,100;
+            bonus3 bAutoSpellWhenHit,"HP_ASSUMPTIO",1,30;
+        }
+
+
+-   Combos:
+        - [ 2183, 22015 ]
+    Script: |
+        {
+            bonus bAllStats,2;
+        }
+
+
+-   Combos:
+        - [ 2195, 20753 ]
+    Script: |
+        {
+            bonus2 bAddEle,Ele_Neutral,getequiprefinerycnt(EQI_HAND_L);
+            bonus2 bSubRace,RC_Formless,getequiprefinerycnt(EQI_GARMENT);
+        }
+
+
+-   Combos:
+        - [ 2198, 5966 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HAND_L);
+            if (.@r > 7)
+                bonus2 bSkillCooldown,"WL_COMET",-20000+(.@r > 9 ? -20000 : 0);
+        }
+
+
+-   Combos:
+        - [ 2241, 5136 ]
+    Script: |
+        {
+            bonus bMaxHP,700;
+            bonus bMaxSP,50;
+            bonus4 bAutoSpellWhenHit,"AL_INCAGI",10,30,1;
+        }
+
+
+
+-   Combos:
+        - [ 2268, 18573 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if (.@r > 6) {
+                bonus bMaxHPrate,((.@r-5)/2)*2;
+            bonus bHit,(.@r-5)/2;
+            }
+        }
+
+
+-   Combos:
+        - [ 2268, 19082 ]
+    Script: |
+        {
+            bonus bDelayrate,-5;
+        }
+# -
+  # Combos:
+    # - [ Mechanical Plant Hat, 19082 ]
+  # Script: |
+    # {
+        # bonus2 bSkillAtk,GN_SPORE_EXPLOSION,getequiprefinerycnt(EQI_HEAD_???)*5;
+    # }
+# -
+  # Combos:
+    # - [ 2268, Mechanical Plant Hat, 19082 ]
+  # Script: |
+    # {
+        # bonus2 bSkillUseSP,GN_SPORE_EXPLOSION,20;
+    # }
+
+
+-   Combos:
+        - [ 2269, 5781 ]
+    Script: |
+        {
+            bonus bInt,1;
+            bonus bMaxSP,30;
+        }
+
+
+-   Combos:
+        - [ 2269, 5786 ]
+    Script: |
+        {
+            bonus2 bAddClass,Class_All,1;
+        }
+# -
+  # Combos:
+    # - [ 2269, 5768 ]
+  # Script: |
+    # {
+        # bonus bInt,1;
+        # if (getequiprefinerycnt(EQI_HEAD_TOP) > 6)
+            # bonus bMaxSPrate,getequiprefinerycnt(EQI_HEAD_TOP)-6;
+    # }
+# -
+  # Combos:
+    # - [ 2270, 5768 ]
+  # Script: |
+    # {
+        # bonus bStr,1;
+        # if (getequiprefinerycnt(EQI_HEAD_TOP) > 2)
+            # bonus bUseSPrate,2-getequiprefinerycnt(EQI_HEAD_TOP);
+    # }
+
+
+-   Combos:
+        - [ 2270, 5781 ]
+    Script: |
+        {
+            bonus bLuk,1;
+            bonus bFlee,2;
+        }
+
+
+-   Combos:
+        - [ 2270, 5786 ]
+    Script: |
+        {
+            bonus bMatkRate,1;
+        }
+
+
+-   Combos:
+        - [ 2278, 18527 ]
+    Script: |
+        {
+            bonus2 bAddMonsterDropItem,12192,20;
+        }
+
+
+-   Combos:
+        - [ 2278, 18656 ]
+    Script: |
+        {
+            bonus2 bAddMonsterDropItem,12192,400;
+        }
+
+
+-   Combos:
+        - [ 2281, 18527 ]
+        - [ 2425, 2530 ]
+        - [ 2425, 2529 ]
+        - [ 2425, 2551 ]
+        - [ 2434, 2529 ]
+        - [ 2434, 2530 ]
+        - [ 2434, 2551 ]
+    Script: |
+        {
+            bonus bFlee,10;
+        }
+
+
+-   Combos:
+        - [ 2286, 18539 ]
+    Script: |
+        {
+            bonus bUseSPrate,-3;
+        }
+
+
+-   Combos:
+        - [ 2312, 2656 ]
+    Script: |
+        {
+            bonus bDef,5;
+            bonus bMaxHP,150;
+        }
+
+
+-   Combos:
+        - [ 2313, 2656 ]
+    Script: |
+        {
+            bonus bDef,5;
+            bonus bMaxHP,150;
+        }
+
+
+-   Combos:
+        - [ 2337, 2654 ]
+    Script: |
+        {
+            bonus bUseSPrate,-20;
+            bonus bMaxHP,300;
+        }
+
+
+-   Combos:
+        - [ 2339, 2522 ]
+        - [ 2339, 2523 ]
+        - [ 15068, 20710 ]
+        - [ 2371, 2522 ]
+        - [ 2371, 2523 ]
+    Script: |
+        {
+            bonus bAgi,5;
+            bonus bFlee,10;
+        }
+
+
+-   Combos:
+        - [ 2346, 27113 ]
+    Script: |
+        {
+            bonus3 bAutoSpellWhenHit,"WZ_WATERBALL",5,50;
+        }
+
+
+-   Combos:
+        - [ 2347, 27113 ]
+    Script: |
+        {
+            bonus3 bAutoSpellWhenHit,"WZ_WATERBALL",5,50;
+        }
+
+
+-   Combos:
+        - [ 2353, 2417, 2516 ]
+    Script: |
+        {
+            bonus bAgi,3;
+            bonus bMaxHPrate,5;
+            bonus bMaxSPrate,5;
+        }
+
+
+-   Combos:
+        - [ 2353, 2418, 2517 ]
+    Script: |
+        {
+            bonus bVit,5;
+            bonus bHPrecovRate,10;
+            bonus bSPrecovRate,10;
+        }
+
+
+-   Combos:
+        - [ 2353, 5123 ]
+    Script: |
+        {
+            if (readparam(bDex)>69)
+                bonus bUseSPrate,-10;
+        }
+
+
+-   Combos:
+        - [ 2353, 5493 ]
+    Script: |
+        {
+            if (readparam(bDex)>69)
+                bonus bUseSPrate,-10;
+        }
+
+
+-   Combos:
+        - [ 2354, 2419, 2520, 5128 ]
+    Script: |
+        {
+            bonus bVit,5;
+            bonus bMaxHPrate,15;
+            bonus bMaxSPrate,5;
+            bonus bDef,5;
+            bonus bMdef,15;
+            bonus2 bSubEle,Ele_Water,10;
+            bonus2 bSubEle,Ele_Earth,10;
+            bonus2 bSubEle,Ele_Fire,10;
+            bonus2 bSubEle,Ele_Wind,10;
+        }
+
+
+-   Combos:
+        - [ 2357, 2421, 2524, 5171 ]
+    Script: |
+        {
+            bonus bAllStats,1;
+        }
+
+
+-   Combos:
+        - [ 2358, 5153 ]
+    Script: |
+        {
+            bonus bLuk,6;
+            bonus bFlee,5;
+            bonus bInt,2;
+        }
+
+
+-   Combos:
+        - [ 2359, 2654 ]
+    Script: |
+        {
+            bonus bUseSPrate,-20;
+            bonus bMaxHP,300;
+        }
+
+
+-   Combos:
+        - [ 2365, 2881 ]
+    Script: |
+        {
+            bonus bDelayRate,-15;
+        }
+
+
+-   Combos:
+        - [ 2369, 2428, 2533, 5306 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_DemiHuman,10;
+            bonus2 bSubRace,RC_Player,10;
+            bonus bMaxHPrate,20;
+            bonus2 bResEff,Eff_Freeze,10000;
+            skill "WZ_FROSTNOVA",10;
+        }
+
+
+-   Combos:
+        - [ 2374, 2729 ]
+    Script: |
+        {
+            bonus2 bAddClass,Class_All,3;
+            bonus bMatkRate,3;
+        }
+
+
+-   Combos:
+        - [ 2375, 2729 ]
+    Script: |
+        {
+            bonus2 bAddClass,Class_All,3;
+            bonus bMatkRate,3;
+        }
+
+
+-   Combos:
+        - [ 2376, 2435, 2538 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_All,-200;
+            bonus2 bSubRace,RC_DemiHuman,200;
+            bonus2 bSubRace,RC_Player,200;
+            bonus bVit,3;
+            bonus bMaxHPRate,12;
+            bonus bHealpower2,10;
+            bonus bAddItemHealRate,10;
+            autobonus2 "{ bonus2 bHPRegenRate,600,1000; }",5,10000,BF_WEAPON,"{ specialeffect2 EF_HEAL; }";
+        }
+
+
+-   Combos:
+        - [ 2377, 2435, 2538 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_All,-200;
+            bonus2 bSubRace,RC_DemiHuman,200;
+            bonus2 bSubRace,RC_Player,200;
+            bonus bStr,3;
+            bonus bMaxHPRate,12;
+            bonus2 bSkillAtk,"MC_MAMMONITE",20;
+            bonus2 bSkillHeal,"AM_POTIONPITCHER",10;
+            bonus2 bSkillHeal2,"AM_POTIONPITCHER",10;
+            bonus2 bSkillHeal2,"AL_HEAL",10;
+            bonus bUnbreakableArmor;
+        }
+
+
+-   Combos:
+        - [ 2378, 2435, 2538 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_All,-200;
+            bonus2 bSubRace,RC_DemiHuman,200;
+            bonus2 bSubRace,RC_Player,200;
+            bonus bAgi,3;
+            bonus bMaxHPRate,12;
+            bonus bCritical,5;
+            bonus bAspdRate,5;
+            autobonus "{ bonus2 bHPRegenRate,300,1000; }",10,10000,BF_WEAPON,"{ specialeffect2 EF_HEAL; }";
+        }
+
+
+-   Combos:
+        - [ 2379, 2436, 2539 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_All,-200;
+            bonus2 bSubRace,RC_DemiHuman,200;
+            bonus2 bSubRace,RC_Player,200;
+            bonus bInt,3;
+            bonus bMaxHPRate,12;
+            bonus2 bResEff,Eff_Stun,2000;
+            autobonus2 "{ bonus bDefEle,Ele_Ghost; }",30,10000,BF_WEAPON,"{ specialeffect2 EF_ENERGYCOAT; }";
+        }
+
+
+-   Combos:
+        - [ 2380, 2436, 2539 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_All,-200;
+            bonus2 bSubRace,RC_DemiHuman,200;
+            bonus2 bSubRace,RC_Player,200;
+            bonus bInt,3;
+            bonus bMaxHPRate,12;
+            bonus2 bVariableCastrate,"AL_HOLYLIGHT",-50;
+            bonus bHealPower,6;
+            autobonus2 "{ bonus bDefEle,Ele_Ghost; }",30,10000,BF_WEAPON,"{ specialeffect2 EF_ENERGYCOAT; }";
+        }
+
+
+-   Combos:
+        - [ 2381, 2436, 2539 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_All,-200;
+            bonus2 bSubRace,RC_DemiHuman,200;
+            bonus2 bSubRace,RC_Player,200;
+            bonus bDex,3;
+            bonus bMaxHPRate,12;
+            bonus bLongAtkDef,10;
+            bonus bDelayRate,-25;
+        }
+
+
+-   Combos:
+        - [ 2382, 2437, 2540 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_All,-200;
+            bonus2 bSubRace,RC_DemiHuman,200;
+            bonus2 bSubRace,RC_Player,200;
+            bonus bDex,3;
+            bonus bMaxHPRate,12;
+            bonus bLongAtkDef,10;
+            bonus bDelayRate,-25;
+        }
+
+
+-   Combos:
+        - [ 2387, 2440, 2744 ]
+    Script: |
+        {
+            bonus bMaxHPrate,7;
+            bonus bMaxSPrate,7;
+            bonus bVariableCastrate,-3;
+            bonus bDelayrate,-15;
+        }
+
+
+-   Combos:
+        - [ 2390, 2749 ]
+    Script: |
+        {
+            bonus bFlee2,5;
+        }
+
+
+-   Combos:
+        - [ 2394, 2444, 2549 ]
+    Script: |
+        {
+            bonus2 bAddClass,Class_All,5;
+            bonus bMatkRate,5;
+            bonus2 bResEff,Eff_Freeze,10000;
+            bonus2 bSkillHeal2,"AM_POTIONPITCHER",3;
+            bonus2 bSkillHeal2,"AL_HEAL",3;
+            bonus2 bSkillHeal2,"PR_SANCTUARY",3;
+        }
+
+
+-   Combos:
+        - [ 2399, 2553 ]
+    Script: |
+        {
+            bonus bAgi,5;
+            bonus bFlee,15;
+        }
+
+
+-   Combos:
+        - [ 2399, 2553, Helm_Of_Dragoon ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_Dragon,20;
+        }
+
+
+-   Combos:
+        - [ 2408, 2655 ]
+    Script: |
+        {
+            bonus bBaseAtk,50;
+            bonus2 bAddDefMonster,1196,20;
+            bonus2 bAddDefMonster,1197,20;
+        }
+
+
+-   Combos:
+        - [ 2408, 15040 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_SHOES);
+            if (.@r > 10)
+                .@r = 10;
+            bonus bMatkRate,5+.@r;
+        }
+
+
+-   Combos:
+        - [ 2424, 2528 ]
+    Script: |
+        {
+            bonus bHPrecovRate,5;
+            bonus bMaxHPrate,10;
+        }
+
+
+-   Combos:
+        - [ 2425, 15058 ]
+    Script: |
+        {
+            bonus bAgi,2;
+            bonus bFlee,5;
+        }
+
+
+-   Combos:
+        - [ 2433, 2537 ]
+    Script: |
+        {
+            bonus bMaxHPRate,6;
+        }
+
+
+-   Combos:
+        - [ 2434, 15058 ]
+    Script: |
+        {
+            bonus bAgi,2;
+            bonus bFlee,5;
+        }
+
+
+-   Combos:
+        - [ 2441, 2546 ]
+    Script: |
+        {
+            bonus bFlee,5;
+        }
+
+
+-   Combos:
+        - [ 2472, 2570, 15030, 16013 ]
+    Script: |
+        {
+            bonus2 bAddRace,RC_Undead,15;
+            bonus2 bMagicAddRace,RC_Undead,15;
+            bonus2 bSkillAtk,"AB_ADORAMUS",200;
+            bonus2 bSkillUseSP,"AB_ADORAMUS",-30;
+        }
+
+
+-   Combos:
+        - [ 2472, 2570, 15030, 16018 ]
+    Script: |
+        {
+            bonus2 bAddRace,RC_Undead,30;
+            bonus2 bMagicAddRace,RC_Undead,30;
+            bonus2 bSkillAtk,"AB_ADORAMUS",200;
+            bonus2 bSkillUseSP,"AB_ADORAMUS",-30;
+            bonus2 bVariableCastrate,"AL_HOLYLIGHT",-50;
+            bonus2 bVariableCastrate,"PR_TURNUNDEAD",-50;
+            bonus2 bVariableCastrate,"PR_MAGNUS",-50;
+            bonus2 bVariableCastrate,"AB_JUDEX",-50;
+            bonus2 bVariableCastrate,"AB_ADORAMUS",-50;
+        }
+
+
+-   Combos:
+        - [ 2475, 2574, 2883, 15036 ]
+    Script: |
+        {
+            bonus bMaxHPRate,14;
+            bonus2 bSubEle,Ele_Neutral,10;
+            bonus2 bSkillAtk,"RK_HUNDREDSPEAR",50; skill "CR_AUTOGUARD",1;
+            bonus bUseSPrate,10;
+        }
+
+
+-   Combos:
+        - [ 2476, 2575, 2884, 15037 ]
+    Script: |
+        {
+            bonus2 bAddClass,Class_All,10;
+            bonus3 bAutoSpell,"RK_STORMBLAST",1,20;
+            bonus2 bSkillAtk,"RK_WINDCUTTER",100;
+            bonus2 bSkillAtk,"RK_SONICWAVE",100;
+            autobonus3 "{ bonus bAspd,2; }",1000,10000,"LK_CONCENTRATION","{ specialeffect2 EF_ENHANCE; }";
+        }
+
+
+-   Combos:
+        - [ 2477, 2577, 2886, 15038 ]
+    Script: |
+        {
+            bonus bFlee,10;
+            bonus bCritical,15;
+            bonus bCritAtkRate,40;
+            bonus2 bSkillAtk,"GC_CROSSIMPACT",20;
+            bonus bUseSPrate,10;
+        }
+
+
+-   Combos:
+        - [ 2478, 2578, 2887, 15039 ]
+    Script: |
+        {
+            bonus3 bAutoSpell,"ASC_BREAKER",max(getskilllv("ASC_BREAKER"),1),20;
+            if (readparam(bStr)>119)
+                bonus bBaseAtk,30;
+            bonus2 bAddClass,Class_All,10;
+            bonus bMatkRate,10;
+            bonus bCritical,-20;
+        }
+
+
+-   Combos:
+        - [ 2479, 2580, 2890, 15042 ]
+    Script: |
+        {
+            bonus bAspd,2;
+            bonus2 bSkillAtk,"RA_ARROWSTORM",50;
+            bonus bLongAtkRate,30;
+            bonus3 bAutoSpell,"AC_DOUBLE",max(getskilllv("AC_DOUBLE"),3),20;
+        }
+
+
+-   Combos:
+        - [ 2480, 2581, 2891, 15043 ]
+    Script: |
+        {
+            bonus bMaxHPRate,15;
+            bonus bFlee2,20;
+            bonus2 bSkillAtk,"RA_CLUSTERBOMB",20;
+            bonus bLongAtkRate,-30;
+            bonus bAspd,-7;
+        }
+
+
+-   Combos:
+        - [ 2481, 2730 ]
+    Script: |
+        {
+            bonus bBaseAtk,getequiprefinerycnt(EQI_SHOES);
+        }
+
+
+-   Combos:
+        - [ 2481, 2731 ]
+    Script: |
+        {
+            bonus bMatkRate,getequiprefinerycnt(EQI_SHOES)/2;
+            bonus bVariableCastrate,-(getequiprefinerycnt(EQI_SHOES)/2);
+        }
+
+
+-   Combos:
+        - [ 2481, 10031 ]
+    Script: |
+        {
+            bonus bCritical,(getequiprefinerycnt(EQI_SHOES)/2)*10;
+        }
+
+
+-   Combos:
+        - [ 2482, 2585, 2895, 2896, 15045, 18578 ]
+    Script: |
+        {
+            bonus bMaxHP,500;
+            bonus bMaxSP,300;
+            bonus bBaseAtk,10;
+            bonus bDef,10;
+        }
+
+
+-   Combos:
+        - [ 2483, 2586, 15046 ]
+    Script: |
+        {
+            bonus bVit,5;
+            bonus2 bSubRace,RC_DemiHuman,15;
+            bonus2 bSubRace,RC_Player,15;
+        }
+
+
+-   Combos:
+        - [ 2484, 2586, 15047 ]
+    Script: |
+        {
+            bonus bDex,5;
+            bonus2 bSubRace,RC_DemiHuman,15;
+            bonus2 bSubRace,RC_Player,15;
+        }
+
+
+-   Combos:
+        - [ 2485, 2587, 15048 ]
+    Script: |
+        {
+            bonus bInt,5;
+            bonus bMdef,10;
+            bonus2 bSubRace,RC_DemiHuman,15;
+            bonus2 bSubRace,RC_Player,15;
+        }
+
+
+-   Combos:
+        - [ 2507, 15146 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_ARMOR);
+            bonus bMaxSPrate,10+.@r;
+            bonus bFlee,10+.@r;
+        }
+
+
+-   Combos:
+        - [ 2507, 15163 ]
+    Script: |
+        {
+            bonus bVariableCastrate,-(2*getequiprefinerycnt(EQI_ARMOR));
+            bonus bNoCastCancel;
+        }
+
+
+-   Combos:
+        - [ 2509, 15146 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_ARMOR);
+            bonus bMaxHPrate,10+.@r;
+            bonus bMatkRate,2+.@r;
+        }
+
+
+-   Combos:
+        - [ 2518, 2648, 2649, 5126 ]
+    Script: |
+        {
+            bonus bInt,5;
+            bonus bMdef,11;
+            bonus bMaxSPrate,20;
+            bonus bNoCastCancel;
+            bonus bVariableCastrate,25;
+        }
+
+
+-   Combos:
+        - [ 2519, 2650, 2651, 5127 ]
+    Script: |
+        {
+            bonus bStr,2;
+            bonus bLuk,9;
+            bonus bCritical,13;
+            bonus bBaseAtk,18;
+            bonus bFlee2,13;
+        }
+
+
+-   Combos:
+        - [ 2519, 15147 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_ARMOR);
+            bonus2 bIgnoreDefRaceRate,RC_DemiHuman,15;
+            bonus2 bIgnoreDefRaceRate,RC_Demon,15;
+            bonus2 bIgnoreDefRaceRate,RC_Undead,15;
+            bonus bLuk,3+.@r;
+            bonus bCritical,10+.@r;
+        }
+
+
+-   Combos:
+        - [ 2519, 15164 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_ARMOR);
+            bonus bDefEle,Ele_Ghost;
+            bonus bAgi,.@r;
+            bonus bFlee,(2*.@r);
+        }
+
+
+-   Combos:
+        - [ 2524, 4174, 15164 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Neutral,-50;
+            bonus2 bSubEle,Ele_Water,50;
+            bonus2 bSubEle,Ele_Earth,50;
+            bonus2 bSubEle,Ele_Fire,50;
+            bonus2 bSubEle,Ele_Wind,50;
+            bonus2 bSubEle,Ele_Poison,50;
+            bonus2 bSubEle,Ele_Holy,50;
+            bonus2 bSubEle,Ele_Dark,50;
+            bonus2 bSubEle,Ele_Ghost,50;
+            bonus2 bSubEle,Ele_Undead,50;
+        }
+
+
+-   Combos:
+        - [ 2524, 15147 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_ARMOR);
+            bonus2 bIgnoreDefRaceRate,RC_DemiHuman,15;
+            bonus2 bIgnoreDefRaceRate,RC_Demon,15;
+            bonus2 bIgnoreDefRaceRate,RC_Undead,15;
+            bonus bMaxHPrate,10+.@r;
+            bonus2 bAddClass,Class_All,2+.@r;
+        }
+
+
+-   Combos:
+        - [ 2524, 15164 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_ARMOR);
+            .@val = 10;
+            bonus bVit,(5+.@r);
+            bonus bLuk,.@r;
+            bonus2 bSubEle,Ele_Fire,10;
+            bonus2 bSubEle,Ele_Dark,10;
+            if (.@r >= 10)
+                .@val += 10;
+            bonus2 bSubEle,Ele_Neutral,.@val;
+        }
+
+
+-   Combos:
+        - [ 2525, 15163 ]
+    Script: |
+        {
+            bonus bVariableCastrate,-(2*getequiprefinerycnt(EQI_ARMOR));
+            bonus bNoCastCancel;
+        }
+
+
+-   Combos:
+        - [ 2535, 15163 ]
+    Script: |
+        {
+            bonus5 bAutoSpell,"AL_HEAL",1,(10*getequiprefinerycnt(EQI_ARMOR)),BF_MAGIC,0;
+        }
+
+
+-   Combos:
+        - [ 2584, 5579 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_GARMENT);
+            if (.@r >= 5) {
+                skill "TF_DOUBLE",1;
+                bonus bDoubleRate,25;
+            }
+            else if (.@r >= 7) {
+                .@bonus = max(getskilllv("TF_DOUBLE"),5);
+                skill "TF_DOUBLE",.@bonus;
+                bonus bDoubleRate,.@bonus*5;
+            }
+        }
+
+
+-   Combos:
+        - [ 2597, 28342 ]
+    Script: |
+        {
+            bonus bCritAtkRate,5;
+            bonus bCritical,10;
+            .@r = getequiprefinerycnt(EQI_GARMENT);
+            if (.@r > 7)
+                bonus bCritAtkRate,4; else if (.@r > 5)
+                bonus bCritAtkRate,3;
+        }
+# -
+  # Combos:
+    # - [ 2598, Ramor Shield ]
+  # Script: |
+    # {
+        # .@r = getequiprefinerycnt(EQI_GARMENT);
+        # bonus2 bSubRace,RC_Undead,.@r;
+        # bonus2 bSubRace,RC_DemiHuman,.@r;
+    # }
+
+
+-   Combos:
+        - [ 2607, 2677 ]
+        - [ 2607, 2711 ]
+        - [ 2607, 2786 ]
+        - [ 2608, 2677 ]
+        - [ 2608, 2711 ]
+        - [ 2608, 2786 ]
+        - [ 2626, 2677 ]
+        - [ 2626, 2711 ]
+        - [ 2626, 2786 ]
+    Script: |
+        {
+            bonus2 bSkillAtk,"AL_HEAL",50;
+            bonus2 bSkillAtk,"PR_MAGNUS",30;
+            bonus bSPrecovRate,9;
+        }
+
+
+-   Combos:
+        - [ 2620, 2746 ]
+    Script: |
+        {
+            bonus2 bAddSize,Size_Medium,8;
+            bonus bAspdRate,getequiprefinerycnt(EQI_HAND_R)/2;
+        }
+
+
+-   Combos:
+        - [ 2620, 2747 ]
+    Script: |
+        {
+            bonus2 bAddSize,Size_Large,8;
+            bonus bHit,getequiprefinerycnt(EQI_HAND_R)/2;
+            bonus bVariableCastrate,-getequiprefinerycnt(EQI_HAND_R)/2;
+        }
+
+
+-   Combos:
+        - [ 2659, 18937 ]
+    Script: |
+        {
+            bonus bInt,8;
+            bonus bMaxSPrate,5;
+        }
+
+
+-   Combos:
+        - [ 2660, 18937 ]
+    Script: |
+        {
+            bonus bInt,8;
+            bonus bBaseAtk,20;
+        }
+
+
+-   Combos:
+        - [ 2661, 18937 ]
+    Script: |
+        {
+            bonus bInt,8;
+            bonus bFlee,15;
+        }
+
+
+-   Combos:
+        - [ 2662, 18937 ]
+    Script: |
+        {
+            bonus bInt,8;
+            bonus bHit,10;
+        }
+
+
+-   Combos:
+        - [ 2677, 28602 ]
+    Script: |
+        {
+            bonus2 bVariableCastrate,"PR_MAGNUS",-25;
+            bonus bHealPower,10;
+            bonus bAddItemHealRate,10;
+            autobonus2 "{ bonus bIgnoreMDefRace,RC_All; }",getequiprefinerycnt(EQI_HAND_R)*20,2000,BF_SHORT|BF_NORMAL; /* Confirm: Success rate and duration */
+        }
+
+
+-   Combos:
+        - [ 2678, 2679 ]
+    Script: |
+        {
+            bonus4 bAutoSpell,"MO_EXTREMITYFIST",1,3,1;
+            bonus3 bAutoSpell,"PR_LEXAETERNA",1,20;
+            bonus3 bAutoSpell,"AS_SONICBLOW",5,50;
+            bonus3 bAutoSpell,"MO_INVESTIGATE",5,20;
+            bonus3 bAutoSpell,"ASC_METEORASSAULT",2,50;
+        }
+# -
+  # Combos:
+    # - [ 2679, 2792 ]
+  # Script: |
+    # {
+        # bonus4 bAutoSpell,"MO_EXTREMITYFIST",1,3,1;
+        # bonus3 bAutoSpell,"PR_LEXAETERNA",1,20;
+        # bonus3 bAutoSpell,"AS_SONICBLOW",5,50;
+        # bonus3 bAutoSpell,"MO_INVESTIGATE",5,20;
+        # bonus3 bAutoSpell,"ASC_METEORASSAULT",2,50;
+    # }
+
+
+-   Combos:
+        - [ 2701, 2881 ]
+    Script: |
+        {
+            bonus bMatkRate,20;
+        }
+
+
+-   Combos:
+        - [ 2702, 2874 ]
+    Script: |
+        {
+            bonus bAspd,1;
+        }
+
+
+-   Combos:
+        - [ 2702, 22064 ]
+    Script: |
+        {
+            if (readparam(bAgi) > 120)
+                bonus bAspd,2; /* Confirm: Bonus value */
+        }
+
+
+-   Combos:
+        - [ 27013, 27012 ]
+    Script: |
+        {
+            bonus bNoMadoFuel;
+        }
+
+
+-   Combos:
+        - [ 27015, 27016 ]
+    Script: |
+        {
+            bonus bCritAtkRate,10;
+        }
+
+
+-   Combos:
+        - [ 27018, 27019 ]
+    Script: |
+        {
+            autobonus "{ bonus bAspd,5; }",30,5000;
+        }
+
+
+-   Combos:
+        - [ 2720, 2772 ]
+        - [ 2720, 2773 ]
+        - [ 2720, 2774 ]
+        - [ 2721, 2772 ]
+        - [ 2721, 2773 ]
+        - [ 2721, 2774 ]
+        - [ 2722, 2772 ]
+        - [ 2722, 2773 ]
+        - [ 2722, 2774 ]
+        - [ 2723, 2772 ]
+        - [ 2723, 2773 ]
+        - [ 2724, 2772 ]
+        - [ 2724, 2773 ]
+        - [ 2724, 2774 ]
+        - [ 2725, 2772 ]
+        - [ 2725, 2773 ]
+        - [ 2725, 2774 ]
+        - [ 2733, 2772 ]
+        - [ 2733, 2773 ]
+        - [ 2733, 2774 ]
+    Script: |
+        {
+            bonus2 bAddClass,Class_All,5;
+            bonus bMatkRate,3;
+            bonus bHealPower,5;
+        }
+
+
+-   Combos:
+        - [ 2726, 2727 ]
+    Script: |
+        {
+            bonus bUseSPrate,-25;
+        }
+
+
+-   Combos:
+        - [ 27264, 27265 ]
+    Script: |
+        {
+            bonus2 bAddEle,Ele_Dark,15;
+            bonus2 bAddEle,Ele_Undead,15;
+            bonus2 bMagicAddEle,Ele_Dark,15;
+            bonus2 bMagicAddEle,Ele_Undead,15;
+            bonus2 bSubEle,Ele_Dark,15;
+            bonus2 bSubEle,Ele_Undead,15;
+        }
+
+
+-   Combos:
+        - [ 2747, 13061 ]
+    Script: |
+        {
+            bonus bHit,5;
+            bonus bMatk,5;
+            bonus2 bSkillUseSP,"SC_ENERVATION",20;
+            bonus2 bSkillUseSP,"SC_GROOMY",20;
+        }
+
+
+-   Combos:
+        - [ 2751, 2888 ]
+    Script: |
+        {
+            bonus bAspdRate,3;
+            bonus bVariableCastrate,-3;
+        }
+
+
+-   Combos:
+        - [ 2777, 2778, 5479 ]
+    Script: |
+        {
+            bonus bMaxHP,10*getequiprefinerycnt(EQI_HEAD_TOP);
+            bonus bMaxSP,2*getequiprefinerycnt(EQI_ACC_L);
+            bonus bNoCastCancel;
+            bonus bCastrate,15;
+        }
+
+
+-   Combos:
+        - [ 2777, 2825, 5479 ]
+    Script: |
+        {
+            bonus bMaxHP,BaseLevel*10;
+            bonus bMaxSP,BaseLevel*2;
+            bonus bHealPower,10;
+        }
+
+
+-   Combos:
+        - [ 2779, 2780, 5482 ]
+    Script: |
+        {
+            bonus bMatkRate,10;
+            bonus bInt,5;
+            bonus2 bSubRace,RC_Angel,10;
+        }
+
+
+-   Combos:
+        - [ 2779, 2780, 5577 ]
+    Script: |
+        {
+            bonus bMatkRate,10;
+            bonus bInt,5;
+            bonus2 bSubRace,RC_Angel,10;
+        }
+
+
+-   Combos:
+        - [ 2779, 2827, 5482 ]
+        - [ 2780, 2826, 5577 ]
+        - [ 2826, 2827, 5577 ]
+    Script: |
+        {
+            autobonus "{ bonus bAspdRate,2; }",50,10000,0,"{ specialeffect2 EF_POTION_BERSERK; }";
+            bonus bMaxHP,BaseLevel*15;
+            bonus bMaxSP,(BaseLevel*12)/10;
+            bonus2 bAddClass,Class_All,3;
+        }
+
+
+-   Combos:
+        - [ 2782, 19156 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if (.@r < 4)
+                .@a = 4;
+            else
+                .@a = min(.@r,10);
+            bonus3 bAutoSpell,"WZ_WATERBALL",.@a,(.@a*10);
+        }
+
+
+-   Combos:
+        - [ 2855, 5360 ]
+    Script: |
+        {
+            bonus bCritAtkRate,10;
+            if (getequiprefinerycnt(EQI_HEAD_TOP)>5)
+                bonus bCritical,5;
+        }
+
+
+-   Combos:
+        - [ 2913, 2710 ]
+    Script: |
+        {
+            bonus bBaseAtk,10;
+        }
+
+
+-   Combos:
+        - [ 2913, 15040 ]
+    Script: |
+        {
+            bonus bBaseAtk,2*getequiprefinerycnt(EQI_ARMOR);
+        }
+
+
+-   Combos:
+        - [ 2913, 2408 ]
+    Script: |
+        {
+            bonus bBaseAtk,getequiprefinerycnt(EQI_SHOES);
+        }
+
+
+-   Combos:
+        - [ 2913, 5104 ]
+    Script: |
+        {
+            bonus bBaseAtk,10;
+        }
+
+
+-   Combos:
+        - [ 2950, 15067, 20709, 22012 ]
+    Script: |
+        {
+            bonus2 bExpAddRace,RC_All,30;
+        }
+
+
+-   Combos:
+        - [ 2957, 2958 ]
+    Script: |
+        {
+            bonus4 bAutoSpell,"MO_EXTREMITYFIST",1,3,1;
+            bonus3 bAutoSpell,"PR_LEXAETERNA",1,20;
+            bonus3 bAutoSpell,"AS_SONICBLOW",5,50;
+            bonus3 bAutoSpell,"MO_INVESTIGATE",5,20;
+            bonus3 bAutoSpell,"ASC_METEORASSAULT",2,50;
+        }
+
+
+-   Combos:
+        - [ 2959, 18756 ]
+    Script: |
+        {
+            .@r = 3+(3*getequiprefinerycnt(EQI_HEAD_TOP));
+            autobonus "{ bonus2 bSPLossRate,5,1000; bonus bBaseAtk,30; }",.@r,5000,BF_WEAPON,"{ transform 1785,5000; specialeffect2 EF_POTION_BERSERK; }";
+            autobonus2 "{ bonus2 bSPLossRate,5,1000; bonus bBaseAtk,30; }",.@r,5000,BF_WEAPON,"{ transform 1785,5000; specialeffect2 EF_POTION_BERSERK; }";
+        }
+
+
+-   Combos:
+        - [ 2963, 15073 ]
+    Script: |
+        {
+            bonus bAspdRate,5;
+        }
+
+
+-   Combos:
+        - [ 2963, 15074 ]
+    Script: |
+        {
+            bonus bDelayrate,-5;
+            bonus2 bSubRace,RC_DemiHuman,5;
+            bonus2 bSubRace,RC_Player,5;
+        }
+
+
+-   Combos:
+        - [ 2964, 15073 ]
+    Script: |
+        {
+            bonus bDelayrate,-5;
+            bonus2 bSubRace,RC_DemiHuman,5;
+            bonus2 bSubRace,RC_Player,5;
+        }
+
+
+-   Combos:
+        - [ 2964, 15074 ]
+    Script: |
+        {
+            bonus bVariableCastrate,-5;
+        }
+
+
+-   Combos:
+        - [ 2966, 2967, 13092 ]
+    Script: |
+        {
+            bonus bBaseAtk,-(getequiprefinerycnt(EQI_HAND_R)*10);
+        }
+
+
+-   Combos:
+        - [ 2966, 2967, 16026 ]
+    Script: |
+        {
+            bonus bBaseAtk,-(getequiprefinerycnt(EQI_HAND_R)*5);
+        }
+
+
+-   Combos:
+        - [ 2966, 2967, 18821 ]
+    Script: |
+        {
+            bonus2 bAddClass,Class_All, -(getequiprefinerycnt(EQI_HEAD_TOP)/2);
+        }
+
+
+-   Combos:
+        - [ 2966, 13092 ]
+    Script: |
+        {
+            bonus bBaseAtk,10*getequiprefinerycnt( (getequipid(EQI_HAND_R) == 13092) ? EQI_HAND_R : EQI_HAND_L );
+        }
+
+
+-   Combos:
+        - [ 2966, 16026 ]
+    Script: |
+        {
+            bonus bBaseAtk,getequiprefinerycnt(EQI_HAND_R)*5;
+        }
+
+
+-   Combos:
+        - [ 2966, 18821 ]
+    Script: |
+        {
+            bonus2 bAddClass,Class_All,getequiprefinerycnt(EQI_HEAD_TOP)/2;
+        }
+
+
+-   Combos:
+        - [ 2967, 13092 ]
+    Script: |
+        {
+            bonus bBaseAtk,getequiprefinerycnt(EQI_HAND_R)*10;
+        }
+
+
+-   Combos:
+        - [ 2967, 16026 ]
+    Script: |
+        {
+            bonus bBaseAtk,getequiprefinerycnt(EQI_HAND_R)*5;
+        }
+
+
+-   Combos:
+        - [ 2967, 18821 ]
+    Script: |
+        {
+            bonus2 bAddClass,Class_All,getequiprefinerycnt(EQI_HEAD_TOP)/2;
+        }
+
+
+-   Combos:
+        - [ 2968, 2969, 13092 ]
+    Script: |
+        {
+            bonus bBaseAtk,-(getequiprefinerycnt(EQI_HAND_R)*10);
+        }
+
+
+-   Combos:
+        - [ 2968, 2969, 18821 ]
+    Script: |
+        {
+            bonus bMagicAtkDef, getequiprefinerycnt(EQI_HEAD_TOP)/2;
+        }
+
+
+-   Combos:
+        - [ 2968, 13092 ]
+    Script: |
+        {
+            bonus bMatk,10*getequiprefinerycnt( (getequipid(EQI_HAND_R) == 13092) ? EQI_HAND_R : EQI_HAND_L );
+        }
+
+
+-   Combos:
+        - [ 2968, 18821 ]
+    Script: |
+        {
+            bonus bMatkRate,getequiprefinerycnt(EQI_HEAD_TOP)/2;
+        }
+
+
+-   Combos:
+        - [ 2969, 13092 ]
+    Script: |
+        {
+            bonus bBaseAtk,getequiprefinerycnt(EQI_HAND_R)*10;
+        }
+
+
+-   Combos:
+        - [ 2969, 18821 ]
+    Script: |
+        {
+            bonus bMatkRate,getequiprefinerycnt(EQI_HEAD_TOP)/2;
+        }
+
+
+-   Combos:
+        - [ 2977, 2978 ]
+    Script: |
+        {
+            bonus5 bAutoSpell,"SO_PSYCHIC_WAVE",1,10,BF_WEAPON,1;
+            bonus5 bAutoSpell,"HW_MAGICPOWER",1,10,BF_MAGIC,0;
+            bonus5 bAutoSpell,"WZ_FROSTNOVA",10,10,BF_WEAPON|BF_MAGIC,0;
+            bonus5 bAutoSpellWhenHit,"DC_SCREAM",1,10,BF_WEAPON|BF_MAGIC,0;
+        }
+
+
+-   Combos:
+        - [ 2979, 18852 ]
+    Script: |
+        {
+            bonus bMaxHPrate,15;
+            bonus2 bSubEle,Ele_Fire,10;
+            bonus bLongAtkRate,30;
+        }
+
+
+-   Combos:
+        - [ 2979, 18853 ]
+    Script: |
+        {
+            bonus bMaxHPrate,15;
+            bonus2 bSubEle,Ele_Fire,10;
+            bonus bLongAtkRate,30;
+        }
+
+
+-   Combos:
+        - [ 2983, 4218 ]
+    Script: |
+        {
+            bonus bVit,-3;
+            bonus bHPrecovRate,-20;
+            bonus bMaxHP,1000;
+        }
+
+
+-   Combos:
+        - [ 2983, 4218, 4269 ]
+    Script: |
+        {
+            bonus bVit,-3;
+            bonus bHPrecovRate,-20;
+            bonus bMaxHP,1000;
+            bonus bInt,-3;
+            bonus bSPrecovRate,-20;
+            bonus bMaxSP,150;
+        }
+
+
+-   Combos:
+        - [ 2983, 4269 ]
+    Script: |
+        {
+            bonus bInt,-3;
+            bonus bSPrecovRate,-20;
+            bonus bMaxSP,150;
+        }
+
+
+-   Combos:
+        - [ 2984, 4151 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_Plant,-10;
+            bonus2 bExpAddRace,RC_Plant,5;
+        }
+
+
+-   Combos:
+        - [ 2984, 4164 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_Fish,-10;
+            bonus2 bExpAddRace,RC_Fish,5;
+        }
+
+
+-   Combos:
+        - [ 2984, 4204 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_Brute,-10;
+            bonus2 bExpAddRace,RC_Brute,5;
+        }
+-   Combos:
+        - [ 2984, 4221 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_Insect,-10;
+            bonus2 bExpAddRace,RC_Insect,5;
+        }
+
+
+-   Combos:
+        - [ 2984, 4235 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_Angel,-10;
+            bonus2 bExpAddRace,RC_Angel,5;
+        }
+
+
+-   Combos:
+        - [ 2984, 4239 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_Formless,-10;
+            bonus2 bExpAddRace,RC_Formless,5;
+        }
+
+
+-   Combos:
+        - [ 2984, 4245 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_DemiHuman,-10;
+            bonus2 bSubRace,RC_Player,-10;
+            bonus2 bExpAddRace,RC_DemiHuman,5;
+        }
+
+
+-   Combos:
+        - [ 2984, 4249 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_Demon,-10;
+            bonus2 bExpAddRace,RC_Demon,5;
+        }
+
+
+-   Combos:
+        - [ 2984, 4267 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_Dragon,-10;
+            bonus2 bExpAddRace,RC_Dragon,5;
+        }
+
+
+-   Combos:
+        - [ 2984, 4275 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_Undead,-10;
+            bonus2 bExpAddRace,RC_Undead,5;
+        }
+
+-   Combos:
+        - [ 2986, 2987, 18872 ]
+    Script: |
+        {
+            bonus2 bAddMonsterDropItem,22559,50;
+        }
+
+
+-   Combos:
+        - [ 2986, 18872 ]
+    Script: |
+        {
+            bonus bBaseAtk,BaseLevel/4;
+        }
+
+
+-   Combos:
+        - [ 2987, 18872 ]
+    Script: |
+        {
+            bonus bMatk,BaseLevel/4;
+        }
+
+
+-   Combos:
+        - [ 2990, 2991 ]
+    Script: |
+        {
+            bonus bAllStats,5;
+            bonus5 bAutoSpellWhenHit,"SC_MAELSTROM",1,100,BF_MAGIC,0;
+        }
+
+
+-   Combos:
+        - [ 2995, 15110 ]
+    Script: |
+        {
+            bonus2 bSkillAtk,"NC_AXEBOOMERANG",100;
+        }
+
+
+-   Combos:
+        - [ 2997, 2999 ]
+        - [ 4642, 4646 ]
+        - [ 4643, 4646 ]
+        - [ 4644, 4646 ]
+        - [ 4645, 4646 ]
+    Script: |
+        {
+            bonus2 bAddClass,Class_All,10;
+            bonus bMatkRate,10;
+        }
+
+
+-   Combos:
+        - [ 4001, 4197 ]
+        - [ 4006, 4266 ]
+        - [ 4009, 4179 ]
+        - [ 4014, 4306 ]
+        - [ 4021, 4211 ]
+        - [ 4029, 4183 ]
+    Script: |
+        {
+            bonus bFlee,18;
+        }
+
+
+-   Combos:
+        - [ 4015, 5967 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_All,10;
+        }
+
+
+-   Combos:
+        - [ 4025, 4222 ]
+    Script: |
+        {
+            bonus2 bAddEffWhenHit,Eff_Sleep,600;
+        }
+
+
+-   Combos:
+        - [ 4028, 4296 ]
+    Script: |
+        {
+            bonus bStr,3;
+        }
+
+
+-   Combos:
+        - [ 4031, 4161 ]
+    Script: |
+        {
+            bonus bDef,3;
+            bonus bVit,3;
+        }
+
+
+-   Combos:
+        - [ 4036, 4186, 4233, 4281, 4343 ]
+    Script: |
+        {
+            bonus bStr,4;
+            bonus bMaxHPrate,7;
+            bonus bMaxSPrate,7;
+            bonus2 bSkillAtk,"MC_MAMMONITE",20;
+            bonus bSPDrainValue,1;
+            if (BaseJob == Job_Alchemist) {
+                bonus3 bAutoSpell,"BS_ADRENALINE",1,10;
+                bonus2 bAddMonsterDropItem,7139,3;
+                bonus2 bAddMonsterDropItem,905,10;
+            }
+        }
+
+
+-   Combos:
+        - [ 4039, 4210, 4230, 4257, 4348 ]
+    Script: |
+        {
+            bonus bStr,6;
+            bonus bAgi,4;
+            bonus2 bSkillAtk,"RG_BACKSTAP",10;
+            if (getskilllv("RG_STRIPARMOR") == 5)
+                bonus3 bAutoSpell,"RG_STRIPARMOR",5,50;
+            if (BaseJob == Job_Rogue) {
+                bonus bUseSPrate,-20;
+                bonus3 bAutoSpell,"RG_INTIMIDATE",1,-20;
+            }
+        }
+
+
+-   Combos:
+        - [ 4045, 28910 ]
+    Script: |
+        {
+            bonus bLongAtkDef,-35;
+        }
+
+
+-   Combos:
+        - [ 4072, 21013 ]
+    Script: |
+        {
+            bonus2 bSubSize,Size_All,15;
+        }
+
+
+-   Combos:
+        - [ 4074, 4162 ]
+    Script: |
+        {
+            bonus2 bAddEffWhenHit,Eff_Blind,600;
+        }
+
+
+-   Combos:
+        - [ 4090, 4212, 4328 ]
+    Script: |
+        {
+            bonus bAllStats,1;
+        }
+
+
+-   Combos:
+        - [ 4090, 27085 ]
+    Script: |
+        {
+            autobonus "{ bonus2 bAddEff,Eff_Stun,5000; }",2,5000,BF_SHORT;
+        }
+
+
+-   Combos:
+        - [ 4093, 27120 ]
+    Script: |
+        {
+            bonus bMaxSP,50;
+        }
+
+
+-   Combos:
+        - [ 4094, 27086 ]
+    Script: |
+        {
+            autobonus "{ bonus bAspd,1; }",20,5000,BF_WEAPON;
+        }
+
+
+-   Combos:
+        - [ 4100, 27084 ]
+    Script: |
+        {
+            autobonus "{ bonus bSPrecovRate,100; }",20,5000,BF_MAGIC;
+        }
+
+
+-   Combos:
+        - [ 4106, 4248 ]
+    Script: |
+        {
+            bonus bPerfectHitAddRate,20;
+        }
+
+
+-   Combos:
+        - [ 4127, 4166 ]
+    Script: |
+        {
+            bonus2 bAddEffWhenHit,Eff_Curse,600;
+        }
+
+
+-   Combos:
+        - [ 4131, 27081 ]
+    Script: |
+        {
+            autobonus "{ bonus bFlee2,10; }",70,5000,BF_SHORT;
+        }
+
+
+-   Combos:
+        - [ 4139, 18619 ]
+    Script: |
+        {
+            bonus3 bAutoSpell,"RG_SNATCHER",5,20;
+            bonus bDex,2;
+            bonus bAgi,1;
+            bonus bInt,-1;
+        }
+
+
+-   Combos:
+        - [ 4152, 5967 ]
+    Script: |
+        {
+            bonus2 bAddItemGroupHealRate,IG_Juice,1000;
+        }
+
+
+-   Combos:
+        - [ 4153, 4247, 4273 ]
+    Script: |
+        {
+            bonus3 bAddMonsterDropItem,544,RC_Fish,3000;
+            bonus2 bAddEle,Ele_Water,30;
+        }
+
+
+-   Combos:
+        - [ 4153, 18554 ]
+    Script: |
+        {
+            bonus2 bAddEle,Ele_Water,10;
+        }
+
+
+-   Combos:
+        - [ 4159, 27082 ]
+    Script: |
+        {
+            autobonus "{ bonus bFlee,10; }",20,5000,BF_SHORT;
+        }
+
+
+-   Combos:
+        - [ 4163, 5967 ]
+    Script: |
+        {
+            bonus bAspdRate,3;
+            bonus bAspd,1;
+            bonus2 bAddClass,Class_All,-5;
+            if (getequiprefinerycnt(EQI_HAND_R) >= 10 && getiteminfo(getequipid(EQI_HAND_R),11) == 11)
+                bonus bAspd,1;
+        }
+
+
+-   Combos:
+        - [ 4168, 4169 ]
+    Script: |
+        {
+            bonus bMaxHPrate,20;
+            bonus bMaxSPrate,20;
+            bonus bVariableCastrate,-10;
+        }
+
+
+-   Combos:
+        - [ 4169, 4488 ]
+    Script: |
+        {
+            if (getequiprefinerycnt(EQI_SHOES) >= 15) {
+                bonus bMaxHPrate,15;
+                bonus bMaxSPrate,15;
+            } else {
+                bonus bMaxHPrate,10;
+                bonus bMaxSPrate,10;
+            }
+        }
+
+
+-   Combos:
+        - [ 4172, 4210, 4230, 4257, 4272 ]
+    Script: |
+        {
+            bonus bAgi,5;
+            bonus bStr,5;
+            bonus bAspdRate,5;
+            bonus bSpeedRate,25;
+            bonus bSPDrainValue,1;
+            if (BaseClass == Job_Thief)
+                bonus bNoGemStone;
+        }
+
+
+-   Combos:
+        - [ 4178, 4199, 4234, 4252, 4297 ]
+    Script: |
+        {
+            bonus bAgi,5;
+            bonus bDex,3;
+            bonus bLongAtkRate,20;
+            bonus bPerfectHitAddRate,20;
+            if (BaseClass == Job_Archer) {
+                bonus2 bExpAddRace,RC_Brute,5;
+                bonus2 bComaRace,RC_Brute,100;
+            }
+        }
+
+
+-   Combos:
+        - [ 4178, 4234, 4252, 4297, 4381 ]
+    Script: |
+        {
+            bonus bDex,5;
+            bonus2 bSkillAtk,"CG_ARROWVULCAN",5;
+            bonus2 bSkillAtk,"DC_THROWARROW",10;
+            bonus2 bSkillAtk,"BA_MUSICALSTRIKE",10;
+            if (BaseJob == Job_Bard || BaseJob == Job_Dancer)
+                bonus3 bAutoSpellWhenHit,"CG_TAROTCARD",2,50;
+        }
+
+
+-   Combos:
+        - [ 4185, 4217, 4280, 4293, 4312 ]
+    Script: |
+        {
+            bonus bVit,10;
+            bonus bVariableCastrate,-10;
+            bonus bUseSPRate,-10;
+            if (BaseClass == Job_Acolyte) {
+                bonus2 bExpAddRace,RC_Undead,5;
+                bonus2 bExpAddRace,RC_Demon,5;
+                bonus2 bSubRace,RC_Undead,30;
+                bonus2 bSubRace,RC_Demon,30;
+            }
+        }
+
+
+-   Combos:
+        - [ 4185, 4293, 4312, 4332 ]
+    Script: |
+        {
+            bonus bStr,3;
+            bonus bMaxSP,80;
+            bonus bBaseAtk,25;
+            bonus3 bAutoSpell,"AL_CRUCIS",5,10;
+            bonus2 bSkillAtk,"MO_EXTREMITYFIST",10;
+            if (BaseJob == Job_Monk) {
+                bonus bUseSPrate,-10;
+                bonus bNoCastCancel;
+            }
+        }
+
+
+-   Combos:
+        - [ 4186, 4206, 4233, 4281, 4321 ]
+    Script: |
+        {
+            bonus bLuk,10;
+            bonus bSPDrainValue,2;
+            bonus2 bSkillAtk,42,20;
+            if (BaseClass == Job_Merchant) {
+                bonus2 bAddMonsterDropItem,617,5;
+                bonus bMagicDamageReturn,20;
+            }
+        }
+
+
+-   Combos:
+        - [ 4191, 4208, 4258, 4309, 4325, 4327 ]
+    Script: |
+        {
+            bonus bMaxHP,500;
+            bonus bDef,5;
+            bonus bMdef,5;
+            bonus2 bSkillAtk,14,10;
+            bonus2 bSkillAtk,19,10;
+            bonus2 bSkillAtk,20,10;
+            if (BaseClass == Job_Mage) {
+                bonus bMatkRate,3;
+                bonus bVariableCastrate,-15;
+            }
+        }
+
+
+-   Combos:
+        - [ 4193, 4294 ]
+    Script: |
+        {
+            bonus bMaxHP,300;
+            bonus bMaxSP,60;
+        }
+
+
+-   Combos:
+        - [ 4207, 18865 ]
+    Script: |
+        {
+            bonus2 bAddSize,Size_All,5;
+            bonus2 bMagicAddSize,Size_All,5;
+        }
+
+
+-   Combos:
+        - [ 4208, 4258, 4325, 4327, 4382 ]
+    Script: |
+        {
+            bonus bInt,3;
+            bonus2 bSkillAtk,"WZ_HEAVENDRIVE",10;
+            bonus2 bSkillAtk,"MG_THUNDERSTORM",10;
+            if (BaseJob == Job_Sage) {
+                bonus bMagicDamageReturn,20;
+                bonus2 bAddMonsterDropItem,716,100;
+                bonus2 bAddMonsterDropItem,715,100;
+                bonus bVariableCastrate,-20;
+            }
+        }
+
+
+-   Combos:
+        - [ 4212, 27083 ]
+    Script: |
+        {
+            autobonus2 "{ bonus2 bAddDefMonster,1026,-100; }",20,5000,BF_SHORT;
+        }
+
+
+-   Combos:
+        - [ 4218, 4269 ]
+    Script: |
+        {
+            bonus bHPrecovRate,30;
+            bonus bSPrecovRate,30;
+            bonus bVit,4;
+            bonus bInt,4;
+        }
+
+
+-   Combos:
+        - [ 4220, 4246, 4311, 4319, 4331 ]
+    Script: |
+        {
+            bonus bStr,10;
+            bonus bMaxHPrate,20;
+            bonus bHPrecovRate,50;
+            bonus3 bAutoSpell,"BS_WEAPONPERFECT",1,3;
+            bonus2 bAddMonsterDropItem,501,500;
+            if (BaseClass == Job_Swordman)
+                bonus2 bAddItemGroupHealRate,IG_Potion,50;
+        }
+
+
+-   Combos:
+        - [ 4229, 4244, 4299, 4313 ]
+    Script: |
+        {
+            bonus bDef,3;
+            bonus bMdef,3;
+        }
+
+
+-   Combos:
+        - [ 4237, 4238 ]
+    Script: |
+        {
+            bonus3 bAutoSpell,"MG_LIGHTNINGBOLT",5,20;
+        }
+
+
+-   Combos:
+        - [ 4247, 18554 ]
+    Script: |
+        {
+            bonus2 bAddEle,Ele_Water,10;
+        }
+
+
+-   Combos:
+        - [ 4250, 18865 ]
+    Script: |
+        {
+            bonus2 bAddSize,Size_All,5;
+            bonus2 bMagicAddSize,Size_All,5;
+        }
+
+
+-   Combos:
+        - [ 4254, 18865 ]
+    Script: |
+        {
+            bonus2 bAddSize,Size_All,5;
+            bonus2 bMagicAddSize,Size_All,5;
+        }
+
+
+-   Combos:
+        - [ 4268, 4277 ]
+    Script: |
+        {
+            bonus bBaseAtk,20;
+            bonus bLuk,3;
+        }
+
+
+-   Combos:
+        - [ 4273, 18554 ]
+    Script: |
+        {
+            bonus2 bAddEle,Ele_Water,10;
+        }
+
+
+-   Combos:
+        - [ 4305, 27119 ]
+    Script: |
+        {
+            bonus2 bSubSize,Size_All,5;
+            bonus bHit,25;
+            bonus2 bAddSize,Size_All,20;
+        }
+
+
+-   Combos:
+        - [ 4311, 4319, 4331, 4371 ]
+    Script: |
+        {
+            bonus bInt,1;
+            bonus bStr,1;
+            bonus bDef,2;
+            bonus bSPrecovRate,10;
+            bonus2 bSkillAtk,"PA_SHIELDCHAIN",10;
+            bonus2 bSkillAtk,"PA_SACRIFICE",10;
+            bonus bVariableCastrate,-10;
+            if (BaseJob == Job_Crusader)
+                bonus bDefEle,Ele_Holy;
+        }
+
+
+-   Combos:
+        - [ 4323, 4324 ]
+    Script: |
+        {
+            bonus3 bAutoSpell,"MG_FROSTDIVER",3,250;
+        }
+
+
+-   Combos:
+        - [ 4435, 4436 ]
+    Script: |
+        {
+            bonus2 bSPGainRace,RC_DemiHuman,2;
+            bonus2 bSPGainRace,RC_Player,2;
+        }
+
+
+-   Combos:
+        - [ 4335, 19156 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if (.@r < 4)
+                .@a = 4;
+            else
+                .@a = min(.@r,10);
+            bonus3 bAutoSpell,"WZ_EARTHSPIKE",.@a,(.@a*10);
+            bonus3 bAutoSpell,"WZ_HEAVENDRIVE",.@a,(.@a*10);
+        }
+
+
+-   Combos:
+        - [ 4345, 19156 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if (.@r < 4)
+                .@a = 4;
+            else
+                .@a = min(.@r,10);
+            bonus3 bAutoSpell,"MG_LIGHTNINGBOLT",.@a,(.@a*10);
+            bonus3 bAutoSpell,"MG_THUNDERSTORM",.@a,(.@a*10);
+        }
+
+
+-   Combos:
+        - [ 4350, 19156 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if (.@r < 4)
+                .@a = 4;
+            else
+                .@a = min(.@r,10);
+            bonus3 bAutoSpell,"MG_COLDBOLT",.@a,(.@a*10);
+            bonus3 bAutoSpell,"WZ_FROSTNOVA",.@a,(.@a*10);
+        }
+
+
+-   Combos:
+        - [ 4380, 19156 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if (.@r < 4)
+                .@a = 4;
+            else
+                .@a = min(.@r,10);
+            bonus3 bAutoSpell,"MG_FIREBOLT",.@a,(.@a*10);
+            bonus3 bAutoSpell,"MG_FIREBALL",.@a,(.@a*10);
+        }
+
+
+-   Combos:
+        - [ 4335, 21012 ]
+    Script: |
+        {
+            bonus5 bAutoSpell,"WZ_EARTHSPIKE",5,10+(getequiprefinerycnt(EQI_HAND_R)*10),BF_NORMAL|BF_WEAPON,1; /* Confirm: Success rate */
+        }
+
+
+-   Combos:
+        - [ 4345, 21012 ]
+    Script: |
+        {
+            bonus5 bAutoSpell,"MG_LIGHTNINGBOLT",5,10+(getequiprefinerycnt(EQI_HAND_R)*10),BF_NORMAL|BF_WEAPON,1; /* Confirm: Success rate */
+        }
+
+
+-   Combos:
+        - [ 4350, 21012 ]
+    Script: |
+        {
+            bonus5 bAutoSpell,"MG_COLDBOLT",5,10+(getequiprefinerycnt(EQI_HAND_R)*10),BF_NORMAL|BF_WEAPON,1; /* Confirm: Success rate */
+        }
+
+
+-   Combos:
+        - [ 4380, 21012 ]
+    Script: |
+        {
+            bonus5 bAutoSpell,"MG_FIREBOLT",5,10+(getequiprefinerycnt(EQI_HAND_R)*10),BF_NORMAL|BF_WEAPON,1; /* Confirm: Success rate */
+        }
+
+
+-   Combos:
+        - [ 4388, 21012 ]
+    Script: |
+        {
+            bonus5 bAutoSpell,"MG_SOULSTRIKE",5,10+(getequiprefinerycnt(EQI_HAND_R)*10),BF_NORMAL|BF_WEAPON,1; /* Confirm: Success rate */
+        }
+
+
+-   Combos:
+        - [ 4517, 5967 ]
+    Script: |
+        {
+            bonus bInt,1;
+            bonus bCritAtkRate,5 + (BaseClass == Job_Archer ? 15 : 0);
+        }
+
+
+-   Combos:
+        - [ 4545, 18730 ]
+    Script: |
+        {
+            bonus bMatk,5;
+            bonus bBaseAtk,5;
+        }
+
+
+-   Combos:
+        - [ 4605, 4606 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Neutral,20;
+            bonus bFlee,20;
+            bonus2 bHPLossRate,100,6000;
+            bonus2 bSPLossRate,6,6000;
+        }
+
+
+-   Combos:
+        - [ 4608, 4609 ]
+    Script: |
+        {
+            bonus2 bAddSize,Size_Medium,15;
+            bonus2 bAddSize,Size_Large,15;
+            bonus2 bSubSize,Size_Medium,5;
+            bonus2 bSubSize,Size_Large,5;
+        }
+
+
+-   Combos:
+        - [ 4610, 27168 ]
+    Script: |
+        {
+            bonus bAtk,100;
+            autobonus "{ active_transform 3190,6000; }",30,6000,BF_WEAPON;
+        }
+
+
+-   Combos:
+        - [ 4626, 4628 ]
+    Script: |
+        {
+            bonus2 bIgnoreMdefRaceRate,RC_Demon,50;
+        }
+
+
+-   Combos:
+        - [ 4627, 4628 ]
+    Script: |
+        {
+            bonus2 bIgnoreDefRaceRate,RC_Formless,50;
+            bonus2 bIgnoreDefRaceRate,RC_Demon,50;
+        }
+
+
+-   Combos:
+        - [ 4629, 4630 ]
+    Script: |
+        {
+            bonus3 bAutoSpell,"NPC_WIDECURSE",2,2;
+            bonus2 bSubEle,Ele_Neutral,5;
+        }
+
+
+-   Combos:
+        - [ 4631, 4632 ]
+    Script: |
+        {
+            bonus5 bAutoSpell,"WZ_VERMILION",1,1,BF_WEAPON,0;
+        }
+
+
+-   Combos:
+        - [ 4635, 4636 ]
+    Script: |
+        {
+            bonus2 bResEff,Eff_Burning,10000;
+        }
+
+
+-   Combos:
+        - [ 4653, 4654 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_Brute,5;
+            bonus2 bSubRace,RC_Undead,5;
+            bonus2 bIgnoreMdefRaceRate,RC_Brute,50;
+            bonus2 bIgnoreMdefRaceRate,RC_Undead,50;
+        }
+
+
+-   Combos:
+        - [ 4653, 4655 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_Brute,5;
+            bonus2 bSubRace,RC_Undead,5;
+            bonus2 bIgnoreDefRaceRate,RC_Brute,50;
+            bonus2 bIgnoreDefRaceRate,RC_Undead,50;
+        }
+
+
+-   Combos:
+        - [ 4656, 4657 ]
+    Script: |
+        {
+            /* Unofficial chance */ bonus3 bAutoSpellWhenHit,"NPC_WIDESLEEP",2,10;
+            bonus2 bSubEle,Ele_Neutral,5;
+        }
+
+
+-   Combos:
+        - [ 4671, 4692 ]
+    Script: |
+        {
+            autobonus "{ active_transform 3242,6000; bonus bMatk,100; }",30,6000,BF_MAGIC;
+        }
+
+
+-   Combos:
+        - [ 4672, 4693 ]
+    Script: |
+        {
+            autobonus "{ active_transform 3243,6000; bonus bAtk,100; }",30,6000,BF_WEAPON;
+        }
+
+
+-   Combos:
+        - [ 4673, 4696 ]
+    Script: |
+        {
+            autobonus "{ active_transform 3245,6000; bonus bAtk,100; }",30,6000,BF_WEAPON;
+        }
+
+
+-   Combos:
+        - [ 4674, 4684 ]
+    Script: |
+        {
+            autobonus "{ active_transform 3220,6000; bonus bAtk,100; }",30,6000,BF_WEAPON;
+        }
+
+
+-   Combos:
+        - [ 4675, 4685 ]
+    Script: |
+        {
+            autobonus "{ active_transform 3221,6000; bonus bMatk,100; }",30,6000,BF_MAGIC;
+        }
+
+
+-   Combos:
+        - [ 4676, 4687 ]
+    Script: |
+        {
+            autobonus "{ active_transform 3222,6000; bonus bAtk,100; }",30,6000,BF_WEAPON;
+        }
+
+
+-   Combos:
+        - [ 4677, 4688 ]
+    Script: |
+        {
+            autobonus "{ active_transform 3223,6000; bonus bAtk,100; }",30,6000,BF_WEAPON;
+        }
+
+
+-   Combos:
+        - [ 4678, 4686 ]
+    Script: |
+        {
+            autobonus "{ active_transform 3224,6000; bonus bMatk,100; }",30,6000,BF_MAGIC;
+        }
+
+
+-   Combos:
+        - [ 4679, 4689 ]
+    Script: |
+        {
+            autobonus "{ active_transform 3225,6000; bonus bAtk,100; }",30,6000,BF_WEAPON;
+        }
+
+
+-   Combos:
+        - [ 4680, 4690 ]
+    Script: |
+        {
+            autobonus "{ active_transform 3240,6000; bonus bAtk,100; }",30,6000,BF_WEAPON;
+        }
+
+
+-   Combos:
+        - [ 4681, 4691 ]
+    Script: |
+        {
+            autobonus "{ active_transform 3241,6000; bonus bAtk,100; }",30,6000,BF_WEAPON;
+        }
+
+
+-   Combos:
+        - [ 4682, 4694 ]
+    Script: |
+        {
+            autobonus "{ active_transform 3244,6000; bonus bAtk,100; }",30,6000,BF_WEAPON;
+        }
+
+
+-   Combos:
+        - [ 4683, 4695 ]
+    Script: |
+        {
+            autobonus "{ active_transform 3246,6000; bonus bAtk,100; }",30,6000,BF_WEAPON;
+        }
+
+
+-   Combos:
+        - [ 4697, 27012 ]
+    Script: |
+        {
+            bonus bNoMadoFuel;
+        }
+
+
+-   Combos:
+        - [ 4699, 27012 ]
+    Script: |
+        {
+            bonus bNoMadoFuel;
+        }
+
+
+-   Combos:
+        - [ 4958, 19050 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if ( .@r >= 7 ) {
+                bonus bDelayrate,-1 - ( .@r > 9 ) ? 1 : 0;
+            }
+        }
+
+
+-   Combos:
+        - [ 4959, 19050 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if ( .@r >= 7 ) {
+                bonus bLongAtkRate,2 + ( .@r > 9 ) ? 1 : 0;
+            }
+        }
+
+
+-   Combos:
+        - [ 4960, 19050 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if ( .@r >= 7 ) {
+                bonus bUseSPrate,-2 - ( .@r > 9 ) ? 1 : 0;
+            }
+        }
+
+
+-   Combos:
+        - [ 4961, 19050 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if ( .@r >= 7 ) {
+                bonus bMatk,10 + ( .@r > 9 ) ? 10 : 0;
+            }
+        }
+
+
+-   Combos:
+        - [ 4962, 19050 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if ( .@r >= 7 ) {
+                bonus bAtk,2 + ( .@r > 9 ) ? 5 : 0;
+            }
+        }
+
+
+-   Combos:
+        - [ 4963, 19050 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if ( .@r >= 7 ) {
+                bonus bAtk,4 + ( .@r > 9 ) ? 2 : 0;
+                bonus bHit,3 + ( .@r > 9 ) ? 1 : 0;
+            }
+        }
+
+
+-   Combos:
+        - [ 4964, 19050 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if ( .@r >= 7 ) {
+                bonus2 bMagicAddRace,RC_All,1 + ( .@r > 9 ) ? 1 : 0;
+            }
+        }
+
+
+-   Combos:
+        - [ 4965, 19050 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if ( .@r >= 7 ) {
+                bonus bVariableCastrate,-1 - ( .@r > 9 ) ? 1 : 0;
+            }
+        }
+
+
+-   Combos:
+        - [ 4966, 19050 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if ( .@r >= 7 ) {
+                bonus2 bAddRace,RC_All,1 + ( .@r > 9 ) ? 1 : 0;
+            }
+        }
+
+
+-   Combos:
+        - [ 4967, 19050 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if ( .@r >= 7 ) {
+                bonus bAspdRate,1 + ( .@r > 9 ) ? 1 : 0;
+            }
+        }
+
+
+-   Combos:
+        - [ 4968, 19050 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if ( .@r >= 7 ) {
+                setarray .@skills$, "AL_HEAL", "PR_SANCTUARY", "AM_POTIONPITCHER", "AB_HIGHNESSHEAL", "AB_CHEAL";
+                for( .@i = 0; .@i < getarraysize(.@skills$); .@i++ ) {
+                    bonus2 bSkillHeal,.@skills$[.@i],2 + ( .@r > 9 ) ? 2 : 0;
+                }
+            }
+        }
+
+
+-   Combos:
+        - [ 4969, 19050 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if ( .@r >= 7 ) {
+                setarray .@skills$, "AL_HEAL", "PR_SANCTUARY", "AM_POTIONPITCHER", "AB_HIGHNESSHEAL", "AB_CHEAL";
+                for( .@i = 0; .@i < getarraysize(.@skills$); .@i++ ) {
+                    bonus2 bSkillHeal2,.@skills$[.@i],2 + ( .@r > 9 ) ? 2 : 0;
+                } /* TODO: Depending on some recovery items HP recovery amount + 1% or if refine >= 9 + 2% */
+            }
+        }
+
+
+-   Combos:
+        - [ 5040, 5442 ]
+    Script: |
+        {
+            bonus bAspdRate,3;
+            bonus bVariableCastrate,3;
+        }
+
+
+-   Combos:
+        - [ 5040, 18672 ]
+    Script: |
+        {
+            bonus bSPrecovRate,3;
+        }
+
+
+-   Combos:
+        - [ 5040, 18673 ]
+    Script: |
+        {
+            bonus bHealPower,10;
+        }
+
+
+-   Combos:
+        - [ 5041, 18538 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_Angel,9;
+        }
+
+
+-   Combos:
+        - [ 5043, 18656 ]
+    Script: |
+        {
+            bonus bFlee,10;
+            bonus2 bAddEff,Eff_Stun,1000;
+        }
+
+
+-   Combos:
+        - [ 5048, 18538 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_Demon,9;
+        }
+
+
+-   Combos:
+        - [ 5068, 5653 ]
+    Script: |
+        {
+            bonus bStr,1;
+            bonus2 bAddClass,Class_All,5;
+        }
+
+
+-   Combos:
+        - [ 5070, 18576 ]
+    Script: |
+        {
+            bonus2 bSkillAtk,"MO_TRIPLEATTACK",5;
+            bonus2 bSkillAtk,"MO_COMBOFINISH",5;
+            bonus2 bSkillAtk,"CH_TIGERFIST",3;
+            bonus2 bSkillAtk,"CH_CHAINCRUSH",3;
+            if ( getequiprefinerycnt(EQI_HEAD_TOP) < 10 )
+                bonus bUseSPrate, getequiprefinerycnt(EQI_HEAD_TOP);
+        }
+
+
+-   Combos:
+        - [ 5073, 5574 ]
+    Script: |
+        {
+            bonus bDex,2;
+            bonus bDef,2;
+        }
+
+
+-   Combos:
+        - [ 5074, 5653 ]
+    Script: |
+        {
+            bonus bStr,1;
+            bonus bAspdRate,2;
+        }
+
+
+-   Combos:
+        - [ 5074, 18827 ]
+    Script: |
+        {
+            autobonus "{ transform 1765,5000; bonus2 bHPLossRate,30,1000; bonus bHit,-10; bonus bSplashRange,1; }",10+getequiprefinerycnt(EQI_HEAD_TOP),5000,BF_WEAPON,"{ specialeffect2 EF_NONE; }";
+        }
+
+
+-   Combos:
+        - [ 5086, 18527 ]
+    Script: |
+        {
+            bonus2 bAddItemHealRate,12192,200;
+        }
+
+
+-   Combos:
+        - [ 5086, 18656 ]
+    Script: |
+        {
+            bonus2 bAddItemHealRate,538,100;
+            bonus2 bAddItemHealRate,12192,100;
+            bonus2 bAddMonsterDropItem,538,400;
+            bonus2 bAddMonsterDropItem,12192,400;
+        }
+
+
+-   Combos:
+        - [ 5170, 19024 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if (.@r >= 7)
+                bonus bAspdRate,5;
+            if (.@r >= 9)
+                bonus bMaxHPRate,5;
+        }
+
+
+-   Combos:
+        - [ 5176, 18527 ]
+    Script: |
+        {
+            bonus bAspdRate,5;
+        }
+
+
+-   Combos:
+        - [ 5176, 18656 ]
+    Script: |
+        {
+            bonus bAspd,1;
+            autobonus "{ bonus bBaseAtk,50; }",20,10000,0,"{ specialeffect2 EF_POTION_BERSERK; }";
+        }
+# -
+  # Combos:
+    # - [ 5184, 5657 ]
+  # Script: |
+    # {
+        # bonus bLongAtkRate,getrefine();
+    # }
+# -
+  # Combos:
+    # - [ 5206, 5768 ]
+  # Script: |
+    # {
+        # bonus bDex,1;
+        # if (getequiprefinerycnt(EQI_HEAD_TOP) > 4)
+            # bonus bDelayRate,4-getequiprefinerycnt(EQI_HEAD_TOP);
+    # }
+
+
+-   Combos:
+        - [ 5358, 5653 ]
+    Script: |
+        {
+            bonus bAgi,1;
+            bonus bFlee,3;
+        }
+# -
+  # Combos:
+    # - [ 5359, 5657 ]
+  # Script: |
+    # {
+        # bonus bLongAtkRate,getequiprefinerycnt(EQI_HEAD_TOP);
+    # }
+
+
+-   Combos:
+        - [ 5391, 5766 ]
+    Script: |
+        {
+            bonus bMaxHP,100;
+            .@r = getrefine();
+            if (.@r>=7)
+                bonus bMaxHP,100;
+            if (.@r>=9)
+                bonus bMaxHP,200;
+        }
+
+
+-   Combos:
+        - [ 5401, 5653 ]
+    Script: |
+        {
+            bonus bInt,1;
+            bonus bMatkRate,2;
+        }
+
+
+-   Combos:
+        - [ 5403, 18529 ]
+    Script: |
+        {
+            bonus3 bAutoSpell,"BS_GREED",1,50;
+        }
+# -
+  # Combos:
+    # - [ 5470, 5653 ]
+  # Script: |
+    # {
+        # bonus bDex,1;
+        # bonus bLongAtkRate,3;
+    # }
+
+
+-   Combos:
+        - [ 5475, 18656 ]
+    Script: |
+        {
+            bonus bBaseAtk,30;
+            bonus bMatk,30;
+            bonus2 bAddMonsterDropItem,529,400;
+            bonus2 bAddMonsterDropItem,530,400;
+            bonus2 bAddMonsterDropItem,538,400;
+            bonus2 bAddMonsterDropItem,12192,400;
+        }
+
+
+-   Combos:
+        - [ 5498, 5521 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            if (.@r>=7)
+                bonus bCritAtkRate,10;
+            if (.@r>=9)
+                bonus bAspd,1;
+        }
+
+
+-   Combos:
+        - [ 5548, 5766 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP);
+            bonus bBaseAtk,min(.@r,10);
+            bonus bMatk,min(.@r,10);
+        }
+
+
+-   Combos:
+        - [ 5917, 1525 ]
+    Script: |
+        {
+            bonus bLongAtkDef,10;
+        }
+
+
+-   Combos:
+        - [ 5920, 18542 ]
+    Script: |
+        {
+            bonus bHealPower,2*getequiprefinerycnt(EQI_HEAD_TOP);
+        }
+
+
+-   Combos:
+        - [ 5967, 28321 ]
+    Script: |
+        {
+            bonus2 bSubSkill,"HT_BLITZBEAT",200;
+        }
+
+
+-   Combos:
+        - [ 5918, 19306 ]
+    Script: |
+        {
+            .@aspd = 1; .@crit_dmg = 2 + 2 * (readparam(bDex) / 10); .@sub_demi = 2; .@luk = readparam(bLuk);
+            if (.@luk > 107) { .@aspd += 1; .@crit_dmg += 2; .@sub_demi += 2;
+            }
+            if (.@luk > 119) { .@aspd += 2; .@crit_dmg += 4; .@sub_demi += 4;
+            bonus bSplashRange,1; } bonus bAspd,.@aspd;
+            bonus bCritAtkRate,.@crit_dmg;
+            bonus2 bSubRace,RC_DemiHuman,.@sub_demi;
+            bonus2 bSubSkill,"NPC_CRITICALSLASH",100;
+        }
+# -
+  # Combos:
+    # - [ 9024, 18832 ]
+  # Script: |
+    # {
+        # bonus3 bAutoSpell,"BS_ADRENALINE",2,(GetPetRelationship >= 3)?15:10;
+    # }
+
+
+-   Combos:
+        - [ 13027, 15044 ]
+    Script: |
+        {
+            .@r = max(getequiprefinerycnt(EQI_ARMOR),1);
+            bonus3 bAddMonsterDropItem,929,RC_DemiHuman,70*.@r;
+            bonus3 bAddMonsterDropItem,970,RC_DemiHuman,50*.@r;
+            bonus3 bAddMonsterDropItem,929,RC_Brute,70*.@r;
+            bonus3 bAddMonsterDropItem,970,RC_Brute,50*.@r;
+        }
+
+
+-   Combos:
+        - [ 13034, 13035 ]
+    Script: |
+        {
+            bonus bMaxSP,20;
+            bonus bMaxHPRate,5;
+            bonus bHit,10;
+            bonus2 bAddSize,Size_Large,30;
+            autobonus "{ bonus bAspdRate,100; }",1,7000,BF_WEAPON,"{ specialeffect2 EF_POTION_BERSERK; }";
+        }
+
+
+-   Combos:
+        - [ 13337, 19210 ]
+    Script: |
+        {
+            bonus bVariableCastrate,-15;
+            .@eq = getequiprefinerycnt(EQI_HEAD_TOP);
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            if (.@eq >= 7 && .@weapon >= 7) {
+            .@val = 25;
+            }
+            if ((.@eq + .@weapon) >= 18) {
+            .@val += 25;
+                if ((.@eq + .@weapon) >= 22)
+            bonus2 bSkillCooldown,"KO_HUUMARANKA",-1000;
+            }
+            if (.@val)bonus2 bSkillAtk,"KO_HUUMARANKA",.@val;
+            }
+        }
+
+
+-   Combos:
+        - [ 13338, 19210 ]
+    Script: |
+        {
+            bonus bBaseAtk,50;  .@eq = getequiprefinerycnt(EQI_HEAD_TOP);
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            if (.@eq >= 7 && .@weapon >= 7) {
+                .@val = 30;
+            }
+            if ((.@eq + .@weapon) >= 18) {
+                bonus bLongAtkRate,10;
+                if ((.@eq + .@weapon) >= 22)
+                    .@val += 20;
+            }
+            if (.@val)
+                bonus2 bSkillAtk,"KO_HAPPOKUNAI",.@val;
+        }
+
+
+-   Combos:
+        - [ 13469, 20840 ]
+    Script: |
+        {
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            .@eq = getequiprefinerycnt(EQI_GARMENT); .@val = 100;
+            if (.@weapon >= 7 && .@eq >= 7)
+                .@val += 50;
+            bonus bMatk,.@val;
+            if ((.@weapon + .@eq) >= 18) {
+                bonus3 bAutoSpell,"MG_COLDBOLT",3,50;
+                bonus3 bAutoSpell,"MG_FIREBOLT",3,50;
+                bonus3 bAutoSpell,"MG_LIGHTNINGBOLT",3,50; /* fix me: unknown skill lvl/rates */
+            }
+            if ((.@weapon + .@eq) >= 22) {
+                autobonus "{ bonus2 bSkillAtk,\"WZ_STORMGUST\",30; bonus2 bSkillAtk,\"WZ_METEOR\",30; bonus2 bSkillAtk,\"WZ_VERMILION\",30; bonus2 bSkillAtk,\"WZ_HEAVENDRIVE\",30; }",20,10000; /* fix me: unknown rate/specialeffect (if any) */
+            }
+        }
+
+
+-   Combos:
+        - [ 15041, 18659 ]
+    Script: |
+        {
+            bonus bInt,3;
+            bonus bStr,3;
+            bonus bMdef,10;
+            bonus bDefEle,Ele_Fire;
+            bonus2 bAddEle,Ele_Earth,10;
+        }
+
+
+-   Combos:
+        - [ 15088, 18816, 18818 ]
+    Script: |
+        {
+            bonus bMatk,BaseLevel/3;
+            bonus2 bExpAddClass,Class_All,5;
+        }
+
+
+-   Combos:
+        - [ 15088, 18817, 18819 ]
+    Script: |
+        {
+            bonus bBaseAtk,BaseLevel/3;
+            bonus2 bExpAddClass,Class_All,5;
+        }
+
+
+-   Combos:
+        - [ 15090, 18820, 20721, 22033 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Neutral,15;
+            bonus3 bAutoSpellWhenHit,"WL_DRAINLIFE",3,1;
+        }
+
+
+-   Combos:
+        - [ 15091, 18820, 20721, 22033 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Neutral,15;
+            bonus bMaxHPrate,25;
+            bonus bMaxSPrate,25;
+            bonus bMatkRate,10;
+        }
+
+
+-   Combos:
+        - [ 15110, 20732 ]
+    Script: |
+        {
+            bonus2 bSkillAtk,"NC_AXETORNADO",25;
+        }
+
+
+-   Combos:
+        - [ 15110, 22043 ]
+    Script: |
+        {
+            bonus bBaseAtk,30;
+        }
+
+
+-   Combos:
+        - [ 15116, 20743, 22046 ]
+    Script: |
+        {
+            bonus bMaxHPrate,25;
+            bonus bMaxSPrate,25;
+            bonus bSpeedAddRate,40;
+        }
+
+
+-   Combos:
+        - [ 15117, 20744, 22047 ]
+    Script: |
+        {
+            bonus bMaxHPrate,25;
+            bonus bMaxSPrate,25;
+            bonus bSpeedAddRate,40;
+            if (getequiprefinerycnt(EQI_ARMOR)+getequiprefinerycnt(EQI_GARMENT)+getequiprefinerycnt(EQI_SHOES) >= 30) { bonus bMaxHPrate,5;
+            bonus bMaxSPrate,5;
+            }
+        }
+
+
+-   Combos:
+        - [ 15126, 20788, 22083 ]
+    Script: |
+        {
+            bonus bMaxHP,2000;
+            bonus bNoCastCancel;
+            bonus bFixedCastrate,-15-(getequiprefinerycnt(EQI_ARMOR)+getequiprefinerycnt(EQI_GARMENT)+getequiprefinerycnt(EQI_SHOES));
+        }
+
+
+-   Combos:
+        - [ 15126, 20788, 22083, 28382, 28416 ]
+    Script: |
+        {
+            bonus bMaxHPrate,10;
+            bonus bMaxSPrate,10;
+            bonus2 bSkillAtk,"SU_CN_METEOR",100;
+        }
+
+
+-   Combos:
+        - [ 15126, 20788, 22083, 28380, 28419 ]
+    Script: |
+        {
+            bonus bMaxHPrate,20;
+            bonus bMaxSPrate,3;
+            bonus2 bSkillAtk,"SU_LUNATICCARROTBEAT",100;
+        }
+
+
+-   Combos:
+        - [ 15126, 20788, 22083, 28381, 28413 ]
+    Script: |
+        {
+            bonus bMaxHPrate,15;
+            bonus bMaxSPrate,5;
+            bonus bHealPower,10; skill "AL_HEAL",5,1;
+        }
+
+
+-   Combos:
+        - [ 15128, 20773 ]
+    Script: |
+        {
+            bonus bFlee2,6;
+            bonus bDelayrate,-10 - (BaseLevel > 129 ? 10 : 0);
+        }
+
+
+-   Combos:
+        - [ 15129, 20789, 22084 ]
+    Script: |
+        {
+            bonus bMaxHP,3000;
+            bonus bNoCastCancel;
+            bonus bFixedCastrate,-20-(getequiprefinerycnt(EQI_ARMOR)+getequiprefinerycnt(EQI_GARMENT)+getequiprefinerycnt(EQI_SHOES));
+        }
+
+
+-   Combos:
+        - [ 15129, 20789, 22084, 28382, 28417 ]
+    Script: |
+        {
+            bonus bMaxHPrate,15;
+            bonus bMaxSPrate,15;
+            bonus2 bSkillAtk,"SU_CN_METEOR",150;
+        }
+
+
+-   Combos:
+        - [ 15129, 20789, 22084, 28380, 28420 ]
+    Script: |
+        {
+            bonus bMaxHPrate,25;
+            bonus bMaxSPrate,6;
+            bonus2 bSkillAtk,"SU_LUNATICCARROTBEAT",150;
+        }
+
+
+-   Combos:
+        - [ 15129, 20789, 22084, 28381, 28414 ]
+    Script: |
+        {
+            bonus bMaxHPrate,20;
+            bonus bMaxSPrate,10;
+            bonus bHealPower,20; skill "AL_HEAL",7,1;
+        }
+
+
+-   Combos:
+        - [ 15138, 19026 ]
+    Script: |
+        {
+            bonus2 bSubRace,RC_Fish,(10+getequiprefinerycnt(EQI_ARMOR));
+        }
+
+
+-   Combos:
+        - [ 15138, 19026, 20756, 22059 ]
+    Script: |
+        {
+            bonus bMaxHP,1000;
+            bonus bMaxSP,100;
+            bonus2 bExpAddRace,RC_Fish,20;
+            bonus2 bMagicAddRace,RC_Fish,50;
+            bonus2 bSubEle,Ele_Water,50;
+        }
+
+
+-   Combos:
+        - [ 15156, 20790, 22085 ]
+    Script: |
+        {
+            bonus bMaxHP,4000;
+            bonus bNoCastCancel;
+            bonus bFixedCastrate,-25-(getequiprefinerycnt(EQI_ARMOR)+getequiprefinerycnt(EQI_GARMENT)+getequiprefinerycnt(EQI_SHOES));
+        }
+
+
+-   Combos:
+        - [ 15156, 20790, 22085, 28382, 28418 ]
+    Script: |
+        {
+            bonus bMaxHPrate,20;
+            bonus bMaxSPrate,20;
+            bonus2 bSkillAtk,"SU_CN_METEOR",200;
+        }
+
+
+-   Combos:
+        - [ 15156, 20790, 22085, 28380, 28421 ]
+    Script: |
+        {
+            bonus bMaxHPrate,30;
+            bonus bMaxSPrate,9;
+            bonus2 bSkillAtk,"SU_LUNATICCARROTBEAT",200;
+        }
+
+
+-   Combos:
+        - [ 15156, 20790, 22085, 28381, 28415 ]
+    Script: |
+        {
+            bonus bMaxHPrate,25;
+            bonus bMaxSPrate,15;
+            bonus bHealPower,30; skill "AL_HEAL",9,1;
+        }
+
+
+-   Combos:
+        - [ 15181, 28443, 28444 ]
+    Script: |
+        {
+            bonus bAtk,20;
+            bonus2 bSubEle,Ele_All,2;
+            bonus2 bSubEle,Ele_Neutral,-2;
+        }
+
+
+-   Combos:
+        - [ 15182, 28445, 28446 ]
+    Script: |
+        {
+            bonus bAtk,40;
+            bonus2 bSubEle,Ele_All,4;
+            bonus2 bSubEle,Ele_Neutral,-4;
+        }
+
+
+-   Combos:
+        - [ 15183, 28447, 28448 ]
+    Script: |
+        {
+            bonus bAtk,40;
+            bonus2 bSubEle,Ele_All,4;
+            bonus2 bSubEle,Ele_Neutral,-4;
+            bonus2 bExpAddClass,Class_All,2;
+        }
+
+
+-   Combos:
+        - [ 15184, 28449, 28450 ]
+    Script: |
+        {
+            bonus bAtk,50;
+            bonus2 bSubEle,Ele_All,5;
+            bonus2 bSubEle,Ele_Neutral,-5;
+            bonus2 bExpAddClass,Class_All,2;
+        }
+
+
+-   Combos:
+        - [ 15185, 28451, 28452 ]
+    Script: |
+        {
+            bonus bAtk,50;
+            bonus2 bSubEle,Ele_All,5;
+            bonus2 bSubEle,Ele_Neutral,-5;
+            bonus2 bExpAddClass,Class_All,2;
+            bonus bNoCastCancel;
+        }
+
+
+-   Combos:
+        - [ 15181, 28453, 28454 ]
+    Script: |
+        {
+            bonus bMatk,20;
+            bonus2 bSubEle,Ele_All,2;
+            bonus2 bSubEle,Ele_Neutral,-2;
+        }
+
+
+-   Combos:
+        - [ 15182, 28455, 28456 ]
+    Script: |
+        {
+            bonus bMatk,40;
+            bonus2 bSubEle,Ele_All,4;
+            bonus2 bSubEle,Ele_Neutral,-4;
+        }
+
+
+-   Combos:
+        - [ 15183, 28457, 28458 ]
+    Script: |
+        {
+            bonus bMatk,40;
+            bonus2 bSubEle,Ele_All,4;
+            bonus2 bSubEle,Ele_Neutral,-4;
+            bonus2 bExpAddClass,Class_All,2;
+        }
+
+
+-   Combos:
+        - [ 15184, 28459, 28460 ]
+    Script: |
+        {
+            bonus bMatk,50;
+            bonus2 bSubEle,Ele_All,5;
+            bonus2 bSubEle,Ele_Neutral,-5;
+            bonus2 bExpAddClass,Class_All,2;
+        }
+
+
+-   Combos:
+        - [ 15185, 28461, 28462 ]
+    Script: |
+        {
+            bonus bMatk,50;
+            bonus2 bSubEle,Ele_All,5;
+            bonus2 bSubEle,Ele_Neutral,-5;
+            bonus2 bExpAddClass,Class_All,2;
+            bonus bNoCastCancel;
+        }
+
+
+-   Combos:
+        - [ 15181, 28463, 28464 ]
+    Script: |
+        {
+            bonus bAtk,20;
+            bonus2 bSubEle,Ele_All,2;
+            bonus2 bSubEle,Ele_Neutral,-2;
+        }
+
+
+-   Combos:
+        - [ 15182, 28465, 28466 ]
+    Script: |
+        {
+            bonus bAtk,40;
+            bonus2 bSubEle,Ele_All,4;
+            bonus2 bSubEle,Ele_Neutral,-4;
+        }
+
+
+-   Combos:
+        - [ 15183, 28467, 28468 ]
+    Script: |
+        {
+            bonus bAtk,40;
+            bonus2 bSubEle,Ele_All,4;
+            bonus2 bSubEle,Ele_Neutral,-4;
+            bonus2 bExpAddClass,Class_All,2;
+        }
+
+
+-   Combos:
+        - [ 15184, 28469, 28470 ]
+    Script: |
+        {
+            bonus bAtk,50;
+            bonus2 bSubEle,Ele_All,5;
+            bonus2 bSubEle,Ele_Neutral,-5;
+            bonus2 bExpAddClass,Class_All,2;
+        }
+
+
+-   Combos:
+        - [ 15185, 28471, 28472 ]
+    Script: |
+        {
+            bonus bAtk,50;
+            bonus2 bSubEle,Ele_All,5;
+            bonus2 bSubEle,Ele_Neutral,-5;
+            bonus2 bExpAddClass,Class_All,2;
+            bonus bNoCastCancel;
+        }
+
+
+-   Combos:
+        - [ 15195, 16063 ]
+    Script: |
+        {
+            .@matk = 100;
+            .@recovery = 20;
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            .@eq = getequiprefinerycnt(EQI_ARMOR);
+            if (.@weapon >= 7 && .@eq >= 7)
+                .@matk += 50;
+            if ((.@weapon + .@eq) >= 18) {
+                .@recovery += 15;
+                if ((.@weapon + .@eq) >= 22)
+                    bonus bDelayrate,-15;
+            }
+            bonus bMatk,.@matk;
+            bonus bHealPower2,.@recovery;
+        }
+
+
+-   Combos:
+        - [ 15195, 19209 ]
+    Script: |
+        {
+            bonus bSpeedRate,25; /* unknown speed value */
+            bonus bHealPower,10;
+        }
+
+
+-   Combos:
+        - [ 15212, 22141 ]
+    Script: |
+        {
+            bonus bAspdRate,getequiprefinerycnt(EQI_SHOES);
+        }
+
+
+-   Combos:
+        - [ 15212, 20856 ]
+    Script: |
+        {
+            bonus bDelayrate,-getequiprefinerycnt(EQI_GARMENT);
+        }
+
+
+-   Combos:
+        - [ 15212, 20856, 22141 ]
+    Script: |
+        {
+            if ((getequiprefinerycnt(EQI_ARMOR)+getequiprefinerycnt(EQI_GARMENT)+getequiprefinerycnt(EQI_SHOES)) >= 39) {
+                autobonus "{ bonus bIgnoreDefClass,Class_Normal; bonus bIgnoreDefClass,Class_Boss; }",50,5000;
+            }
+        }
+
+
+-   Combos:
+        - [ 15348, 19366, 20923, 22192 ]
+    Script: |
+        {
+            bonus bVit,5;
+            bonus bMaxSPrate,5;
+            bonus bDef,5;
+            bonus bMdef,15;
+            bonus2 bSubEle,Ele_Water,10;
+            bonus2 bSubEle,Ele_Earth,10;
+            bonus2 bSubEle,Ele_Fire,10;
+            bonus2 bSubEle,Ele_Wind,10; .@hp = 15;
+            .@r[0] = getequiprefinerycnt(EQI_ARMOR);
+            .@r[1] = getequiprefinerycnt(EQI_HEAD_TOP);
+            .@r[2] = getequiprefinerycnt(EQI_GARMENT);
+            .@r[3] = getequiprefinerycnt(EQI_SHOES); .@sum = .@r[0]+.@r[1]+.@r[2]+.@r[3];
+            if (.@r[0] >= 7 && .@r[1] >= 7 && .@r[2] >= 7 && .@r[3] >= 7)
+                .@hp += 10;
+            bonus bMaxHPrate,.@hp;
+            if (.@sum >= 36)
+                bonus bFixedCast,-700;
+            if (.@sum >= 40)
+                bonus bDelayrate,-20;
+        }
+
+
+-   Combos:
+        - [ 16065, 20838 ]
+    Script: |
+        {
+            bonus bAspdRate,10;
+            .@eq = getequiprefinerycnt(EQI_GARMENT);
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            if (.@eq >= 7 && .@weapon >= 7) {
+                bonus2 bSkillAtk,"AB_DUPLELIGHT_MELEE",25;
+                bonus2 bSkillAtk,"AB_DUPLELIGHT_MAGIC",25;
+            }
+            if ((.@eq + .@weapon) >= 18) {
+                bonus bCritical,15;
+                if ((.@eq + .@weapon) >= 22)
+                    bonus bCritAtkRate,20;
+            }
+        }
+
+
+-   Combos:
+        - [ 18137, 1752, 19048 ]
+    Script: |
+        {
+            bonus bLongAtkRate,20;
+            bonus2 bSubEle,Ele_Fire,-10;
+            if (getequiprefinerycnt(EQI_HAND_R) >= 10)
+                bonus bAspd,1;
+        }
+
+
+-   Combos:
+        - [ 18138, 1754, 19048 ]
+    Script: |
+        {
+            bonus bLongAtkRate,20;
+            bonus2 bAddEff,Eff_Freeze,-1000;
+            if (getequiprefinerycnt(EQI_HAND_R) >= 10)
+                bonus bAspd,1;
+        }
+
+
+-   Combos:
+        - [ 18139, 1756 ]
+    Script: |
+        {
+            bonus bLongAtkRate,25;
+            bonus2 bAddEff,Eff_Stone,1000;
+        }
+
+
+-   Combos:
+        - [ 18139, 1756, 19048 ]
+    Script: |
+        {
+            bonus bLongAtkRate,20;
+            bonus2 bAddEff,Eff_Stone,-1000;
+            if (getequiprefinerycnt(EQI_HAND_R) >= 10)
+                bonus bAspd,1;
+        }
+
+
+-   Combos:
+        - [ 18140, 1755 ]
+    Script: |
+        {
+            bonus bLongAtkRate,25;
+            bonus3 bAutoSpell,"NJ_HUUJIN",5,(readparam(bInt)>39) ? 300 : 100;
+        }
+
+
+-   Combos:
+        - [ 18140, 1755, 19048 ]
+    Script: |
+        {
+            bonus bLongAtkRate,20;
+            bonus3 bAutoSpell,"NJ_HUUJIN",5,(readparam(bInt)>39) ? -300 : -100;
+            if (getequiprefinerycnt(EQI_HAND_R) >= 10)
+                bonus bAspd,1;
+        }
+
+
+-   Combos:
+        - [ 18149, 19210 ]
+    Script: |
+        {
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            .@eq = getequiprefinerycnt(EQI_HEAD_TOP);
+            bonus bLongAtkRate,5;
+            if (.@weapon >= 7 && .@eq >= 7)
+                .@val = 20;
+            if ((.@weapon + .@eq) >= 18) {
+                bonus2 bAddClass,Class_All,10;
+                if ((.@weapon + .@eq) >= 22)
+                    .@val += 30;
+            }
+            if (.@val) {
+                bonus2 bSkillAtk,"RA_ARROWSTORM",.@val;
+            }
+        }
+
+
+-   Combos:
+        - [ 18174, 22190 ]
+    Script: |
+        {
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            .@eq = getequiprefinerycnt(EQI_SHOES);
+            bonus2 bAddClass,Class_All,10;
+            if (.@weapon >= 7 && .@eq >= 7) {
+                bonus bAspd,2;
+            }
+            if ((.@weapon + .@eq) >= 18) {
+                bonus bCritAtkRate,10;
+                if ((.@weapon + .@eq) >= 22) {
+                    autobonus "{ bonus bBaseAtk,100; bonus bCritAtkRate,15; bonus2 bAddRace,RC_Insect,50; bonus2 bAddRace,RC_Brute,50; }",20,10000,BF_LONG|BF_WEAPON|BF_NORMAL; /* fix me: unknown rates */
+                }
+            }
+        }
+
+
+-   Combos:
+        - [ 18507, 18539 ]
+    Script: |
+        {
+            bonus bUseSPrate,-3;
+        }
+
+
+-   Combos:
+        - [ 18559, 18560 ]
+    Script: |
+        {
+            bonus bCritAtkRate,5;
+        }
+
+
+-   Combos:
+        - [ 18563, 18564 ]
+    Script: |
+        {
+            bonus bFixedCastrate,-10;
+        }
+
+
+-   Combos:
+        - [ 18776, 20710 ]
+    Script: |
+        {
+            bonus bBaseAtk,10;
+        }
+
+
+-   Combos:
+        - [ 18776, 22015 ]
+    Script: |
+        {
+            bonus bMatk,20;
+        }
+
+
+-   Combos:
+        - [ 18823, 19246 ]
+    Script: |
+        {
+            .@atk = 40;
+            .@aspd = 3;
+            .@dmg = 2;
+            .@agi = readparam(bAgi);
+            if (.@agi > 107) {
+                .@atk += 60;
+                .@aspd += 5;
+                .@dmg += 2;
+                if (.@agi > 119) {
+                    .@atk += 80;
+                    .@aspd += 7;
+                    .@dmg += 4;
+                }
+            }
+            bonus bBaseAtk,.@atk;
+            bonus bAspdRate,.@aspd;
+            bonus2 bSubRace,RC_Player,.@dmg;
+            bonus2 bResEff,Eff_Blind,10000;
+            bonus2 bResEff,Eff_Silence,10000;
+        }
+
+
+-   Combos:
+        - [ 18823, 28372 ]
+    Script: |
+        {
+            bonus2 bSkillVariableCast,"CR_GRANDCROSS",-1500;
+            bonus2 bSkillAtk,"LG_RAYOFGENESIS",(BaseLevel/30) + BaseLevel;
+            bonus2 bSkillUseSP,"LG_RAYOFGENESIS",-10;
+        }
+
+
+-   Combos:
+        - [ 18823, 28551 ]
+    Script: |
+        {
+            bonus2 bSkillDelay,"LG_OVERBRAND",-2000;
+            bonus bLongAtkRate,getskilllv("LG_CANNONSPEAR") * 2;
+            bonus bLongAtkRate,getskilllv("LG_OVERBRAND") * 2;
+            bonus2 bSkillAtk,"LG_CANNONSPEAR",30;
+            bonus2 bSkillAtk,"LG_OVERBRAND",20;
+        }
+
+
+-   Combos:
+        - [ 18867, 1720 ]
+    Script: |
+        {
+            bonus bLongAtkRate,3+(getequiprefinerycnt(EQI_HAND_R) > 6 ? 5:0);
+        }
+
+
+-   Combos:
+        - [ 18937, 28302 ]
+    Script: |
+        {
+            bonus bInt,8;
+            bonus bMaxSPrate,5;
+        }
+
+
+-   Combos:
+        - [ 18937, 28303 ]
+    Script: |
+        {
+            bonus bInt,8;
+            bonus bBaseAtk,20;
+        }
+
+
+-   Combos:
+        - [ 18937, 28304 ]
+    Script: |
+        {
+            bonus bInt,8;
+            bonus bFlee,15;
+        }
+
+
+-   Combos:
+        - [ 18937, 28305 ]
+    Script: |
+        {
+            bonus bInt,8;
+            bonus bHit,10;
+        }
+
+
+-   Combos:
+        - [ 18985, 28321 ]
+    Script: |
+        {
+            bonus2 bSkillAtk,"HT_BLITZBEAT",100;
+        }
+
+
+-   Combos:
+        - [ 18985, 28321, 28322 ]
+    Script: |
+        {
+            bonus2 bSkillAtk,"HT_BLITZBEAT",200;
+        }
+
+
+-   Combos:
+        - [ 18985, 28322 ]
+    Script: |
+        {
+            bonus2 bSkillAtk,"SN_FALCONASSAULT",50;
+        }
+
+
+-   Combos:
+        - [ 18997, 28326, 28327 ]
+    Script: |
+        {
+            bonus bSpeedRate,10;
+            bonus bBaseAtk,50;
+            bonus bMatk,50;
+            if (getequiprefinerycnt(EQI_HEAD_TOP) >=9 ) {
+                bonus bMaxHPrate,10;
+                bonus bMaxSPrate,50;
+            }
+        }
+
+
+-   Combos:
+        - [ 19026, 20756 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_GARMENT);
+            bonus2 bSPGainRace,RC_Fish,10;
+            bonus3 bAddMonsterDropItem,551,RC_Fish,(5+.@r);
+            bonus2 bAddItemHealRate,551,5;
+            bonus bHPrecovRate,(5+.@r);
+        }
+
+
+-   Combos:
+        - [ 19026, 22059 ]
+    Script: |
+        {
+            bonus2 bCriticalAddRace,RC_Fish,(10+getequiprefinerycnt(EQI_SHOES));
+        }
+
+
+-   Combos:
+        - [ 19038, 19039 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HEAD_TOP)+getequiprefinerycnt(EQI_HEAD_MID);
+            if (.@r >= 7) {
+                bonus bCritical,12;
+                bonus bHit,12;
+            }
+            if (.@r >= 9) {
+                bonus bMaxHP,1200;
+                bonus bMaxSP,120;
+            }
+        }
+
+
+-   Combos:
+        - [ 19117, 22101 ]
+    Script: |
+        {
+            bonus2 bDropAddRace,RC_All,5;
+            bonus2 bExpAddRace,RC_All,5;
+            if (getequiprefinerycnt(EQI_SHOES) >= 12)
+                bonus bFixedCast,-400;
+        }
+
+
+-   Combos:
+        - [ 19118, 22101 ]
+    Script: |
+        {
+            bonus2 bDropAddRace,RC_All,4;
+            bonus2 bExpAddRace,RC_All,4;
+            if (getequiprefinerycnt(EQI_SHOES) >= 12)
+                bonus bFixedCast,-400;
+        }
+
+
+-   Combos:
+        - [ 19344, 28244 ]
+    Script: |
+        {
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            .@eq = getequiprefinerycnt(EQI_HEAD_TOP);
+            bonus2 bAddClass,Class_All,10;
+            if (.@weapon >= 7 && .@eq >= 7)
+                bonus bAspd,2;
+            if ((.@weapon + .@eq) >= 18) {
+                bonus bLongAtkRate,10;
+                if ((.@weapon + .@eq) >= 22)
+                    bonus2 bSkillAtk,"GS_SPREADATTACK",30;
+            }
+        }
+
+
+-   Combos:
+        - [ 20135, 20136 ]
+    Script: |
+        {
+            bonus bAllStats,12;
+        }
+
+
+-   Combos:
+        - [ 20717, 22000 ]
+        - [ 20717, 22001 ]
+        - [ 20717, 22002 ]
+        - [ 20717, 22003 ]
+        - [ 20717, 22004 ]
+        - [ 20717, 22005 ]
+        - [ 20717, 22006 ]
+        - [ 20717, 22007 ]
+        - [ 20717, 22008 ]
+        - [ 20717, 22009 ]
+        - [ 20717, 22010 ]
+        - [ 20717, 22011 ]
+        - [ 20718, 22000 ]
+        - [ 20718, 22001 ]
+        - [ 20718, 22002 ]
+        - [ 20718, 22003 ]
+        - [ 20718, 22004 ]
+        - [ 20718, 22005 ]
+        - [ 20718, 22006 ]
+        - [ 20718, 22007 ]
+        - [ 20718, 22008 ]
+        - [ 20718, 22009 ]
+        - [ 20718, 22010 ]
+        - [ 20718, 22011 ]
+        - [ 20717, 22107 ]
+        - [ 20717, 22108 ]
+        - [ 20717, 22109 ]
+        - [ 20717, 22110 ]
+        - [ 20717, 22111 ]
+        - [ 20717, 22112 ]
+        - [ 20717, 22113 ]
+        - [ 20717, 22114 ]
+        - [ 20717, 22115 ]
+        - [ 20717, 22116 ]
+        - [ 20717, 22117 ]
+        - [ 20717, 22118 ]
+        - [ 20718, 22107 ]
+        - [ 20718, 22108 ]
+        - [ 20718, 22109 ]
+        - [ 20718, 22110 ]
+        - [ 20718, 22111 ]
+        - [ 20718, 22112 ]
+        - [ 20718, 22113 ]
+        - [ 20718, 22114 ]
+        - [ 20718, 22115 ]
+        - [ 20718, 22116 ]
+        - [ 20718, 22117 ]
+        - [ 20718, 22118 ]
+    Script: |
+        {
+            bonus bMaxHPRate,15;
+            bonus bMaxSPRate,5;
+        }
+
+
+-   Combos:
+        - [ 20797, 2339 ]
+    Script: |
+        {
+            bonus bInt,15;
+            bonus bMaxHPrate,5;
+            bonus bMaxSPrate,5;
+            if (getequiprefinerycnt(EQI_ARMOR) > 6)
+                bonus bNoCastCancel;
+        }
+
+
+-   Combos:
+        - [ 20797, 4174 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_All,50;
+            bonus2 bSubEle,Ele_Neutral,-50;
+        }
+
+
+-   Combos:
+        - [ 20838, 26109 ]
+    Script: |
+        {
+            bonus2 bSkillAtk,"SO_PSYCHIC_WAVE",10;
+            .@eq = getequiprefinerycnt(EQI_GARMENT);
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            if (.@eq >= 7 && .@weapon >= 7)
+                bonus2 bSkillAtk,"SO_EARTHGRAVE",40;
+            if ((.@eq + .@weapon) >= 18) {
+                bonus2 bMagicAtkEle,Ele_Neutral,10;
+                bonus2 bMagicAtkEle,Ele_Earth,10;
+                if ((.@eq + .@weapon) >= 22)
+                    bonus2 bMagicAtkEle,Ele_Water,10;
+            }
+        }
+
+
+-   Combos:
+        - [ 20840, 28725 ]
+    Script: |
+        {
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            .@eq = getequiprefinerycnt(EQI_GARMENT);
+            .@val = 80;
+            if (.@weapon >= 7 && .@eq >= 7)
+                .@val += 80;
+            if ((.@weapon + .@eq) >= 18) {
+                .@val += 40;
+                if ((.@weapon + .@eq) >= 22)
+                    bonus2 bMagicAtkEle,Ele_Fire,15;
+            }
+            bonus bMatk,.@val;
+        }
+
+
+-   Combos:
+        - [ 20847, 28745 ]
+    Script: |
+        {
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            .@eq = getequiprefinerycnt(EQI_GARMENT);
+            .@val = 10;
+            if (.@weapon >= 7 && .@eq >= 7)
+                bonus bCritAtkRate,15;
+            if ((.@weapon + .@eq) >= 18) {
+                .@val += 15;
+                if ((.@weapon + .@eq) >= 22) {
+                    skill "TF_DOUBLE",4;
+                    bonus bDoubleRate,20;
+                }
+            }
+            bonus bAspdRate,.@val;
+        }
+
+
+-   Combos:
+        - [ 22069, 2195 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Neutral,5;
+            bonus2 bAddEle,Ele_Neutral,getequiprefinerycnt(EQI_HAND_L);
+        }
+
+
+-   Combos:
+        - [ 22069, 20753 ]
+    Script: |
+        {
+            bonus2 bAddEle,Ele_Neutral,5;
+            .@r = getequiprefinerycnt(EQI_GARMENT);
+            bonus bMaxHPrate,.@r;
+            bonus bMaxSPrate,.@r;
+        }
+
+
+-   Combos:
+        - [ 22101, 29148 ]
+    Script: |
+        {
+            bonus bMaxHPRate,5;
+            bonus bMaxSPRate,5;
+            .@r = getequiprefinerycnt(EQI_SHOES);
+            if (.@r >= 7) {
+                bonus2 bAddClass,Class_All,2;
+                if (.@r >= 9) {
+                    bonus2 bAddClass,Class_All,3;
+                    if (.@r >= 12)
+                        bonus bDelayrate,-5;
+                }
+            }
+        }
+
+
+-   Combos:
+        - [ 22101, 29149 ]
+    Script: |
+        {
+            bonus bMaxHPRate,5;
+            bonus bMaxSPRate,5;
+            .@r = getequiprefinerycnt(EQI_SHOES);
+            if (.@r >= 7) {
+                bonus bMatkRate,2;
+                if (.@r >= 9) {
+                    bonus bMatkRate,3;
+                    if (.@r >= 12)
+                        bonus bDelayrate,-5;
+                }
+            }
+        }
+
+
+-   Combos:
+        - [ 22101, 29150 ]
+    Script: |
+        {
+            bonus bMaxHPRate,5;
+            bonus bMaxSPRate,5;
+            .@r = getequiprefinerycnt(EQI_SHOES);
+            if (.@r >= 7) {
+                bonus bAspdRate,5;
+                if (.@r >= 9) {
+                    bonus bAspdRate,5;
+                    if (.@r >= 12)
+                        bonus bDelayrate,-5;
+                }
+            }
+        }
+
+
+-   Combos:
+        - [ 22101, 29151 ]
+    Script: |
+        {
+            bonus bMaxHPRate,5;
+            bonus bMaxSPRate,5;
+            .@r = getequiprefinerycnt(EQI_SHOES);
+            if (.@r >= 7) {
+                bonus2 bSubEle,Ele_Neutral,2;
+                if (.@r >= 9) {
+                    bonus2 bSubEle,Ele_Neutral,3;
+                    if (.@r >= 12)
+                        bonus bDelayrate,-5;
+                }
+            }
+        }
+
+
+-   Combos:
+        - [ 22101, 29152 ]
+    Script: |
+        {
+            bonus bMaxHPRate,5;
+            bonus bMaxSPRate,5;
+            .@r = getequiprefinerycnt(EQI_SHOES);
+            if (.@r >= 7) {
+                bonus bLongAtkRate,2;
+                if (.@r >= 9) {
+                    bonus bLongAtkRate,3;
+                    if (.@r >= 12)
+                        bonus bDelayrate,-5;
+                }
+            }
+        }
+
+
+-   Combos:
+        - [ 22101, 29153 ]
+    Script: |
+        {
+            bonus bMaxHPRate,5;
+            bonus bMaxSPRate,5;
+            .@r = getequiprefinerycnt(EQI_SHOES);
+            if (.@r >= 7) {
+                bonus bCritAtkRate,2;
+                if (.@r >= 9) {
+                    bonus bCritAtkRate,3;
+                    if (.@r >= 12)
+                        bonus bDelayrate,-5;
+                }
+            }
+        }
+
+
+-   Combos:
+        - [ 22106, 2160 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_SHOES);
+            if (.@r > 6) {
+                bonus2 bSubSize,Size_Large,2;
+                bonus2 bSubClass,Class_Boss,2;
+                if (.@r > 8) {
+                    bonus2 bSubSize,Size_Large,2;
+                    bonus2 bSubClass,Class_Boss,2;
+                }
+            }
+        }
+
+
+-   Combos:
+        - [ 22122, 28443, 28444 ]
+    Script: |
+        {
+            bonus bAspdRate,4;
+            bonus bHit,4;
+        }
+
+
+-   Combos:
+        - [ 22123, 28445, 28446 ]
+    Script: |
+        {
+            bonus bAspdRate,8;
+            bonus bHit,8;
+        }
+
+
+-   Combos:
+        - [ 22124, 28447, 28448 ]
+    Script: |
+        {
+            bonus bAspdRate,8;
+            bonus bHit,8;
+            bonus2 bExpAddClass,Class_All,2;
+        }
+
+
+-   Combos:
+        - [ 22125, 28449, 28450 ]
+    Script: |
+        {
+            bonus bAspdRate,10;
+            bonus bHit,10;
+            bonus2 bExpAddClass,Class_All,2;
+        }
+
+
+-   Combos:
+        - [ 22126, 28451, 28452 ]
+    Script: |
+        {
+            bonus bAspdRate,10;
+            bonus bHit,10;
+            bonus2 bExpAddClass,Class_All,2;
+            bonus bSpeedAddRate,25;
+        }
+
+
+-   Combos:
+        - [ 22122, 28453, 28454 ]
+    Script: |
+        {
+            bonus bVariableCastrate,-3;
+            bonus bDelayrate,-3;
+        }
+
+
+-   Combos:
+        - [ 22123, 28455, 28456 ]
+    Script: |
+        {
+            bonus bVariableCastrate,-6;
+            bonus bDelayrate,-6;
+        }
+
+
+-   Combos:
+        - [ 22124, 28457, 28458 ]
+    Script: |
+        {
+            bonus bVariableCastrate,-6;
+            bonus bDelayrate,-6;
+            bonus2 bExpAddClass,Class_All,2;
+        }
+
+
+-   Combos:
+        - [ 22125, 28459, 28460 ]
+    Script: |
+        {
+            bonus bVariableCastrate,-6;
+            bonus bDelayrate,-6;
+            bonus2 bExpAddClass,Class_All,2;
+        }
+
+
+-   Combos:
+        - [ 22126, 28461, 28462 ]
+    Script: |
+        {
+            bonus bVariableCastrate,-8;
+            bonus bDelayrate,-8;
+            bonus2 bExpAddClass,Class_All,2;
+            bonus bSpeedAddRate,25;
+        }
+
+
+-   Combos:
+        - [ 22122, 28463, 28464 ]
+    Script: |
+        {
+            bonus bAspdRate,4;
+            bonus bHit,4;
+        }
+
+
+-   Combos:
+        - [ 22123, 28465, 28466 ]
+    Script: |
+        {
+            bonus bAspdRate,8;
+            bonus bHit,8;
+        }
+
+
+-   Combos:
+        - [ 22124, 28467, 28468 ]
+    Script: |
+        {
+            bonus bAspdRate,8;
+            bonus bHit,8;
+            bonus2 bExpAddClass,Class_All,2;
+        }
+
+
+-   Combos:
+        - [ 22125, 28469, 28470 ]
+    Script: |
+        {
+            bonus bAspdRate,10;
+            bonus bHit,10;
+            bonus2 bExpAddClass,Class_All,2;
+        }
+
+
+-   Combos:
+        - [ 22126, 28471, 28472 ]
+    Script: |
+        {
+            bonus bAspdRate,10;
+            bonus bHit,10;
+            bonus2 bExpAddClass,Class_All,2;
+            bonus bSpeedAddRate,25;
+        }
+
+
+-   Combos:
+        - [ 22133, 26007 ]
+    Script: |
+        {
+            bonus bAspdRate,8;
+            .@eq = getequiprefinerycnt(EQI_SHOES);
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            if (.@eq >= 7 && .@weapon >= 7)
+                .@val = 20;
+            if ((.@eq + .@weapon) >= 18) {
+                bonus bLongAtkRate,10;
+                if ((.@eq + .@weapon) >= 22)
+                    .@val += 30;
+            }
+            if (.@val)
+                bonus2 bSkillAtk,"LG_BANISHINGPOINT",.@val;
+        }
+
+
+-   Combos:
+        - [ 22133, 32005 ]
+    Script: |
+        {
+            bonus bBaseAtk,40;
+            .@eq = getequiprefinerycnt(EQI_SHOES);
+            .@weapon = getequiprefinerycnt(EQI_HAND_R);
+            if (.@eq >= 7 && .@weapon >= 7)
+                .@val = 20;
+            if ((.@eq + .@weapon) >= 18) {
+                bonus2 bAddClass,Class_All,10;
+                if ((.@eq + .@weapon) >= 22)
+                    .@val += 20;
+            }
+            if (.@val)
+                bonus2 bSkillAtk,"RK_HUNDREDSPEAR",.@val;
+        }
+
+
+-   Combos:
+        - [ 24012, 24013, 24014, 24015, 24016, 24017 ]
+    Script: |
+        {
+            bonus bAllStats,3;
+        }
+
+
+-   Combos:
+        - [ 24018, 24019, 24020 ]
+    Script: |
+        {
+            if (getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) + getequiprefinerycnt(EQI_SHADOW_WEAPON) >= 23)
+                bonus2 bAddClass,Class_All,1;
+        }
+
+
+-   Combos:
+        - [ 24021, 24022, 24023 ]
+    Script: |
+        {
+            if (getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) + getequiprefinerycnt(EQI_SHADOW_WEAPON) >= 23)
+                bonus bMatkRate,1;
+        }
+
+
+-   Combos:
+        - [ 24025, 24028 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_SHADOW_ARMOR) + getequiprefinerycnt(EQI_SHADOW_SHOES);
+            bonus bMaxHP,.@r;
+            bonus bMaxSP,.@r;
+            if (.@r >= 15)
+                bonus bMaxHPrate,1;
+        }
+
+
+-   Combos:
+        - [ 24026, 24027 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_SHADOW_ARMOR) + getequiprefinerycnt(EQI_SHADOW_SHIELD);
+            bonus bDef,.@r;
+            if (.@r >= 15)
+                bonus2 bSubEle,Ele_Neutral,1;
+        }
+
+
+-   Combos:
+        - [ 24029, 24031 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_SHADOW_ARMOR) + getequiprefinerycnt(EQI_SHADOW_WEAPON);
+            bonus bBaseAtk,.@r;
+            if (.@r >= 15)
+                bonus bLongAtkRate,1;
+        }
+
+
+-   Combos:
+        - [ 24030, 24032 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_SHADOW_ARMOR) + getequiprefinerycnt(EQI_SHADOW_WEAPON);
+            bonus bCritical,.@r;
+            bonus bBaseAtk,.@r;
+            if (.@r >= 15)
+                bonus bCritAtkRate,1;
+        }
+
+
+-   Combos:
+        - [ 24034, 24040 ]
+    Script: |
+        {
+            bonus bLuk,1;
+        }
+
+
+-   Combos:
+        - [ 24035, 24041 ]
+    Script: |
+        {
+            bonus bStr,1;
+        }
+
+
+-   Combos:
+        - [ 24036, 24042 ]
+    Script: |
+        {
+            bonus bInt,1;
+        }
+
+
+-   Combos:
+        - [ 24037, 24043 ]
+    Script: |
+        {
+            bonus bDex,1;
+        }
+
+
+-   Combos:
+        - [ 24038, 24044 ]
+    Script: |
+        {
+            bonus bVit,1;
+        }
+
+
+-   Combos:
+        - [ 24039, 24045 ]
+    Script: |
+        {
+            bonus bAgi,1;
+        }
+
+
+-   Combos:
+        - [ 24046, 24051 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Neutral,1;
+            if (getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 15)
+                bonus2 bSubEle,Ele_Neutral,1;
+        }
+
+
+-   Combos:
+        - [ 24052, 24062 ]
+    Script: |
+        {
+            bonus2 bExpAddRace,RC_DemiHuman,3;
+        }
+
+
+-   Combos:
+        - [ 24053, 24063 ]
+    Script: |
+        {
+            bonus2 bAddRace,10,5;
+            bonus2 bMagicAddRace,10,5;
+        }
+
+
+-   Combos:
+        - [ 24054, 24065 ]
+    Script: |
+        {
+            bonus2 bExpAddRace,RC_Brute,3;
+        }
+
+
+-   Combos:
+        - [ 24055, 24066 ]
+    Script: |
+        {
+            bonus2 bExpAddRace,RC_Insect,3;
+        }
+
+
+-   Combos:
+        - [ 24056, 24067 ]
+    Script: |
+        {
+            bonus2 bExpAddRace,RC_Fish,3;
+        }
+
+
+-   Combos:
+        - [ 24057, 24071 ]
+    Script: |
+        {
+            bonus2 bExpAddRace,RC_Dragon,3;
+        }
+
+
+-   Combos:
+        - [ 24058, 24068 ]
+    Script: |
+        {
+            bonus2 bExpAddRace,RC_Angel,3;
+        }
+
+
+-   Combos:
+        - [ 24059, 24069 ]
+    Script: |
+        {
+            bonus2 bExpAddRace,RC_Formless,3;
+        }
+
+
+-   Combos:
+        - [ 24060, 24070 ]
+    Script: |
+        {
+            bonus2 bExpAddRace,RC_Undead,3;
+        }
+
+
+-   Combos:
+        - [ 24061, 24064 ]
+    Script: |
+        {
+            bonus2 bExpAddRace,RC_Plant,3;
+        }
+
+
+-   Combos:
+        - [ 24072, 24075 ]
+    Script: |
+        {
+            bonus bMaxHPrate,1;
+            bonus bMaxSPrate,1;
+        }
+
+
+-   Combos:
+        - [ 24073, 24076 ]
+    Script: |
+        {
+            bonus bMaxHPrate,1;
+            bonus bMaxSPrate,1;
+        }
+
+
+-   Combos:
+        - [ 24074, 24077 ]
+    Script: |
+        {
+            bonus bMaxHPrate,1;
+            bonus bMaxSPrate,1;
+        }
+
+
+-   Combos:
+        - [ 24078, 24079, 24080 ]
+    Script: |
+        {
+            bonus2 bSPDrainRate,10,1+(getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L)/10);
+        }
+
+
+-   Combos:
+        - [ 24081, 24082, 24083 ]
+    Script: |
+        {
+            bonus2 bHPDrainRate,40,2+(getequiprefinerycnt(EQI_SHADOW_ARMOR)+getequiprefinerycnt(EQI_SHADOW_SHIELD)+getequiprefinerycnt(EQI_SHADOW_SHOES)/5);
+        }
+
+
+-   Combos:
+        - [ 24084, 24085, 24086, 24087, 24088, 24089 ]
+    Script: |
+        {
+            bonus bAllStats,1;
+            .@r = getequiprefinerycnt(EQI_SHADOW_ARMOR)+getequiprefinerycnt(EQI_SHADOW_WEAPON)+getequiprefinerycnt(EQI_SHADOW_SHIELD)+getequiprefinerycnt(EQI_SHADOW_SHOES)+getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L);
+            if (.@r >= 45)
+                bonus bNoGemStone;
+            bonus bUseSPrate,100-.@r;
+        }
+
+
+-   Combos:
+        - [ 24090, 24091, 24092 ]
+    Script: |
+        {
+            bonus bDef,5;
+            if (getequiprefinerycnt(EQI_SHADOW_SHIELD)+getequiprefinerycnt(EQI_SHADOW_ARMOR)+getequiprefinerycnt(EQI_SHADOW_SHOES) >= 20)
+                bonus2 bResEff,Eff_Stone,10000;
+        }
+
+
+-   Combos:
+        - [ 24090, 24093, 24094 ]
+    Script: |
+        {
+            bonus bDef,5;
+            if (getequiprefinerycnt(EQI_SHADOW_SHIELD)+getequiprefinerycnt(EQI_SHADOW_ARMOR)+getequiprefinerycnt(EQI_SHADOW_SHOES) >= 20)
+                bonus2 bResEff,Eff_Sleep,10000;
+        }
+
+
+-   Combos:
+        - [ 24090, 24095, 24096 ]
+    Script: |
+        {
+            bonus bDef,5;
+            if (getequiprefinerycnt(EQI_SHADOW_SHIELD)+getequiprefinerycnt(EQI_SHADOW_ARMOR)+getequiprefinerycnt(EQI_SHADOW_SHOES) >= 20)
+                bonus2 bResEff,Eff_Silence,10000;
+        }
+
+
+-   Combos:
+        - [ 24090, 24097, 24098 ]
+    Script: |
+        {
+            bonus bDef,5;
+            if (getequiprefinerycnt(EQI_SHADOW_SHIELD)+getequiprefinerycnt(EQI_SHADOW_ARMOR)+getequiprefinerycnt(EQI_SHADOW_SHOES) >= 20)
+                bonus2 bResEff,Eff_Blind,10000;
+        }
+
+
+-   Combos:
+        - [ 24090, 24099, 24100, 24101 ]
+    Script: |
+        {
+            bonus bDef,4;
+            if (getequiprefinerycnt(EQI_SHADOW_SHIELD)+getequiprefinerycnt(EQI_SHADOW_WEAPON)+getequiprefinerycnt(EQI_SHADOW_ACC_L)+getequiprefinerycnt(EQI_SHADOW_ACC_R) >= 30)
+                bonus2 bResEff,Eff_Freeze,10000;
+        }
+
+
+-   Combos:
+        - [ 24090, 24102, 24103 ]
+    Script: |
+        {
+            bonus bDef,5;
+            if (getequiprefinerycnt(EQI_SHADOW_SHIELD)+getequiprefinerycnt(EQI_SHADOW_ACC_L)+getequiprefinerycnt(EQI_SHADOW_ACC_R) >= 20)
+                bonus2 bResEff,Eff_Bleeding,10000;
+        }
+
+
+-   Combos:
+        - [ 24090, 24104, 24105, 24106 ]
+    Script: |
+        {
+            bonus bDef,4;
+            if (getequiprefinerycnt(EQI_SHADOW_SHIELD)+getequiprefinerycnt(EQI_SHADOW_WEAPON)+getequiprefinerycnt(EQI_SHADOW_ACC_L)+getequiprefinerycnt(EQI_SHADOW_ACC_R) >= 30)
+                bonus2 bResEff,Eff_Stun,10000;
+        }
+
+
+-   Combos:
+        - [ 24090, 24107, 24108 ]
+    Script: |
+        {
+            bonus bDef,5;
+            if (getequiprefinerycnt(EQI_SHADOW_SHIELD)+getequiprefinerycnt(EQI_SHADOW_ACC_L)+getequiprefinerycnt(EQI_SHADOW_ACC_R) >= 20)
+                bonus2 bResEff,Eff_Curse,10000;
+        }
+
+
+-   Combos:
+        - [ 24048, 24109, 24110 ]
+    Script: |
+        {
+            bonus bNoCastCancel2;
+            bonus bVariableCastrate,40-(getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L));
+        }
+
+
+-   Combos:
+        - [ 24111, 24112, 24113 ]
+    Script: |
+        {
+            bonus bNoCastCancel;
+            bonus bUseSPrate,40-getequiprefinerycnt(EQI_SHADOW_SHIELD)-getequiprefinerycnt(EQI_SHADOW_ARMOR)-getequiprefinerycnt(EQI_SHADOW_SHOES);
+        }
+
+
+-   Combos:
+        - [ 24150, 24151 ]
+    Script: |
+        {
+            bonus2 bAddClass,Class_All,1;
+            if (getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 15)
+                bonus bNoSizeFix;
+        }
+
+
+-   Combos:
+        - [ 24152, 24153 ]
+    Script: |
+        {
+            bonus bAtk,getequiprefinerycnt(EQI_SHADOW_WEAPON);
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) >= 15)
+                bonus bUnbreakableWeapon;
+        }
+
+
+-   Combos:
+        - [ 24154, 24155 ]
+    Script: |
+        {
+            bonus bDef,getequiprefinerycnt(EQI_SHADOW_ARMOR);
+            if (getequiprefinerycnt(EQI_SHADOW_ARMOR) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 15)
+                bonus bUnbreakableArmor;
+        }
+
+
+-   Combos:
+        - [ 24156, 24166, 24167 ]
+    Script: |
+        {
+            bonus bBaseAtk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreDefRace,RC_DemiHuman;
+        }
+
+
+-   Combos:
+        - [ 24157, 24166, 24167 ]
+    Script: |
+        {
+            bonus bBaseAtk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreDefRace,RC_Demon;
+        }
+
+
+-   Combos:
+        - [ 24158, 24166, 24167 ]
+    Script: |
+        {
+            bonus bBaseAtk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreDefRace,RC_Brute;
+        }
+
+
+-   Combos:
+        - [ 24159, 24166, 24167 ]
+    Script: |
+        {
+            bonus bBaseAtk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreDefRace,RC_Insect;
+        }
+
+
+-   Combos:
+        - [ 24160, 24166, 24167 ]
+    Script: |
+        {
+            bonus bBaseAtk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreDefRace,RC_Fish;
+        }
+
+
+-   Combos:
+        - [ 24161, 24166, 24167 ]
+    Script: |
+        {
+            bonus bBaseAtk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreDefRace,RC_Dragon;
+        }
+
+
+-   Combos:
+        - [ 24162, 24166, 24167 ]
+    Script: |
+        {
+            bonus bBaseAtk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreDefRace,RC_Angel;
+        }
+
+
+-   Combos:
+        - [ 24163, 24166, 24167 ]
+    Script: |
+        {
+            bonus bBaseAtk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreDefRace,RC_Formless;
+        }
+
+
+-   Combos:
+        - [ 24164, 24166, 24167 ]
+    Script: |
+        {
+            bonus bBaseAtk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreDefRace,RC_Undead;
+        }
+
+
+-   Combos:
+        - [ 24165, 24166, 24167 ]
+    Script: |
+        {
+            bonus bBaseAtk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreDefRace,RC_Plant;
+        }
+
+
+-   Combos:
+        - [ 24168, 24169, 24170 ]
+    Script: |
+        {
+            bonus bMatk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreMDefRace,RC_DemiHuman;
+        }
+
+
+-   Combos:
+        - [ 24168, 24169, 24171 ]
+    Script: |
+        {
+            bonus bMatk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreMDefRace,RC_Demon;
+        }
+
+
+-   Combos:
+        - [ 24168, 24169, 24172 ]
+    Script: |
+        {
+            bonus bMatk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreMDefRace,RC_Brute;
+        }
+
+
+-   Combos:
+        - [ 24168, 24169, 24173 ]
+    Script: |
+        {
+            bonus bMatk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreMDefRace,RC_Insect;
+        }
+
+
+-   Combos:
+        - [ 24168, 24169, 24174 ]
+    Script: |
+        {
+            bonus bMatk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreMDefRace,RC_Fish;
+        }
+
+
+-   Combos:
+        - [ 24168, 24169, 24175 ]
+    Script: |
+        {
+            bonus bMatk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreMDefRace,RC_Dragon;
+        }
+
+
+-   Combos:
+        - [ 24168, 24169, 24176 ]
+    Script: |
+        {
+            bonus bMatk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreMDefRace,RC_Angel;
+        }
+
+
+-   Combos:
+        - [ 24168, 24169, 24177 ]
+    Script: |
+        {
+            bonus bMatk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreMDefRace,RC_Formless;
+        }
+
+
+-   Combos:
+        - [ 24168, 24169, 24178 ]
+    Script: |
+        {
+            bonus bMatk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreMDefRace,RC_Undead;
+        }
+
+
+-   Combos:
+        - [ 24168, 24169, 24179 ]
+    Script: |
+        {
+            bonus bMatk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 25)
+                bonus bIgnoreMDefRace,RC_Plant;
+        }
+
+
+-   Combos:
+        - [ 24186, 24198 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Neutral,2;
+        }
+
+
+-   Combos:
+        - [ 24187, 24199 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Dark,2;
+        }
+
+
+-   Combos:
+        - [ 24188, 24200 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Water,2;
+        }
+
+
+-   Combos:
+        - [ 24189, 24201 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Earth,2;
+        }
+
+
+-   Combos:
+        - [ 24190, 24202 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Fire,2;
+        }
+
+
+-   Combos:
+        - [ 24191, 24203 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Wind,2;
+        }
+
+
+-   Combos:
+        - [ 24192, 24204 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Poison,2;
+        }
+
+
+-   Combos:
+        - [ 24193, 24205 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Holy,2;
+        }
+
+
+-   Combos:
+        - [ 24194, 24206 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Ghost,2;
+        }
+
+
+-   Combos:
+        - [ 24195, 24207 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Undead,2;
+        }
+
+
+-   Combos:
+        - [ 24196, 24197 ]
+    Script: |
+        {
+            bonus bFlee,5;
+            if (getequiprefinerycnt(EQI_SHADOW_SHOES) + getequiprefinerycnt(EQI_SHADOW_ARMOR) >= 15)
+                bonus bSpeedAddRate,3;
+        }
+
+
+-   Combos:
+        - [ 24208, 24209 ]
+    Script: |
+        {
+            if (getequiprefinerycnt(EQI_SHADOW_SHOES) + getequiprefinerycnt(EQI_SHADOW_SHIELD) >= 15)
+                bonus2 bExpAddRace,RC_All,10;
+            else
+                bonus2 bExpAddRace,RC_All,1;
+        }
+
+
+-   Combos:
+        - [ 24210, 24211 ]
+    Script: |
+        {
+            if (getequiprefinerycnt(EQI_SHADOW_SHOES) + getequiprefinerycnt(EQI_SHADOW_SHIELD) >= 15)
+                bonus2 bExpAddRace,RC_All,20;
+            else
+                bonus2 bExpAddRace,RC_All,10;
+        }
+
+
+-   Combos:
+        - [ 24212, 24213 ]
+    Script: |
+        {
+            if (getequiprefinerycnt(EQI_SHADOW_SHOES) + getequiprefinerycnt(EQI_SHADOW_SHIELD) >= 15)
+                bonus2 bExpAddRace,RC_All,10;
+            else
+                bonus2 bExpAddRace,RC_All,5;
+        }
+
+
+-   Combos:
+        - [ 24214, 24215 ]
+    Script: |
+        {
+            if (getequiprefinerycnt(EQI_SHADOW_SHOES) + getequiprefinerycnt(EQI_SHADOW_SHIELD) >= 15)
+                bonus2 bExpAddRace,RC_All,4;
+            else
+                bonus2 bExpAddRace,RC_All,2;
+        }
+
+
+-   Combos:
+        - [ 24217, 24218 ]
+    Script: |
+        {
+            if (getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 15)
+                bonus bAspd,1;
+        }
+
+
+-   Combos:
+        - [ 24223, 24225, 24226 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L);
+            if (.@r >= 25)
+                bonus2 bAddClass,Class_All,2;
+            else if (.@r >= 20)
+                bonus2 bAddClass,Class_All,1;
+            bonus2 bAddClass,Class_All,1;
+        }
+
+
+-   Combos:
+        - [ 24224, 24225, 24226 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L);
+            if (.@r >= 25)
+                bonus2 bAddClass,Class_All,2;
+            else if (.@r >= 20)
+                bonus2 bAddClass,Class_All,1;
+            bonus bAtk2,10;
+        }
+
+
+-   Combos:
+        - [ 24227, 24229, 24230 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L);
+            if (.@r >= 25)
+                bonus bMatkRate,2;
+            else if (.@r >= 20)
+                bonus bMatkRate,1;
+            bonus bMatkRate,1;
+        }
+
+
+-   Combos:
+        - [ 24228, 24229, 24230 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_SHADOW_WEAPON) + getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L);
+            if (.@r >= 25)
+                bonus bMatkRate,2;
+            else if (.@r >= 20)
+                bonus bMatkRate,1;
+            bonus bMatk,10;
+        }
+
+
+-   Combos:
+        - [ 24231, 24232 ]
+    Script: |
+        {
+            bonus bFlee,5;
+            if (getequiprefinerycnt(EQI_SHADOW_SHOES) + getequiprefinerycnt(EQI_SHADOW_SHIELD) >= 15)
+                bonus bAspd,1;
+        }
+
+
+-   Combos:
+        - [ 24234, 24235 ]
+    Script: |
+        {
+            bonus bBaseAtk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 15) {
+                bonus2 bAddSize,Size_Large,2;
+                bonus2 bMagicAddSize,Size_Large,2;
+            }
+        }
+
+
+-   Combos:
+        - [ 24236, 24237 ]
+    Script: |
+        {
+            bonus bBaseAtk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 15) {
+                bonus2 bAddSize,Size_Medium,2;
+                bonus2 bMagicAddSize,Size_Medium,2;
+            }
+        }
+
+
+-   Combos:
+        - [ 24238, 24239 ]
+    Script: |
+        {
+            bonus bBaseAtk,5;
+            if (getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 15) {
+                bonus2 bAddSize,Size_Small,2;
+                bonus2 bMagicAddSize,Size_Small,2;
+            }
+        }
+
+
+-   Combos:
+        - [ 24240, 24241, 24242 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_SHADOW_SHOES) + getequiprefinerycnt(EQI_SHADOW_SHIELD) + getequiprefinerycnt(EQI_SHADOW_ARMOR);
+            bonus bVariableCastrate,-.@r/5;
+            if (.@r >= 25)
+                bonus bUseSPrate,-2;
+            else
+                bonus bUseSPrate,-1;
+        }
+
+
+-   Combos:
+        - [ 24240, 24241, 24330 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_SHADOW_SHOES) + getequiprefinerycnt(EQI_SHADOW_SHIELD) + getequiprefinerycnt(EQI_SHADOW_ARMOR);
+            bonus bVariableCastrate,-.@r/5;
+            if (.@r >= 25)
+                bonus bUseSPrate,-2;
+            else
+                bonus bUseSPrate,-1;
+        }
+
+
+-   Combos:
+        - [ 24243, 24244, 24245 ]
+    Script: |
+        {
+            bonus bDelayrate,(getequiprefinerycnt(EQI_SHADOW_SHOES)+getequiprefinerycnt(EQI_SHADOW_SHIELD)+getequiprefinerycnt(EQI_SHADOW_ARMOR) >= 25?-5:-1);
+        }
+
+
+-   Combos:
+        - [ 24246, 24250 ]
+        - [ 24247, 24251 ]
+        - [ 24253, 28391 ]
+        - [ 24255, 28392 ]
+    Script: |
+        {
+            bonus2 bAddRace,RC_All,1;
+            bonus bMaxHPrate,1;
+            if (getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 10) {
+                bonus2 bAddRace,RC_All,2;
+                bonus bMaxHPrate,2;
+            }
+        }
+
+
+-   Combos:
+        - [ 24248, 24252 ]
+    Script: |
+        {
+            bonus2 bMagicAddRace,RC_All,1;
+            bonus bMaxSPrate,1;
+            if (getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 10) {
+                bonus2 bMagicAddRace,RC_All,2;
+                bonus bMaxSPrate,2;
+            }
+        }
+
+
+-   Combos:
+        - [ 24249, 24254 ]
+    Script: |
+        {
+            bonus2 bMagicAddRace,RC_All,1;
+            bonus bMaxSPrate,1;
+            if (getequiprefinerycnt(EQI_SHADOW_ACC_R) + getequiprefinerycnt(EQI_SHADOW_ACC_L) >= 10) {
+                bonus2 bMagicAddRace,RC_All,2;
+                bonus bMaxSPrate,2;
+            }
+        }
+
+
+-   Combos:
+        - [ 27101, 28510 ]
+    Script: |
+        {
+            bonus bMatkRate,(getrefine()/3);
+        }
+
+
+-   Combos:
+        - [ 27102, 28510 ]
+    Script: |
+        {
+            bonus bFlee2,5;
+        }
+
+
+-   Combos:
+        - [ 27103, 28510 ]
+    Script: |
+        {
+            bonus2 bAddClass,Class_All,(getrefine()/3);
+        }
+
+
+-   Combos:
+        - [ 27104, 28510 ]
+    Script: |
+        {
+            bonus2 bHPRegenRate,30,3000;
+            bonus2 bSPRegenRate,1,3000;
+        }
+
+
+-   Combos:
+        - [ 27104, 27105 ]
+    Script: |
+        {
+            if (getequiprefinerycnt(EQI_GARMENT) >= 9) {
+                bonus bMaxHP,2000;
+                bonus bMaxSP,100;
+            }
+            else {
+                bonus bMaxHP,1000;
+                bonus bMaxSP,50;
+            }
+        }
+
+
+-   Combos:
+        - [ 27105, 28510 ]
+    Script: |
+        {
+            bonus bMatk,30;
+        }
+
+
+-   Combos:
+        - [ 27107, 27108 ]
+    Script: |
+        {
+            bonus2 bSkillAtk,"WM_METALICSOUND",50;
+            bonus2 bSkillAtk,"WM_REVERBERATION",50;
+        }
+# -
+  # Combos:
+    # - 27107
+    # - 27108
+    # - 27109
+  # Script: |
+    # {
+        # autobonus "{ heal 2000,0; bonus2 bAddEle,Ele_Neutral,200; bonus2 bMagicAddEle,Ele_Neutral,200; }",20,6000,BF_WEAPON|BF_MAGIC,"{ active_transform 3073,6000; }"; /* fix me: mob 3073 not implemented */
+    # }
+
+
+-   Combos:
+        - [ 27110, 27111 ]
+    Script: |
+        {
+            bonus2 bSubSize,Size_Small,20;
+        }
+
+
+-   Combos:
+        - [ 27111, 27112 ]
+    Script: |
+        {
+            bonus2 bSubSize,Size_Medium,20;
+        }
+
+
+-   Combos:
+        - [ 27114, 27115 ]
+    Script: |
+        {
+            bonus bMaxHPrate,(getequiprefinerycnt(EQI_ARMOR)/3);
+            bonus bMaxSP,(5*(getequiprefinerycnt(EQI_HEAD_TOP)/2));
+        }
+
+
+-   Combos:
+        - [ 27116, 27117 ]
+    Script: |
+        {
+            bonus bCritical,2;
+            bonus bCritAtkRate,2;
+        }
+
+
+-   Combos:
+        - [ 27147, 27148 ]
+    Script: |
+        {
+            bonus bDelayrate,-3;
+        }
+
+
+-   Combos:
+        - [ 27163, 27165 ]
+    Script: |
+        {
+            bonus bDelayrate,-3;
+            bonus bVit,2;
+            bonus bInt,2;
+            bonus bAgi,2;
+            bonus bDex,2;
+        }
+
+
+-   Combos:
+        - [ 27166, 27167 ]
+    Script: |
+        {
+            bonus2 bSubEle,Ele_Neutral,5;
+            bonus2 bMagicAddSize,Size_All,10;
+        }
+
+
+-   Combos:
+        - [ 27196, 27199 ]
+    Script: |
+        {
+            bonus2 bMagicAddSize,Size_Small,5;
+            bonus2 bMagicAddRace,RC_Brute,5;
+        }
+
+
+-   Combos:
+        - [ 27197, 27198 ]
+    Script: |
+        {
+            bonus2 bAddSize,Size_Small,5;
+            bonus2 bAddRace,RC_Brute,5;
+        }
+
+
+-   Combos:
+        - [ 28022, 28509 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HAND_R);
+            bonus bAspdRate,10;
+            if (.@r >= 9) {
+                bonus bCritAtkRate,10;
+                if (.@r >= 11)
+                    bonus2 bAddRace,RC_Brute,25;
+            }
+        }
+
+
+-   Combos:
+        - [ 28316, 28318 ]
+        - [ 28315, 28317 ]
+        - [ 2967, 2969 ]
+        - [ 2967, 2968 ]
+        - [ 2966, 2968 ]
+        - [ 2966, 2969 ]
+    Script: |
+        {
+            bonus2 bAddClass,Class_All,4;
+            bonus bMatkRate,4;
+        }
+
+
+-   Combos:
+        - [ 28321, 28322 ]
+    Script: |
+        {
+            bonus bUseSPrate,-(getskilllv("HT_BEASTBANE") * 2);
+        }
+
+
+-   Combos:
+        - [ 28326, 28327 ]
+    Script: |
+        {
+            bonus bInt,8;
+            bonus bStr,8;
+        }
+
+
+-   Combos:
+        - [ 28358, 18521 ]
+    Script: |
+        {
+            skill "AS_CLOAKING",1;
+        }
+
+
+-   Combos:
+        - [ 28499, 28920 ]
+    Script: |
+        {
+            bonus bFlee2,10;
+        }
+
+
+-   Combos:
+        - [ 28508, 28612 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HAND_R);
+            bonus bAspdRate,8;
+            bonus bCritAtkRate,(5*(.@r/2));
+            if (.@r >= 9) {
+                bonus bCritical,15;
+                bonus2 bResEff,Eff_Curse,10000;
+                if (.@r >= 11)
+                    bonus bBaseAtk,100;
+            }
+        }
+
+
+-   Combos:
+        - [ 28509, 28626 ]
+    Script: |
+        {
+            .@r = getequiprefinerycnt(EQI_HAND_R);
+            bonus bAspdRate,8;
+            bonus bCritAtkRate,(5*(.@r/2));
+            if (.@r >= 9) {
+                bonus bCritical,15;
+                if (.@r >= 11)
+                    bonus bBaseAtk,100;
+            }
+        }
+
+
+-   Combos:
+        - [ 28906, 2998 ]
+    Script: |
+        {
+            bonus bLongAtkRate,10;
+        }
+
+
+-   Combos:
+        - [ 28907, 2998 ]
+    Script: |
+        {
+            bonus bSpeedRate,25;
+        }
+
+
+-   Combos:
+        - [ 28908, 2998 ]
+    Script: |
+        {
+            bonus bDelayrate,-10;
+        }
+
+
+-   Combos:
+        - [ 28909, 2998 ]
+    Script: |
+        {
+            bonus bUseSPrate,-10;
+            bonus bMaxSPrate,10;
+        }
