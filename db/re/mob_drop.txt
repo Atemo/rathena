@@ -121,3 +121,22 @@
 1658,21015,500,RDMOPTG_Crimson_Weapon // B_YGNIZEM
 1301,16040,50,RDMOPTG_Crimson_Weapon // AM_MUT
 2362,28604,50,RDMOPTG_Crimson_Weapon // N_AMON_RA
+
+// Vicious Weapons - unknown drop rate, inaccurate drop list
+// 3477,1400,50,RDMOPTG_Vicious_Melee	// AS_IMMORTAL_CORPS
+// 3477,13455,50,RDMOPTG_Vicious_Melee
+// 3477,21016,50,RDMOPTG_Vicious_Melee
+// 3477,28706,50,RDMOPTG_Vicious_Melee
+// 3477,28008,50,RDMOPTG_Vicious_Melee
+// 3479,1450,50,RDMOPTG_Vicious_Melee	// AS_ZOMBIE_MASTER
+// 3479,1800,50,RDMOPTG_Vicious_Melee
+// 3479,16041,50,RDMOPTG_Vicious_Melee
+// 3479,13328,50,RDMOPTG_Vicious_Huuma
+// 3479,28605,50,RDMOPTG_Vicious_Melee
+// 3480,1600,50,RDMOPTG_Vicious_Staff	// AS_CURSED_SOLDIER
+// 3480,2026,50,RDMOPTG_Vicious_Staff
+// 3480,13128,50,RDMOPTG_Vicious_Range
+// 3480,18121,50,RDMOPTG_Vicious_Range
+// 3480,28107,50,RDMOPTG_Vicious_Melee
+// 3481,1996,50,RDMOPTG_Vicious_Melee	// AS_EVIL_SHADOW1
+// 3482,1900,50,RDMOPTG_Vicious_Melee	// AS_EVIL_SHADOW2

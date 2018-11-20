@@ -1744,7 +1744,9 @@ struct s_random_opt_group *itemdb_randomopt_group_exists(int id) {
  **/
 static bool itemdb_read_randomopt_group(char* str[], int columns, int current) {
 	int id = 0, i;
-	unsigned short rate = (unsigned short)strtoul(str[1], NULL, 10);
+	short min, max;
+	int slot = (int)strtoul(str[1], NULL, 10);
+	unsigned short rate = (unsigned short)strtoul(str[2], NULL, 10);
 	struct s_random_opt_group *g = NULL;
 
 	if (!script_get_constant(str[0], &id)) {
@@ -1752,37 +1754,42 @@ static bool itemdb_read_randomopt_group(char* str[], int columns, int current) {
 		return false;
 	}
 
-	if ((columns-2)%3 != 0) {
-		ShowError("itemdb_read_randomopt_group: Invalid column entries '%d'.\n", columns);
+	if (slot < 0 || slot >= MAX_ITEM_RDM_OPT) {
+		ShowError("itemdb_read_randomopt_group: Invalid slot '%d'.\n", slot);
 		return false;
 	}
 
 	if (!(g = (struct s_random_opt_group *)uidb_get(itemdb_randomopt_group, id))) {
 		CREATE(g, struct s_random_opt_group, 1);
 		g->id = id;
-		g->total = 0;
+		for (i = 0; i < MAX_ITEM_RDM_OPT; i++)
+			g->total[i] = 0;
 		g->entries = NULL;
 		uidb_put(itemdb_randomopt_group, g->id, g);
 	}
 
-	RECREATE(g->entries, struct s_random_opt_group_entry, g->total + rate);
+	RECREATE(g->entries, struct s_random_opt_group_entry, g->total[slot] + rate);
 
-	for (i = g->total; i < (g->total + rate); i++) {
-		int j, k;
-		memset(&g->entries[i].option, 0, sizeof(g->entries[i].option));
-		for (j = 0, k = 2; k < columns && j < MAX_ITEM_RDM_OPT; k+=3) {
-			int randid = 0;
-			if (!script_get_constant(str[k], &randid) || !itemdb_randomopt_exists(randid)) {
-				ShowError("itemdb_read_randomopt_group: Invalid random group id '%s' in column %d!\n", str[k], k+1);
-				continue;
-			}
-			g->entries[i].option[j].id = randid;
-			g->entries[i].option[j].value = (short)strtoul(str[k+1], NULL, 10);
-			g->entries[i].option[j].param = (char)strtoul(str[k+2], NULL, 10);
-			j++;
+	for (i = g->total[slot]; i < (g->total[slot] + rate); i++) {
+		memset(&g->entries[i].option[slot], 0, sizeof(g->entries[i].option[slot]));
+		
+		int randid = 0;
+		if (!script_get_constant(str[3], &randid) || !itemdb_randomopt_exists(randid)) {
+			ShowError("itemdb_read_randomopt_group: Invalid random group id '%s'!\n", str[3]);
+			continue;
 		}
+		min = (short)strtoul(str[4], NULL, 10);
+		max = (short)strtoul(str[5], NULL, 10);
+		if (max < min)
+			SWAP(min, max);
+		
+		g->entries[i].option[slot].id = randid;
+		g->entries[i].option[slot].value = 0;
+		g->entries[i].option[slot].value_min = min;
+		g->entries[i].option[slot].value_max = max;
+		g->entries[i].option[slot].param = (char)strtoul(str[6], NULL, 10);
 	}
-	g->total += rate;
+	g->total[slot] += rate;
 	return true;
 }
 
@@ -1837,7 +1844,7 @@ static void itemdb_read(void) {
 		sv_readdb(dbsubpath2, "item_delay.txt",         ',', 2, 3, -1, &itemdb_read_itemdelay, i > 0);
 		sv_readdb(dbsubpath2, "item_buyingstore.txt",   ',', 1, 1, -1, &itemdb_read_buyingstore, i > 0);
 		sv_readdb(dbsubpath2, "item_flag.txt",          ',', 2, 2, -1, &itemdb_read_flag, i > 0);
-		sv_readdb(dbsubpath2, "item_randomopt_group.txt", ',', 5, 2+5*MAX_ITEM_RDM_OPT, -1, &itemdb_read_randomopt_group, i > 0);
+		sv_readdb(dbsubpath2, "item_randomopt_group.txt", ',', 7, 7, -1, &itemdb_read_randomopt_group, i > 0);
 		aFree(dbsubpath1);
 		aFree(dbsubpath2);
 	}

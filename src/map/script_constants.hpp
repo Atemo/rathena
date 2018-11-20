@@ -4433,6 +4433,10 @@
 	/* Item Random Option Group */
 	export_constant(RDMOPTG_None);
 	export_constant(RDMOPTG_Crimson_Weapon);
+	export_constant(RDMOPTG_Vicious_Melee);
+	export_constant(RDMOPTG_Vicious_Range);
+	export_constant(RDMOPTG_Vicious_Huuma);
+	export_constant(RDMOPTG_Vicious_Staff);
 
 	/* random option attributes */
 	export_constant(ROA_ID);

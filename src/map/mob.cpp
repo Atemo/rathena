@@ -2088,12 +2088,25 @@ void mob_setdropitem_option(struct item *itm, struct s_mob_drop *mobdrop) {
 	struct s_random_opt_group *g = NULL;
 	if (!itm || !mobdrop || mobdrop->randomopt_group == RDMOPTG_None)
 		return;
-	if ((g = itemdb_randomopt_group_exists(mobdrop->randomopt_group)) && g->total) {
-		int r = rnd()%g->total;
-		if (&g->entries[r]) {
-			memcpy(&itm->option, &g->entries[r], sizeof(itm->option));
-			return;
+	if ((g = itemdb_randomopt_group_exists(mobdrop->randomopt_group))) {
+		int i, r, range, min, max;
+		for (i = 0; i < MAX_ITEM_RDM_OPT; i++) {
+			if (!g->total[i])
+				continue;
+			r = rnd()%g->total[i];
+			if (&g->entries[r].option[i]) {
+				memcpy(&itm->option[i], &g->entries[r].option[i], sizeof(itm->option[i]));
+
+				min = g->entries[r].option[i].value_min;
+				max = g->entries[r].option[i].value_max;
+				range = max - min + 1;
+				if (range <= 1)
+					itm->option[i].value = min;
+				else
+					itm->option[i].value = rnd()%range + min;
+			}
 		}
+		return;
 	}
 }
 

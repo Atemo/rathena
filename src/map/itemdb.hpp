@@ -869,6 +869,10 @@ struct s_random_opt_data
 enum Random_Option_Group {
 	RDMOPTG_None = 0,
 	RDMOPTG_Crimson_Weapon,
+	RDMOPTG_Vicious_Melee,
+	RDMOPTG_Vicious_Range,
+	RDMOPTG_Vicious_Huuma,
+	RDMOPTG_Vicious_Staff,
 };
 
 /// Struct for random option group entry
@@ -880,7 +884,7 @@ struct s_random_opt_group_entry {
 struct s_random_opt_group {
 	uint8 id;
 	struct s_random_opt_group_entry *entries;
-	uint16 total;
+	uint16 total[MAX_ITEM_RDM_OPT];
 };
 
 struct item_data* itemdb_searchname(const char *name);

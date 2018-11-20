@@ -229,6 +229,8 @@ struct quest {
 struct s_item_randomoption {
 	short id;
 	short value;
+	short value_min;
+	short value_max;
 	char param;
 };
 
