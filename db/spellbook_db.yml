@@ -1,0 +1,103 @@
+# Reading Spellbook Preserve Points Database
+#
+# Structure of Database:
+##################################################################################################################
+#
+#-   SkillID: <string>
+#    MaxSpell: <unsigned int>
+#    RequiredBook: <unsigned int>
+#
+##################################################################################################################
+#
+# Description:
+#
+# SkillID:                        Skill name
+# MaxSpell:                       Preserve Points
+# RequiredBook:                   Required Book item ID
+#
+##################################################################################################################
+#
+# NOTE:
+# - To add more entries, increase MAX_SKILL_SPELLBOOK_DB in skill.h.
+# - To remove entry by importing, put 0 for 'MaxSpell'
+#
+##################################################################################################################
+
+Header:
+    Type: SPELLBOOK_DB
+    Version: 1
+
+Body:
+
+# Mage
+-   SkillID: MG_COLDBOLT
+    MaxSpell: 7
+    RequiredBook: 6190
+
+-   SkillID: MG_FIREBOLT
+    MaxSpell: 7
+    RequiredBook: 6189
+
+-   SkillID: MG_LIGHTNINGBOLT
+    MaxSpell: 7
+    RequiredBook: 6191
+
+-   SkillID: MG_THUNDERSTORM
+    MaxSpell: 9
+    RequiredBook: 6197
+
+
+# Wizard
+-   SkillID: WZ_METEOR
+    MaxSpell: 10
+    RequiredBook: 6194
+
+-   SkillID: WZ_JUPITEL
+    MaxSpell: 9
+    RequiredBook: 6198
+
+-   SkillID: WZ_VERMILION
+    MaxSpell: 10
+    RequiredBook: 6193
+
+-   SkillID: WZ_WATERBALL
+    MaxSpell: 9
+    RequiredBook: 6199
+
+-   SkillID: WZ_STORMGUST
+    MaxSpell: 10
+    RequiredBook: 6192
+
+-   SkillID: WZ_EARTHSPIKE
+    MaxSpell: 8
+    RequiredBook: 6201
+
+-   SkillID: WZ_HEAVENDRIVE
+    MaxSpell: 9
+    RequiredBook: 6200
+
+
+# Warlock
+-   SkillID: WL_DRAINLIFE
+    MaxSpell: 8
+    RequiredBook: 6205
+
+-   SkillID: WL_CRIMSONROCK
+    MaxSpell: 12
+    RequiredBook: 6204
+
+-   SkillID: WL_COMET
+    MaxSpell: 22
+    RequiredBook: 6195
+
+-   SkillID: WL_CHAINLIGHTNING
+    MaxSpell: 12
+    RequiredBook: 6203
+
+-   SkillID: WL_EARTHSTRAIN
+    MaxSpell: 12
+    RequiredBook: 6202
+
+-   SkillID: WL_TETRAVORTEX
+    MaxSpell: 22
+    RequiredBook: 6196

@@ -10,6 +10,7 @@
 #include <time.h>
 
 #include "../common/cbasetypes.hpp"
+#include "../common/database.hpp"
 #include "../common/ers.hpp"
 #include "../common/malloc.hpp"
 #include "../common/nullpo.hpp"
@@ -21365,40 +21366,65 @@ static bool skill_parse_row_createarrowdb(char* split[], int columns, int curren
 /** Reads Spell book db
  * Structure: SkillID,PreservePoints,RequiredBook
  */
-static bool skill_parse_row_spellbookdb(char* split[], int columns, int current)
-{
-	unsigned short skill_id = atoi(split[0]), points = atoi(split[1]), nameid = atoi(split[2]);
+static bool skill_parse_row_spellbookdb_sub(const YAML::Node &node, int n, const std::string &source) {
+	if (!node["SkillID"]) {
+		yaml_invalid_warning("skill_parse_row_spellbookdb_sub: Missing SkillID field in '" CL_WHITE "%s" CL_RESET "', skipping.\n", node, source);
+		return false;
+	}
+	std::string skill_name = node["SkillID"].as<std::string>();
 
-	if (!skill_get_index(skill_id) || !skill_get_max(skill_id))
-		ShowError("skill_parse_row_spellbookdb: Invalid skill ID %d\n", skill_id);
-	if (!skill_get_inf(skill_id))
+	if (!node["MaxSpell"]) {
+		ShowWarning("skill_parse_row_spellbookdb_sub: Missing " CL_WHITE "MaxSpell" CL_RESET " definition for SkillID %s in file " CL_WHITE "%s" CL_RESET ", skipping.\n", skill_name.c_str(), source.c_str());
+		return false;
+	}
+	int skill_id = skill_name2id( skill_name.c_str() );
+
+	if (!skill_id || !skill_get_index(skill_id) || !skill_get_max(skill_id)) {
+		ShowError("skill_parse_row_spellbookdb_sub: Invalid SkillID %s line %d in '" CL_WHITE "%s" CL_RESET "', skipping.\n", skill_name.c_str(), node.Mark().line, source.c_str());
+		return false;
+	}
+	if (!skill_get_inf(skill_id)) {
 		ShowError("skill_parse_row_spellbookdb: Passive skills cannot be memorized (%d/%s)\n", skill_id, skill_get_name(skill_id));
-	else {
-		unsigned short i;
+		return false;
+	}
+	uint32 points = node["MaxSpell"].as<uint32>();
+	int i;
 
-		ARR_FIND(0, skill_spellbook_count, i, skill_spellbook_db[i].skill_id == skill_id);
-		if (i >= ARRAYLENGTH(skill_spellbook_db)) {
-			ShowError("skill_parse_row_spellbookdb: Maximum db entries reached.\n");
-			return false;
-		}
-		// Import just for clearing/disabling from original data
-		if (points == 0) {
-			memset(&skill_spellbook_db[i], 0, sizeof(skill_spellbook_db[i]));
-			//ShowInfo("skill_parse_row_spellbookdb: Skill %d removed from list.\n", skill_id);
-			return true;
-		}
-
-		skill_spellbook_db[i].skill_id = skill_id;
-		skill_spellbook_db[i].point = points;
-		skill_spellbook_db[i].nameid = nameid;
-
-		if (i == skill_spellbook_count)
-			skill_spellbook_count++;
+	ARR_FIND(0, skill_spellbook_count, i, skill_spellbook_db[i].skill_id == skill_id);
+	if (i >= ARRAYLENGTH(skill_spellbook_db)) {
+		ShowError("skill_parse_row_spellbookdb: Maximum db entries reached.\n");
+		return false;
+	}
+	// Import just for clearing/disabling from original data
+	if (points == 0) {
+		memset(&skill_spellbook_db[i], 0, sizeof(skill_spellbook_db[i]));
+		//ShowInfo("skill_parse_row_spellbookdb: Skill %d removed from list.\n", skill_id);
 		return true;
 	}
+	if (!node["RequiredBook"]) {
+		ShowWarning("skill_parse_row_spellbookdb_sub: Missing " CL_WHITE "RequiredBook" CL_RESET " definition for SkillID %s in file " CL_WHITE "%s" CL_RESET ", skipping.\n", skill_name.c_str(), source.c_str());
+		return false;
+	}
+	uint32 nameid = node["RequiredBook"].as<uint32>();
 
-	return false;
+	skill_spellbook_db[i].skill_id = skill_id;
+	skill_spellbook_db[i].point = points;
+	skill_spellbook_db[i].nameid = nameid;
+
+	if (i == skill_spellbook_count)
+		skill_spellbook_count++;
+
+	return true;
 }
+
+void skill_parse_row_spellbookdb(const std::string &path, const std::string &source) {	
+	std::vector<std::string> directories = { path + "/spellbook_db.yml" };
+
+	Database db("SPELLBOOK_DB", 1);
+
+	db.parse(directories, parse_t(skill_parse_row_spellbookdb_sub));
+}
+
 
 /** Reads improvise db
  * Structure: SkillID,Rate
@@ -21746,7 +21772,6 @@ static void skill_readdb(void)
 		sv_readdb(dbsubpath2, "produce_db.txt"        , ',',   5,  5+2*MAX_PRODUCE_RESOURCE, MAX_SKILL_PRODUCE_DB, skill_parse_row_producedb, i > 0);
 		sv_readdb(dbsubpath1, "create_arrow_db.txt"   , ',', 1+2,  1+2*MAX_ARROW_RESULT, MAX_SKILL_ARROW_DB, skill_parse_row_createarrowdb, i > 0);
 		sv_readdb(dbsubpath1, "abra_db.txt"           , ',',   3,  3, MAX_SKILL_ABRA_DB, skill_parse_row_abradb, i > 0);
-		sv_readdb(dbsubpath1, "spellbook_db.txt"      , ',',   3,  3, MAX_SKILL_SPELLBOOK_DB, skill_parse_row_spellbookdb, i > 0);
 		sv_readdb(dbsubpath1, "magicmushroom_db.txt"  , ',',   1,  2, MAX_SKILL_MAGICMUSHROOM_DB, skill_parse_row_magicmushroomdb, i > 0);
 		sv_readdb(dbsubpath1, "skill_copyable_db.txt"       , ',',   2,  4, -1, skill_parse_row_copyabledb, i > 0);
 		sv_readdb(dbsubpath1, "skill_improvise_db.txt"      , ',',   2,  2, MAX_SKILL_IMPROVISE_DB, skill_parse_row_improvisedb, i > 0);
@@ -21754,6 +21779,7 @@ static void skill_readdb(void)
 		sv_readdb(dbsubpath1, "skill_nonearnpc_db.txt"      , ',',   2,  3, -1, skill_parse_row_nonearnpcrangedb, i > 0);
 		sv_readdb(dbsubpath1, "skill_damage_db.txt"         , ',',   4,  3+SKILLDMG_MAX, -1, skill_parse_row_skilldamage, i > 0);
 
+		skill_parse_row_spellbookdb(dbsubpath1, "spellbook_db.yml");
 		aFree(dbsubpath1);
 		aFree(dbsubpath2);
 	}

@@ -1,0 +1,11 @@
+# Reading Spellbook Preserve Points Database
+#
+# Structure of Database:
+# SkillID:          <string>                Skill name (read as constant source side) with or without quote
+# NumberOfSpell:    <unsigned int>          Preserve Points
+# RequiredBook:     <unsigned int>          Required Book item ID
+#
+# NOTE:
+# - To add more entries, increase MAX_SKILL_SPELLBOOK_DB in skill.h.
+# - To remove entry by importing, put 0 for 'NumberOfSpell'
+
