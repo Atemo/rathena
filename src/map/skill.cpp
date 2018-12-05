@@ -21364,27 +21364,30 @@ static bool skill_parse_row_createarrowdb(char* split[], int columns, int curren
 }
 
 /** Reads Spell book db
- * Structure: SkillID,PreservePoints,RequiredBook
+ * Structure:
+-   Skill: <string>
+    MaxSpell: <unsigned int>
+    Book: <unsigned int>
  */
 static bool skill_parse_row_spellbookdb_sub(const YAML::Node &node, int n, const std::string &source) {
-	if (!node["SkillID"]) {
-		yaml_invalid_warning("skill_parse_row_spellbookdb_sub: Missing SkillID field in '" CL_WHITE "%s" CL_RESET "', skipping.\n", node, source);
+	if (!node["Skill"]) {
+		yaml_invalid_warning("skill_parse_row_spellbookdb_sub: Missing Skill field in '" CL_WHITE "%s" CL_RESET "', skipping.\n", node, source);
 		return false;
 	}
-	std::string skill_name = node["SkillID"].as<std::string>();
+	std::string skill_name = node["Skill"].as<std::string>();
 
 	if (!node["MaxSpell"]) {
-		ShowWarning("skill_parse_row_spellbookdb_sub: Missing " CL_WHITE "MaxSpell" CL_RESET " definition for SkillID %s in file " CL_WHITE "%s" CL_RESET ", skipping.\n", skill_name.c_str(), source.c_str());
+		ShowWarning("skill_parse_row_spellbookdb_sub: Missing " CL_WHITE "MaxSpell" CL_RESET " definition for Skill %s in file " CL_WHITE "%s" CL_RESET ", skipping.\n", skill_name.c_str(), source.c_str());
 		return false;
 	}
 	int skill_id = skill_name2id( skill_name.c_str() );
 
 	if (!skill_id || !skill_get_index(skill_id) || !skill_get_max(skill_id)) {
-		ShowError("skill_parse_row_spellbookdb_sub: Invalid SkillID %s line %d in '" CL_WHITE "%s" CL_RESET "', skipping.\n", skill_name.c_str(), node.Mark().line, source.c_str());
+		ShowError("skill_parse_row_spellbookdb_sub: Invalid Skill %s line %d in '" CL_WHITE "%s" CL_RESET "', skipping.\n", skill_name.c_str(), node.Mark().line, source.c_str());
 		return false;
 	}
 	if (!skill_get_inf(skill_id)) {
-		ShowError("skill_parse_row_spellbookdb: Passive skills cannot be memorized (%d/%s)\n", skill_id, skill_get_name(skill_id));
+		ShowError("skill_parse_row_spellbookdb: Passive skills cannot be memorized (%d/%s)\n", skill_id, skill_name.c_str());
 		return false;
 	}
 	uint32 points = node["MaxSpell"].as<uint32>();
@@ -21401,11 +21404,11 @@ static bool skill_parse_row_spellbookdb_sub(const YAML::Node &node, int n, const
 		//ShowInfo("skill_parse_row_spellbookdb: Skill %d removed from list.\n", skill_id);
 		return true;
 	}
-	if (!node["RequiredBook"]) {
-		ShowWarning("skill_parse_row_spellbookdb_sub: Missing " CL_WHITE "RequiredBook" CL_RESET " definition for SkillID %s in file " CL_WHITE "%s" CL_RESET ", skipping.\n", skill_name.c_str(), source.c_str());
+	if (!node["Book"]) {
+		ShowWarning("skill_parse_row_spellbookdb_sub: Missing " CL_WHITE "Book" CL_RESET " definition for Skill %s in file " CL_WHITE "%s" CL_RESET ", skipping.\n", skill_name.c_str(), source.c_str());
 		return false;
 	}
-	uint32 nameid = node["RequiredBook"].as<uint32>();
+	uint32 nameid = node["Book"].as<uint32>();
 
 	skill_spellbook_db[i].skill_id = skill_id;
 	skill_spellbook_db[i].point = points;
