@@ -610,9 +610,9 @@ static void itemdb_read_box(const std::string &path, const std::string &source) 
 	struct s_item_group_db *group = NULL;
 
     for ( YAML::const_iterator it = root.begin(); it != root.end(); ++it ) {
-		std::string group_char = it->first.as<std::string>();
-		if (!script_get_constant( group_char.c_str(), &group_id)) {
-			ShowWarning("itemdb_read_box: Invalid Group %s in \"%s\", skipping.\n", group_char.c_str(), current_file.c_str());
+		std::string group_name = it->first.as<std::string>();
+		if (!script_get_constant( group_name.c_str(), &group_id)) {
+			ShowWarning("itemdb_read_box: Invalid Group %s in \"%s\", skipping.\n", group_name.c_str(), current_file.c_str());
 			return;
 		}
 		const YAML::Node &node = it->second;
@@ -622,7 +622,7 @@ static void itemdb_read_box(const std::string &path, const std::string &source) 
 			int clear = node["Clear"].as<bool>();
 
 			if (clear < 0 || clear > 1) {
-				ShowWarning( "itemdb_read_box: Invalid Clear for group %s in '%s'.\n", group_char.c_str(), current_file.c_str() );
+				ShowWarning( "itemdb_read_box: Invalid Clear for group %s in '%s'.\n", group_name.c_str(), current_file.c_str() );
 				return;
 			}
 
@@ -631,9 +631,9 @@ static void itemdb_read_box(const std::string &path, const std::string &source) 
 
 				if (itemdb_group->remove( itemdb_group, db_ui2key(group_id), &data )){
 					itemdb_group_free2(db_ui2key(group_id), &data);
-					ShowNotice( "itemdb_read_box: Item Group '%s' has been cleared.\n", group_char.c_str() );
+					ShowNotice( "itemdb_read_box: Item Group '%s' has been cleared.\n", group_name.c_str() );
 				} else {
-					ShowWarning( "itemdb_read_box: Item Group '%s' has not been cleared, because it did not exist.\n", group_char.c_str() );
+					ShowWarning( "itemdb_read_box: Item Group '%s' has not been cleared, because it did not exist.\n", group_name.c_str() );
 				}
 				return;
 			}
