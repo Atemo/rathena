@@ -6,36 +6,36 @@
 ##################################################################################################################
 #
 #<group name>:
-#    <Item ID>: <rate>
+#    <aegis name>: <rate>
 #
 ##################################################################################################################
 #
 # Description:
 #
-# <group name>:                 Box Database name
-# <Item ID>:                    Item ID
-# <rate>:                       Rate
+# <group name>:                 IG DB name
+# <aegis name>:                 Aegis item name
+# <rate>:                       rate
 #
 ##################################################################################################################
 
 IG_FindingOre:
-    714:  3       # Emperium
-    756:  2       # Oridecon_Stone
-    757:  2       # Elunium_Stone
-    969:  2       # Gold
-    984:  1       # Oridecon
-    985:  1       # Elunium
-    990:  3       # Boody_Red
-    991:  3       # Crystal_Blue
-    992:  3       # Wind_Of_Verdure
-    993:  3       # Yellow_Live
-    994:  1       # Flame_Heart
-    995:  1       # Mistic_Frozen
-    996:  1       # Rough_Wind
-    997:  1       # Great_Nature
-    998:  8       # Iron
-    999:  5       # Steel
-    1002: 1       # Iron_Ore
-    1003: 6       # Coal
-    1010: 9       # Phracon
-    1011: 5       # Emveretarcon
+    Emperium:         3
+    Oridecon_Stone:   2
+    Elunium_Stone:    2
+    Gold:             2
+    Oridecon:         1
+    Elunium:          1
+    Boody_Red:        3
+    Crystal_Blue:     3
+    Wind_Of_Verdure:  3
+    Yellow_Live:      3
+    Flame_Heart:      1
+    Mistic_Frozen:    1
+    Rough_Wind:       1
+    Great_Nature:     1
+    Iron:             8
+    Steel:            5
+    Iron_Ore:         1
+    Coal:             6
+    Phracon:          9
+    Emveretarcon:     5

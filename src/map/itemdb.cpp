@@ -651,11 +651,13 @@ static void itemdb_read_box(const std::string &path, const std::string &source) 
 
 			memset(&entry, 0, sizeof(entry));
 
-			int itemid = items_it->first.as<int>();
-			if (itemdb_exists(itemid))
-				entry.nameid = itemid;
+			std::string item_name = items_it->first.as<std::string>();
+			struct item_data *id = NULL;
+			id = itemdb_searchname( item_name.c_str() );
+			if (id)
+				entry.nameid = id->nameid;
 			else {
-				ShowWarning( "itemdb_read_box: Non-existant item '%d' in '" CL_WHITE "%s" CL_RESET "'\n", itemid, current_file.c_str() );
+				ShowWarning( "itemdb_read_box: Non-existant item '%s' in '" CL_WHITE "%s" CL_RESET "'\n", item_name.c_str(), current_file.c_str() );
 				continue;
 			}
 			unsigned int prob = items_it->second.as<unsigned int>();
