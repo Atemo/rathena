@@ -1174,16 +1174,10 @@ void read_elementaldb(void) {
 
 void reload_elementaldb(void) {
 	read_elementaldb();
-	reload_elemental_skilldb();
-}
-
-void reload_elemental_skilldb(void) {
-	read_elemental_skilldb();
 }
 
 void do_init_elemental(void) {
 	read_elementaldb();
-	read_elemental_skilldb();
 
 	add_timer_func_list(elemental_ai_timer,"elemental_ai_timer");
 	add_timer_interval(gettick()+MIN_ELETHINKTIME,elemental_ai_timer,0,0,MIN_ELETHINKTIME);
