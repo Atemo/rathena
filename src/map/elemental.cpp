@@ -7,6 +7,7 @@
 #include <ctgmath> //floor
 #include <math.h>
 #include <stdlib.h>
+#include <yaml-cpp/yaml.h>
 
 #include "../common/cbasetypes.hpp"
 #include "../common/malloc.hpp"
@@ -756,132 +757,418 @@ static TIMER_FUNC(elemental_ai_timer){
 	return 0;
 }
 
+static void yaml_invalid_warning(const char* fmt, const YAML::Node &node, const std::string &file) {
+	YAML::Emitter out;
+	out << node;
+	ShowWarning(fmt, file.c_str());
+	ShowMessage("%s\n", out.c_str());
+}
+
+static bool yaml_assert_exists(const YAML::Node &node, const std::string &key, const std::string &source, const char * func) {
+	if (!node[key]) {
+		std::string msg = std::string(func) + ": Missing " + key + " field in '" CL_WHITE "%s" CL_RESET "', skipping.\n";
+		yaml_invalid_warning(msg.c_str(), node, source);
+		return false;
+	}
+	return true;
+}
+
+static void yaml_catch_warning(const YAML::Node &node, const std::string &key, const std::string &source, const char * func) {
+	std::string msg = std::string(func) + ": Node definition with invalid " + key + " field in '" CL_WHITE "%s" CL_RESET "', skipping.\n";
+	yaml_invalid_warning(msg.c_str(), node, source);
+}
+
 /**
-* Reads Elemental DB lines
-* ID,Sprite_Name,Name,LV,HP,SP,Range1,ATK1,ATK2,DEF,MDEF,STR,AGI,VIT,INT,DEX,LUK,Range2,Range3,Scale,Race,Element,Speed,aDelay,aMotion,dMotion
+* Reads Elemental DB
 */
-static bool read_elementaldb_sub(char* str[], int columns, int current) {
-	uint16 class_ = atoi(str[0]), i, ele;
+bool read_elementaldb_sub (const YAML::Node &node, int elemental_count, const std::string &source) {
 	struct s_elemental_db *db;
 	struct status_data *status;
+	std::string spritename, name, scale_constant, ele_type_constant;
+	int class_, i, scale, ele_type, ele_level;
 
-	//Find the ID, already exist or not in elemental_db
-	ARR_FIND(0,elemental_count,i,elemental_db[i].class_ == class_);
+	const std::string labels[] = { "ID", "SpriteName", "Name", "Scale", "Element" };
+
+	for (const auto &lab : labels) {
+		if (!yaml_assert_exists(node, lab, source, "read_elementaldb_sub")) {
+			return false;
+		}
+	}
+	const YAML::Node &element_list = node["Element"];
+	if (!yaml_assert_exists(element_list, "Type", source, "read_elementaldb_sub") || !yaml_assert_exists(element_list, "Level", source, "read_elementaldb_sub")) {
+		return false;
+	}
+
+	try {
+		class_ = node["ID"].as<int>();
+	} catch (...) {
+		yaml_catch_warning(node, "ID", source, "read_elementaldb_sub");
+		return false;
+	}
+	try {
+		spritename = node["SpriteName"].as<std::string>();
+	} catch (...) {
+		yaml_catch_warning(node, "SpriteName", source, "read_elementaldb_sub");
+		return false;
+	}
+	try {
+		name = node["Name"].as<std::string>();
+	} catch (...) {
+		yaml_catch_warning(node, "Name", source, "read_elementaldb_sub");
+		return false;
+	}
+	try {
+		scale_constant = node["Scale"].as<std::string>();
+	} catch (...) {
+		yaml_catch_warning(node, "Scale", source, "read_elementaldb_sub");
+		return false;
+	}
+	if (!script_get_constant(scale_constant.c_str(), (int *)&scale)) {
+		ShowWarning("read_elementaldb_sub: Invalid Scale constant %s for ID %d in \"%s\", skipping.\n", scale_constant.c_str(), class_, source.c_str());
+		return false;
+	}
+	if (scale < SZ_SMALL || scale > SZ_BIG) {
+		ShowWarning("read_elementaldb_sub: Invalid scale %d for ID %d in \"%s\" (min: %d, max: %d), skipping.\n", scale, class_, source.c_str(), SZ_SMALL, SZ_BIG);
+		return false;
+	}
+	try {
+		ele_type_constant = element_list["Type"].as<std::string>();
+	} catch (...) {
+		yaml_catch_warning(element_list, "Type", source, "read_elementaldb_sub");
+		return false;
+	}
+	if (!script_get_constant(ele_type_constant.c_str(), (int *)&ele_type)) {
+		ShowWarning("read_elementaldb_sub: Invalid element Type constant %s for ID %d in \"%s\", skipping.\n", ele_type_constant.c_str(), class_, source.c_str());
+		return false;
+	}
+	if (ele_type < ELE_NEUTRAL || ele_type > ELE_UNDEAD) {
+		ShowWarning("read_elementaldb_sub: Invalid element Type %d for ID %d in \"%s\" (min: %d, max: %d), skipping.\n", ele_type, class_, source.c_str(), ELE_NEUTRAL, ELE_UNDEAD);
+		return false;
+	}
+	try {
+		ele_level = element_list["Level"].as<int>();
+	} catch (...) {
+		yaml_catch_warning(element_list, "Level", source, "read_elementaldb_sub");
+		return false;
+	}
+	if (!CHK_ELEMENT_LEVEL(ele_level)) {
+		ShowWarning("read_elementaldb_sub: Elemental %d has invalid element level %d (max is %d) in \"%s\", skipping.\n", class_, ele_level, MAX_ELE_LEVEL, source.c_str());
+		return false;
+	}
+
+	// Find the ID, already exist or not in elemental_db
+	ARR_FIND(0, elemental_count, i, elemental_db[i].class_ == class_);
 	if (i >= elemental_count)
 		db = &elemental_db[elemental_count];
 	else
 		db = &elemental_db[i];
-	
-	db->class_ = atoi(str[0]);
-	safestrncpy(db->sprite, str[1], NAME_LENGTH);
-	safestrncpy(db->name, str[2], NAME_LENGTH);
-	db->lv = atoi(str[3]);
+	db->class_ = class_;
+
+	safestrncpy(db->sprite, spritename.c_str(), NAME_LENGTH);
+	safestrncpy(db->name, name.c_str(), NAME_LENGTH);
 
 	status = &db->status;
 	db->vd.class_ = db->class_;
+	status->size = scale;
+	status->def_ele = ele_type;
+	status->ele_lv = ele_level;
 
-	status->max_hp = atoi(str[4]);
-	status->max_sp = atoi(str[5]);
-	status->rhw.range = atoi(str[6]);
+	// default value for optional fields
+	db->lv = 100;
+	db->range2 = 5;
+	db->range3 = 12;
+	status->max_hp = 0;
+	status->max_sp = 1;
+	status->rhw.range = 1;
+
 #ifdef RENEWAL
-	status->rhw.atk = atoi(str[7]); // BaseATK
-	status->rhw.matk = atoi(str[8]); // BaseMATK
+	status->rhw.atk = 0; // BaseATK
+	status->rhw.matk = 0; // BaseMATK
 #else
-	status->rhw.atk = atoi(str[7]); // MinATK
-	status->rhw.atk2 = atoi(str[8]); // MaxATK
+	status->rhw.atk = 0; // MinATK
+	status->rhw.atk2 = 0; // MaxATK
 #endif
-	status->def = atoi(str[9]);
-	status->mdef = atoi(str[10]);
-	status->str = atoi(str[11]);
-	status->agi = atoi(str[12]);
-	status->vit = atoi(str[13]);
-	status->int_ = atoi(str[14]);
-	status->dex = atoi(str[15]);
-	status->luk = atoi(str[16]);
-	db->range2 = atoi(str[17]);
-	db->range3 = atoi(str[18]);
-	status->size = atoi(str[19]);
-	status->race = atoi(str[20]);
 
-	ele = atoi(str[21]);
-	status->def_ele = ele%20;
-	status->ele_lv = (unsigned char)floor(ele/20.);
-	if( !CHK_ELEMENT(status->def_ele) ) {
-		ShowWarning("read_elementaldb_sub: Elemental %d has invalid element type %d (max element is %d)\n", db->class_, status->def_ele, ELE_ALL - 1);
-		status->def_ele = ELE_NEUTRAL;
-	}
-	if( !CHK_ELEMENT_LEVEL(status->ele_lv) ) {
-		ShowWarning("read_elementaldb_sub: Elemental %d has invalid element level %d (max is %d)\n", db->class_, status->ele_lv, MAX_ELE_LEVEL);
-		status->ele_lv = 1;
-	}
-
+	status->def = 0;
+	status->mdef = 0;
+	status->str = 0;
+	status->agi = 0;
+	status->vit = 0;
+	status->int_ = 0;
+	status->dex = 0;
+	status->luk = 0;
+	status->race = 0;
 	status->aspd_rate = 1000;
-	status->speed = atoi(str[22]);
-	status->adelay = atoi(str[23]);
-	status->amotion = atoi(str[24]);
-	status->dmotion = atoi(str[25]);
+	status->speed = 200;
+	status->adelay = 504;
+	status->amotion = 1020;
+	status->dmotion = 360;
 
-	if (i >= elemental_count)
-		elemental_count++;
-	return true;
+	char warning_text[512];
+	sprintf( warning_text, "read_elementaldb_sub: Invalid elemental %s definition for ID %d in \"%s\", defaulting to %s.\n", "%s", class_, source.c_str(), "%d");
+
+	if (node["LV"]) {
+		// catch_value( db->lv, "LV", 100, warning_text );
+		try {
+			db->lv = node["LV"].as<unsigned short>();
+		} catch (...) {
+			ShowWarning( warning_text, "LV", 100 );
+			db->lv = 100;
+		}
+	}
+	if (node["HP"]) {
+		try {
+			status->max_hp = node["HP"].as<unsigned int>();
+		} catch (...) {
+			ShowWarning( warning_text, "HP", 0 );
+			status->max_hp = 0;
+		}
+	}
+	if (node["SP"]) {
+		try {
+			status->max_sp = node["SP"].as<unsigned int>();
+		} catch (...) {
+			ShowWarning( warning_text, "SP", 1 );
+			status->max_sp = 1;
+		}
+	}
+	if (node["Range"]) {
+		try {
+			status->rhw.range = node["Range"].as<unsigned short>();
+		} catch (...) {
+			ShowWarning( warning_text, "Range", 1 );
+			status->rhw.range = 1;
+		}
+	}
+	if (node["ATK1"]) {
+		try {
+			status->rhw.atk = node["ATK1"].as<unsigned short>();	// BaseATK renewal ; MinATK pre-renewal
+		} catch (...) {
+			ShowWarning( warning_text, "ATK1", 0 );
+			status->rhw.atk = 0;
+		}
+	}
+#ifdef RENEWAL
+	if (node["ATK2"]) {
+		try {
+			status->rhw.matk = node["ATK2"].as<unsigned short>();
+		} catch (...) {
+			ShowWarning( warning_text, "ATK2", 0 );
+			status->rhw.matk = 0;
+		}
+	}
+#else
+	if (node["ATK2"]) {
+		try {
+			status->rhw.atk2 = node["ATK2"].as<unsigned short>();
+		} catch (...) {
+			ShowWarning( warning_text, "ATK2", 0 );
+			status->rhw.atk2 = 0;
+		}
+	}
+#endif
+	if (node["DEF"]) {
+		try {
+			status->def = node["DEF"].as<short>();
+		} catch (...) {
+			ShowWarning( warning_text, "DEF", 0 );
+			status->def = 0;
+		}
+	}
+	if (node["MDEF"]) {
+		try {
+			status->mdef = node["MDEF"].as<short>();
+		} catch (...) {
+			ShowWarning( warning_text, "MDEF", 0 );
+			status->mdef = 0;
+		}
+	}
+	if (node["STR"]) {
+		try {
+			status->str = node["STR"].as<short>();
+		} catch (...) {
+			ShowWarning( warning_text, "STR", 0 );
+			status->str = 0;
+		}
+	}
+	if (node["AGI"]) {
+		try {
+			status->agi = node["AGI"].as<short>();
+		} catch (...) {
+			ShowWarning( warning_text, "AGI", 0 );
+			status->agi = 0;
+		}
+	}
+	if (node["VIT"]) {
+		try {
+			status->vit = node["VIT"].as<short>();
+		} catch (...) {
+			ShowWarning( warning_text, "VIT", 0 );
+			status->vit = 0;
+		}
+	}
+	if (node["INT"]) {
+		try {
+			status->int_ = node["INT"].as<short>();
+		} catch (...) {
+			ShowWarning( warning_text, "INT", 0 );
+			status->int_ = 0;
+		}
+	}
+	if (node["DEX"]) {
+		try {
+			status->dex = node["DEX"].as<short>();
+		} catch (...) {
+			ShowWarning( warning_text, "DEX", 0 );
+			status->dex = 0;
+		}
+	}
+	if (node["LUK"]) {
+		try {
+			status->luk = node["LUK"].as<short>();
+		} catch (...) {
+			ShowWarning( warning_text, "LUK", 0 );
+			status->luk = 0;
+		}
+	}
+	if (node["Range2"]) {
+		try {
+			db->range2 = node["Range2"].as<short>();
+		} catch (...) {
+			ShowWarning( warning_text, "Range2", 5 );
+			db->range2 = 5;
+		}
+	}
+	if (node["Range3"]) {
+		try {
+			db->range3 = node["Range3"].as<short>();
+		} catch (...) {
+			ShowWarning( warning_text, "Range3", 12 );
+			db->range3 = 12;
+		}
+	}
+	if (node["Race"]) {
+		try {
+			std::string race_constant = node["Race"].as<std::string>();
+			int race;
+			if (!script_get_constant(race_constant.c_str(), (int *)&race)) {
+				ShowWarning("read_elementaldb_sub: Invalid elemental Race constant %s for ID %d in \"%s\", defaulting to RC_Formless.\n", race_constant.c_str(), class_, source.c_str());
+				status->race = 0;
+			}
+			else if (race < RC_FORMLESS || race > RC_PLAYER) {
+				ShowWarning("read_elementaldb_sub: Invalid race %d for ID %d in \"%s\" (min: %d, max: %d), defaulting to RC_Formless.\n", race, class_, source.c_str(), RC_FORMLESS, RC_PLAYER);
+				status->race = 0;
+			}
+			else {
+				status->race = race;
+			}
+		} catch (...) {
+			ShowWarning("read_elementaldb_sub: Invalid elemental Race definition for ID %d in \"%s\", defaulting to RC_Formless.\n", class_, source.c_str());
+			status->race = 0;
+		}
+	}
+	if (node["Speed"]) {
+		try {
+			status->speed = node["Speed"].as<unsigned short>();
+		} catch (...) {
+			ShowWarning( warning_text, "Speed", 200 );
+			status->speed = 200;
+		}
+	}
+	if (node["aDelay"]) {
+		try {
+			status->adelay = node["aDelay"].as<unsigned short>();
+		} catch (...) {
+			ShowWarning( warning_text, "aDelay", 504 );
+			status->adelay = 504;
+		}
+	}
+	if (node["aMotion"]) {
+		try {
+			status->amotion = node["aMotion"].as<unsigned short>();
+		} catch (...) {
+			ShowWarning( warning_text, "aMotion", 1020 );
+			status->amotion = 1020;
+		}
+	}
+	if (node["dMotion"]) {
+		try {
+			status->dmotion = node["dMotion"].as<unsigned short>();
+		} catch (...) {
+			ShowWarning( warning_text, "dMotion", 360 );
+			status->dmotion = 360;
+		}
+	}
+
+	// elemental skills
+	if (node["SpiritMode"]) {
+		const YAML::Node &spirit_mode = node["SpiritMode"];
+		const std::string labels[] = { "Passive", "Defensive", "Aggressive" };
+
+		for (int index = 0; index < ARRAYLENGTH(labels); index++) {
+			if (!spirit_mode[ labels[index] ]) {
+				continue;
+			}
+			for (const auto &spirit_skill : spirit_mode[ labels[index] ]) {
+				std::string skill_name;
+				int skill_id, skill_lv = 1;
+				uint8 j;
+
+				if (!yaml_assert_exists(spirit_skill, "SkillID", source, "read_elementaldb_sub") || !yaml_assert_exists(spirit_skill, "SkillLevel", source, "read_elementaldb_sub")) {
+					continue;
+				}
+				try {
+					skill_name = spirit_skill["SkillID"].as<std::string>();
+				} catch (...) {
+					yaml_catch_warning(spirit_skill, "SkillID", source, "read_elementaldb_sub");
+					continue;
+				}
+				try {
+					skill_lv = spirit_skill["SkillLevel"].as<unsigned short>();
+				} catch (...) {
+					yaml_catch_warning(spirit_skill, "SkillLevel", source, "read_elementaldb_sub");
+					continue;
+				}
+				skill_id = skill_name2id( skill_name.c_str() );
+				if (!SKILL_CHK_ELEM(skill_id)) {
+					ShowWarning("read_elementaldb_sub: Invalid Elemental skill '%d' for ID %d in \"%s\", skipping this skill.\n", skill_id, class_, source.c_str());
+					continue;
+				}
+				ARR_FIND( 0, MAX_ELESKILLTREE, j, db->skill[j].id == 0 || db->skill[j].id == skill_id );
+				if (j == MAX_ELESKILLTREE) {
+					ShowWarning("read_elementaldb_sub: Unable to load skill %d into Elemental %d's tree. Maximum number of skills per elemental has been reached in \"%s\", skipping.\n", skill_id, class_, source.c_str());
+					return false;
+				}
+				db->skill[j].id = skill_id;
+				db->skill[j].lv = skill_lv;
+				db->skill[j].mode = index;
+			}
+		}
+	}
+	return (i >= elemental_count);
 }
 
 void read_elementaldb(void) {
-	const char *filename[] = { "elemental_db.txt", DBIMPORT"/elemental_db.txt" };
-	uint8 i;
-
-	elemental_count = 0;
+	std::vector<std::string> directories = { std::string(db_path) + "/",  std::string(db_path) + "/" + std::string(DBIMPORT) + "/" };
+	static const std::string file_name("elemental_db.yml");
 	memset(elemental_db, 0, sizeof(elemental_db));
-	for(i = 0; i<ARRAYLENGTH(filename); i++){
-		sv_readdb(db_path, filename[i], ',', 26, 26, -1, &read_elementaldb_sub, i > 0);
-	}
-}
+	elemental_count = 0;
 
-/**
-* Reads Elemental Skill DB lines
-* ElementalID,SkillID,SkillLevel,ReqMode
-*/
-static bool read_elemental_skilldb_sub(char* str[], int columns, int current) {
-	uint16 class_ = atoi(str[0]), skill_id, skill_lv, skillmode;
-	uint8 i;
-	struct s_elemental_db *db;
+	for (auto &directory : directories) {
+		std::string current_file = directory + file_name;
+		YAML::Node root;
 
-	ARR_FIND(0, MAX_ELEMENTAL_CLASS, i, class_ == elemental_db[i].class_);
-	if( i == MAX_ELEMENTAL_CLASS ) {
-		ShowError("read_elemental_skilldb_sub: Class not found in elemental_db for skill entry, line %d.\n", current);
-		return false;
-	}
-
-	skill_id = atoi(str[1]);
-	if( !SKILL_CHK_ELEM(skill_id) ) {
-		ShowError("read_elemental_skilldb_sub: Invalid Elemental skill '%d'.\n", skill_id);
-		return false;
-	}
-
-	db = &elemental_db[i];
-	skill_lv = atoi(str[2]);
-
-	skillmode = atoi(str[3]);
-	if( skillmode < EL_SKILLMODE_PASSIVE || skillmode > EL_SKILLMODE_AGGRESSIVE ) {
-		ShowError("read_elemental_skilldb_sub: Skillmode out of range, line %d.\n",current);
-		return false;
-	}
-	ARR_FIND( 0, MAX_ELESKILLTREE, i, db->skill[i].id == 0 || db->skill[i].id == skill_id );
-	if( i == MAX_ELESKILLTREE ) {
-		ShowWarning("read_elemental_skilldb_sub: Unable to load skill %d into Elemental %d's tree. Maximum number of skills per elemental has been reached.\n", skill_id, class_);
-		return false;
-	}
-	db->skill[i].id = skill_id;
-	db->skill[i].lv = skill_lv;
-	db->skill[i].mode = skillmode;
-	return true;
-}
-
-void read_elemental_skilldb(void) {
-	const char *filename[] = { "elemental_skill_db.txt", DBIMPORT"/elemental_skill_db.txt" };
-	uint8 i;
-	for(i = 0; i<ARRAYLENGTH(filename); i++){
-		sv_readdb(db_path, filename[i], ',', 4, 4, -1, &read_elemental_skilldb_sub, i > 0);
+		try {
+			root = YAML::LoadFile(current_file);
+		} catch (...) {
+			ShowError("Failed to read '" CL_WHITE "%s" CL_RESET "'.\n", current_file.c_str());
+			continue;
+		}
+		for (const auto &node : root) {
+			if (node.IsDefined() && read_elementaldb_sub(node, elemental_count, current_file))
+				elemental_count++;
+		}
+		ShowStatus("Done reading '" CL_WHITE "%d" CL_RESET "' entries in '" CL_BLUE "%s" CL_RESET "'\n", elemental_count, current_file.c_str());
 	}
 }
 
