@@ -1,39 +1,38 @@
-// Copyright (c) Athena Dev Teams - Licensed under GNU GPL
+// Copyright (c) rAthena Dev Teams - Licensed under GNU GPL
 // For more information, see LICENCE in the main folder
 
 #include "inter.hpp"
 
+#include <stdlib.h>
 #include <string.h>
-#include <stdlib.h>
-#include <sys/stat.h> // for stat/lstat/fstat - [Dekamaster/Ultimate GM Tool]
-#include <yaml-cpp/yaml.h>
 #include <string>
+#include <sys/stat.h> // for stat/lstat/fstat - [Dekamaster/Ultimate GM Tool]
 #include <vector>
-#include <stdlib.h>
+#include <yaml-cpp/yaml.h>
 
-#include "../common/cbasetypes.h"
-#include "../common/malloc.h"
-#include "../common/strlib.h"
-#include "../common/showmsg.h"
-#include "../common/socket.h"
-#include "../common/timer.h"
+#include "../common/cbasetypes.hpp"
+#include "../common/malloc.hpp"
+#include "../common/showmsg.hpp"
+#include "../common/socket.hpp"
+#include "../common/strlib.hpp"
+#include "../common/timer.hpp"
 
 #include "char.hpp"
 #include "char_logif.hpp"
 #include "char_mapif.hpp"
 #include "inter.hpp"
-#include "int_party.hpp"
-#include "int_guild.hpp"
-#include "int_storage.hpp"
-#include "int_pet.hpp"
-#include "int_homun.hpp"
-#include "int_mercenary.hpp"
-#include "int_mail.hpp"
-#include "int_auction.hpp"
-#include "int_quest.hpp"
-#include "int_elemental.hpp"
-#include "int_clan.hpp"
 #include "int_achievement.hpp"
+#include "int_auction.hpp"
+#include "int_clan.hpp"
+#include "int_elemental.hpp"
+#include "int_guild.hpp"
+#include "int_homun.hpp"
+#include "int_mail.hpp"
+#include "int_mercenary.hpp"
+#include "int_party.hpp"
+#include "int_pet.hpp"
+#include "int_quest.hpp"
+#include "int_storage.hpp"
 
 #define WISDATA_TTL (60*1000)	//Wis data Time To Live (60 seconds)
 #define WISDELLIST_MAX 256		// Number of elements in the list Delete data Wis
@@ -67,13 +66,13 @@ int inter_recv_packet_length[] = {
 
 struct WisData {
 	int id, fd, count, len, gmlvl;
-	unsigned long tick;
+	t_tick tick;
 	char src[NAME_LENGTH], dst[NAME_LENGTH], msg[512];
 };
 static DBMap* wis_db = NULL; // int wis_id -> struct WisData*
 static int wis_dellist[WISDELLIST_MAX], wis_delnum;
 
-/* from pc.c due to @accinfo. any ideas to replace this crap are more than welcome. */
+/* from pc.cpp due to @accinfo. any ideas to replace this crap are more than welcome. */
 const char* job_name(int class_) {
 	switch (class_) {
 		case JOB_NOVICE:
@@ -116,6 +115,7 @@ const char* job_name(int class_) {
 			return msg_txt(20 - JOB_WEDDING+class_);
 
 		case JOB_SUMMER:
+		case JOB_SUMMER2:
 			return msg_txt(71);
 
 		case JOB_HANBOK:
@@ -307,10 +307,20 @@ const char* job_name(int class_) {
 			return msg_txt(110 - JOB_BABY_NINJA+class_);
 
 		case JOB_BABY_STAR_GLADIATOR2:
-			return msg_txt(114);
+		case JOB_STAR_EMPEROR:
+		case JOB_SOUL_REAPER:
+		case JOB_BABY_STAR_EMPEROR:
+		case JOB_BABY_SOUL_REAPER:
+			return msg_txt(114 - JOB_BABY_STAR_GLADIATOR2 + class_);
+
+		case JOB_STAR_EMPEROR2:
+			return msg_txt(118);
+
+		case JOB_BABY_STAR_EMPEROR2:
+			return msg_txt(120);
 
 		default:
-			return msg_txt(118);
+			return msg_txt(199);
 	}
 }
 
@@ -478,7 +488,7 @@ void mapif_parse_accinfo(int fd) {
 	}
 
 	/* it will only get here if we have a single match then ask login-server to fetch the `login` record */
-	if (!account_id || chlogif_req_accinfo(fd, u_fd, u_aid, u_group, account_id, type) != 1) {
+	if (!account_id || chlogif_req_accinfo(fd, u_fd, u_aid, account_id, type) != 1) {
 		inter_to_fd(fd, u_fd, u_aid, (char *)msg_txt(213));
 	}
 	return;
@@ -489,7 +499,7 @@ void mapif_parse_accinfo(int fd) {
  */
 void mapif_accinfo_ack(bool success, int map_fd, int u_fd, int u_aid, int account_id, int8 type,
 	int group_id, int logincount, int state, const char *email, const char *last_ip, const char *lastlogin,
-	const char *birthdate, const char *user_pass, const char *pincode, const char *userid)
+	const char *birthdate, const char *userid)
 {
 	
 	if (map_fd <= 0 || !session_isActive(map_fd))
@@ -507,7 +517,6 @@ void mapif_accinfo_ack(bool success, int map_fd, int u_fd, int u_aid, int accoun
 
 	inter_to_fd(map_fd, u_fd, u_aid, (char *)msg_txt(217), account_id);
 	inter_to_fd(map_fd, u_fd, u_aid, (char *)msg_txt(218), userid, group_id, state);
-	inter_to_fd(map_fd, u_fd, u_aid, (char *)msg_txt(219), user_pass[0] != '\0' ? user_pass : msg_txt(220), pincode[0] != '\0' ? msg_txt(220) : pincode);
 	inter_to_fd(map_fd, u_fd, u_aid, (char *)msg_txt(221), email, birthdate);
 	inter_to_fd(map_fd, u_fd, u_aid, (char *)msg_txt(222), last_ip, geoip_getcountry(str2ip(last_ip)));
 	inter_to_fd(map_fd, u_fd, u_aid, (char *)msg_txt(223), logincount, lastlogin);
@@ -794,17 +803,17 @@ int inter_config_read(const char* cfgName)
 			continue;
 
 		if(!strcmpi(w1,"char_server_ip"))
-			strcpy(char_server_ip,w2);
+			safestrncpy(char_server_ip,w2,sizeof(char_server_ip));
 		else if(!strcmpi(w1,"char_server_port"))
 			char_server_port = atoi(w2);
 		else if(!strcmpi(w1,"char_server_id"))
-			strcpy(char_server_id,w2);
+			safestrncpy(char_server_id,w2,sizeof(char_server_id));
 		else if(!strcmpi(w1,"char_server_pw"))
-			strcpy(char_server_pw,w2);
+			safestrncpy(char_server_pw,w2,sizeof(char_server_pw));
 		else if(!strcmpi(w1,"char_server_db"))
-			strcpy(char_server_db,w2);
+			safestrncpy(char_server_db,w2,sizeof(char_server_db));
 		else if(!strcmpi(w1,"default_codepage"))
-			strcpy(default_codepage,w2);
+			safestrncpy(default_codepage,w2,sizeof(default_codepage));
 		else if(!strcmpi(w1,"party_share_level"))
 			party_share_level = (unsigned int)atof(w2);
 		else if(!strcmpi(w1,"log_inter"))
@@ -878,7 +887,7 @@ void inter_config_readConf(void) {
 				try {
 					id = node["ID"].as<unsigned int>();
 				}
-				catch (std::exception) {
+				catch (const std::exception&) {
 					yaml_invalid_warning("inter_config_readConf: Storage definition with invalid ID field in '" CL_WHITE "%s" CL_RESET "', skipping.\n", node, current_file);
 					continue;
 				}
@@ -904,7 +913,7 @@ void inter_config_readConf(void) {
 					try {
 						storage_table->max_num = node["Max"].as<uint16>();
 					}
-					catch (std::exception) {
+					catch (const std::exception&) {
 						yaml_invalid_warning("inter_config_readConf: Storage definition with invalid Max field in '" CL_WHITE "%s" CL_RESET "', skipping.\n", node, current_file);
 						continue;
 					}
@@ -1091,9 +1100,9 @@ int mapif_disconnectplayer(int fd, uint32 account_id, uint32 char_id, int reason
  */
 int check_ttl_wisdata_sub(DBKey key, DBData *data, va_list ap)
 {
-	unsigned long tick;
+	t_tick tick;
 	struct WisData *wd = (struct WisData *)db_data2ptr(data);
-	tick = va_arg(ap, unsigned long);
+	tick = va_arg(ap, t_tick);
 
 	if (DIFF_TICK(tick, wd->tick) > WISDATA_TTL && wis_delnum < WISDELLIST_MAX)
 		wis_dellist[wis_delnum++] = wd->id;
@@ -1103,7 +1112,7 @@ int check_ttl_wisdata_sub(DBKey key, DBData *data, va_list ap)
 
 int check_ttl_wisdata(void)
 {
-	unsigned long tick = gettick();
+	t_tick tick = gettick();
 	int i;
 
 	do {
