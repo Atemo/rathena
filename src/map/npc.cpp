@@ -182,8 +182,11 @@ int npc_ontouch_event(struct map_session_data *sd, struct npc_data *nd)
 int npc_ontouch2_event(struct map_session_data *sd, struct npc_data *nd)
 {
 	char name[EVENT_NAME_LENGTH];
+	int k;
 
-	if( sd->areanpc_id == nd->bl.id )
+	ARR_FIND(0, sd->areanpc.count, k, sd->areanpc.ids[k] == nd->bl.id);
+
+	if (k < sd->areanpc.count)
 		return 0;
 
 	safesnprintf(name, ARRAYLENGTH(name), "%s::%s", nd->exname, script_config.ontouch2_event_name);
@@ -888,6 +891,7 @@ int npc_event(struct map_session_data* sd, const char* eventname, int ontouch)
 {
 	struct event_data* ev = (struct event_data*)strdb_get(ev_db, eventname);
 	struct npc_data *nd;
+	int k;
 
 	nullpo_ret(sd);
 
@@ -905,7 +909,18 @@ int npc_event(struct map_session_data* sd, const char* eventname, int ontouch)
 		sd->touching_id = nd->bl.id;
 		break;
 	case 2:
-		sd->areanpc_id = nd->bl.id;
+		ARR_FIND(0, sd->areanpc.count, k, sd->areanpc.ids[k] == nd->bl.id);
+
+		if (k == sd->areanpc.count) {
+			if (k >= sd->areanpc.mem_count) {
+				sd->areanpc.mem_count++;
+				RECREATE(sd->areanpc.ids, int, sd->areanpc.mem_count);
+			}
+
+			sd->areanpc.ids[sd->areanpc.count] = nd->bl.id;
+			sd->areanpc.count++;
+		}
+
 		break;
 	}
 
@@ -973,10 +988,7 @@ int npc_touchnext_areanpc(struct map_session_data* sd, bool leavemap)
  *------------------------------------------*/
 int npc_touch_areanpc(struct map_session_data* sd, int16 m, int16 x, int16 y)
 {
-	int xs,ys;
-	int f = 1;
-	int i;
-	int j, found_warp = 0;
+	int xs, ys, f = 1, i = 0, j = 0;
 
 	nullpo_retr(1, sd);
 
@@ -986,81 +998,96 @@ int npc_touch_areanpc(struct map_session_data* sd, int16 m, int16 x, int16 y)
 
 	struct map_data *mapdata = map_getmapdata(m);
 
-	for(i=0;i<mapdata->npc_num;i++)
-	{
+	// Remove NPCs that are no longer within the OnTouch area
+	for (i = 0; i < sd->areanpc.count; i++) {
+		struct npc_data *nd = map_id2nd(sd->areanpc.ids[i]);
+
+		if (!nd || nd->subtype != NPCTYPE_SCRIPT ||
+			!(x >= nd->bl.x - nd->u.scr.xs && x <= nd->bl.x + nd->u.scr.xs && y >= nd->bl.y - nd->u.scr.ys && y <= nd->bl.y + nd->u.scr.ys)) {
+			sd->areanpc.count--;
+			memmove(&sd->areanpc.ids[i], &sd->areanpc.ids[i + 1], sizeof(int) * (sd->areanpc.count - i));
+			i--;
+		}
+	}
+
+	for (i = 0; i < mapdata->npc_num; i++) {
 		if (mapdata->npc[i]->sc.option&OPTION_INVISIBLE) {
-			f=0; // a npc was found, but it is disabled; don't print warning
+			f = 0; // a npc was found, but it is disabled; don't print warning
 			continue;
 		}
 
-		switch(mapdata->npc[i]->subtype) {
+		switch (mapdata->npc[i]->subtype) {
 		case NPCTYPE_WARP:
-			xs=mapdata->npc[i]->u.warp.xs;
-			ys=mapdata->npc[i]->u.warp.ys;
+			xs = mapdata->npc[i]->u.warp.xs;
+			ys = mapdata->npc[i]->u.warp.ys;
 			break;
 		case NPCTYPE_SCRIPT:
-			xs=mapdata->npc[i]->u.scr.xs;
-			ys=mapdata->npc[i]->u.scr.ys;
+			xs = mapdata->npc[i]->u.scr.xs;
+			ys = mapdata->npc[i]->u.scr.ys;
 			break;
 		default:
 			continue;
 		}
-		if( x >= mapdata->npc[i]->bl.x-xs && x <= mapdata->npc[i]->bl.x+xs
-		&&  y >= mapdata->npc[i]->bl.y-ys && y <= mapdata->npc[i]->bl.y+ys )
-			break;
-	}
-	if( i == mapdata->npc_num )
-	{
-		if( f == 1 ) // no npc found
-			ShowError("npc_touch_areanpc : stray NPC cell/NPC not found in the block on coordinates '%s',%d,%d\n", mapdata->name, x, y);
-		return 1;
-	}
-	switch(mapdata->npc[i]->subtype) {
-		case NPCTYPE_WARP:
-			if ((!mapdata->npc[i]->trigger_on_hidden && (pc_ishiding(sd) || (sd->sc.count && sd->sc.data[SC_CAMOUFLAGE]))) || pc_isdead(sd))
-				break; // hidden or dead chars cannot use warps
-			if (!pc_job_can_entermap((enum e_job)sd->status.class_, map_mapindex2mapid(mapdata->npc[i]->u.warp.mapindex), sd->group_level))
-				break;
-			if(sd->count_rewarp > 10){
-				ShowWarning("Prevented infinite warp loop for player (%d:%d). Please fix NPC: '%s', path: '%s'\n", sd->status.account_id, sd->status.char_id, mapdata->npc[i]->exname, mapdata->npc[i]->path);
-				sd->count_rewarp=0;
-				break;
-			}
-			pc_setpos(sd,mapdata->npc[i]->u.warp.mapindex,mapdata->npc[i]->u.warp.x,mapdata->npc[i]->u.warp.y,CLR_OUTSIGHT);
-			break;
-		case NPCTYPE_SCRIPT:
-			for (j = i; j < mapdata->npc_num; j++) {
-				if (mapdata->npc[j]->subtype != NPCTYPE_WARP) {
-					continue;
-				}
 
-				if ((sd->bl.x >= (mapdata->npc[j]->bl.x - mapdata->npc[j]->u.warp.xs) && sd->bl.x <= (mapdata->npc[j]->bl.x + mapdata->npc[j]->u.warp.xs)) &&
-					(sd->bl.y >= (mapdata->npc[j]->bl.y - mapdata->npc[j]->u.warp.ys) && sd->bl.y <= (mapdata->npc[j]->bl.y + mapdata->npc[j]->u.warp.ys))) {
-					if ((!mapdata->npc[i]->trigger_on_hidden && (pc_ishiding(sd) || (sd->sc.count && sd->sc.data[SC_CAMOUFLAGE]))) || pc_isdead(sd))
-						break; // hidden or dead chars cannot use warps
-					pc_setpos(sd,mapdata->npc[j]->u.warp.mapindex,mapdata->npc[j]->u.warp.x,mapdata->npc[j]->u.warp.y,CLR_OUTSIGHT);
-					found_warp = 1;
+		if (x >= mapdata->npc[i]->bl.x - xs && x <= mapdata->npc[i]->bl.x + xs && y >= mapdata->npc[i]->bl.y - ys && y <= mapdata->npc[i]->bl.y + ys) {
+			f = 0;
+
+			switch (mapdata->npc[i]->subtype) {
+			case NPCTYPE_WARP:
+				if ((!mapdata->npc[i]->trigger_on_hidden && (pc_ishiding(sd) || (sd->sc.count && sd->sc.data[SC_CAMOUFLAGE]))) || pc_isdead(sd))
+					break; // hidden or dead chars cannot use warps
+				if (!pc_job_can_entermap((enum e_job)sd->status.class_, map_mapindex2mapid(mapdata->npc[i]->u.warp.mapindex), sd->group_level))
+					break;
+				if (sd->count_rewarp > 10) {
+					ShowWarning("Prevented infinite warp loop for player (%d:%d). Please fix NPC: '%s', path: '%s'\n", sd->status.account_id, sd->status.char_id, mapdata->npc[i]->exname, mapdata->npc[i]->path);
+					sd->count_rewarp = 0;
 					break;
 				}
-			}
+				pc_setpos(sd, mapdata->npc[i]->u.warp.mapindex, mapdata->npc[i]->u.warp.x, mapdata->npc[i]->u.warp.y, CLR_OUTSIGHT);
+				break;
+			case NPCTYPE_SCRIPT:
+				// Check if there's a warp NPC, overrides any other OnTouch areas.
+				for (j = i; j < mapdata->npc_num; j++) {
+					if (mapdata->npc[j]->subtype != NPCTYPE_WARP) {
+						continue;
+					}
+					if ((sd->bl.x >= (mapdata->npc[j]->bl.x - mapdata->npc[j]->u.warp.xs) && sd->bl.x <= (mapdata->npc[j]->bl.x + mapdata->npc[j]->u.warp.xs)) &&
+						(sd->bl.y >= (mapdata->npc[j]->bl.y - mapdata->npc[j]->u.warp.ys) && sd->bl.y <= (mapdata->npc[j]->bl.y + mapdata->npc[j]->u.warp.ys))) {
+						if (pc_ishiding(sd) || (sd->sc.count && sd->sc.data[SC_CAMOUFLAGE]) || pc_isdead(sd))
+							break; // hidden or dead chars cannot use warps
+						pc_setpos(sd, mapdata->npc[j]->u.warp.mapindex, mapdata->npc[j]->u.warp.x, mapdata->npc[j]->u.warp.y, CLR_OUTSIGHT);
+						return 0;
+					}
+				}
 
-			if (found_warp > 0) {
+				if (npc_ontouch_event(sd, mapdata->npc[i]) > 0 && npc_ontouch2_event(sd, mapdata->npc[i]) > 0) { // failed to run OnTouch event, so just click the npc
+					int k;
+
+					ARR_FIND(0, sd->areanpc.count, k, sd->areanpc.ids[k] == mapdata->npc[i]->bl.id);
+
+					if (k == sd->areanpc.count) {
+						if (k >= sd->areanpc.mem_count) {
+							sd->areanpc.mem_count++;
+							RECREATE(sd->areanpc.ids, int, sd->areanpc.mem_count);
+						}
+
+						sd->areanpc.ids[sd->areanpc.count] = mapdata->npc[i]->bl.id;
+						sd->areanpc.count++;
+					}
+
+					npc_click(sd, mapdata->npc[i]);
+				}
+
 				break;
 			}
-
-			if( npc_ontouch_event(sd,mapdata->npc[i]) > 0 && npc_ontouch2_event(sd,mapdata->npc[i]) > 0 )
-			{ // failed to run OnTouch event, so just click the npc
-				struct unit_data *ud = unit_bl2ud(&sd->bl);
-				if( ud && ud->walkpath.path_pos < ud->walkpath.path_len )
-				{ // Since walktimer always == INVALID_TIMER at this time, we stop walking manually. [Inkfish]
-					clif_fixpos(&sd->bl);
-					ud->walkpath.path_pos = ud->walkpath.path_len;
-				}
-				sd->areanpc_id = mapdata->npc[i]->bl.id;
-				npc_click(sd,mapdata->npc[i]);
-			}
-			break;
+		}
 	}
+	
+	if (f == 1) {
+		ShowError("npc_touch_areanpc : stray NPC cell/NPC not found in the block on coordinates '%s',%d,%d\n", mapdata->name, x, y);
+		return 1;
+	}
+
 	return 0;
 }
 
