@@ -20,6 +20,61 @@
 //= 1.7 Bug fixes and syntax. [Capuche]
 //============================================================
 
+// simple overlapping test
+izlude,139,158,4	script	overlap 1	56,2,2,{
+	end;
+OnTouch_:
+	npctalk "NPC " + strnpcinfo(1) + " : !";
+	end;
+}
+izlude,143,158,4	duplicate(overlap 1)	overlap 2	56,2,2
+
+
+izlude,139,167,4	script	disable test 1	56,2,2,{
+	end;
+OnTouch_:
+	npctalk "NPC " + strnpcinfo(1) + " : !";
+	disablenpc strnpcinfo(0);
+	sleep 2000;
+	enablenpc strnpcinfo(0);
+	end;
+}
+izlude,143,167,4	duplicate(disable test 1)	disable test 2	56,2,2
+
+
+izlude,139,174,4	script	mes A	56,2,2,{
+	mes "The message shouldn't be triggered on hiding.";
+	close;
+OnTouch_:
+	mes "1";
+	next;
+	mes "2";
+	close;
+}
+izlude,143,174,4	duplicate(mes A)	mes B	56,2,2
+
+
+
+izlude,150,167,4	script	overlap 3 npcs A	56,2,2,{
+	end;
+OnTouch_:
+	npctalk "NPC " + strnpcinfo(1) + " : !";
+	enablenpc "overlap 3 npcs C";
+	end;
+}
+izlude,154,167,4	duplicate(overlap 3 npcs A)	overlap 3 npcs B	56,2,2
+
+izlude,152,167,4	script	overlap 3 npcs C	56,4,4,{
+	end;
+OnInit:
+	disablenpc strnpcinfo(0);
+	end;
+OnTouch_:
+	npctalk "NPC " + strnpcinfo(1) + " : !";
+	end;
+}
+
+
 alberta,97,51,0	script	Fabian	84,{
 	mes "[Fabian]";
 	mes "Man... When you travel all around the world, you'll hear of some crazy things.";
