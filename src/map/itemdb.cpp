@@ -593,6 +593,98 @@ static bool itemdb_read_itemavail(char* str[], int columns, int current) {
 static int itemdb_group_free(DBKey key, DBData *data, va_list ap);
 static int itemdb_group_free2(DBKey key, DBData *data);
 
+static void itemdb_read_box(const std::string &path, const std::string &source) {
+	const std::string current_file = path + "/" + source;
+	YAML::Node root;
+
+	try {
+		root = YAML::LoadFile(current_file);
+	}
+	catch (...) {
+		ShowError("Failed to read '" CL_WHITE "%s" CL_RESET "'.\n", current_file.c_str());
+		return;
+	}
+	
+	int count_entries = 0;
+	int group_id = -1;
+	struct s_item_group_db *group = NULL;
+
+    for ( YAML::const_iterator it = root.begin(); it != root.end(); ++it ) {
+		std::string group_name = it->first.as<std::string>();
+		if (!script_get_constant( group_name.c_str(), &group_id)) {
+			ShowWarning("itemdb_read_box: Invalid Group %s in \"%s\", skipping.\n", group_name.c_str(), current_file.c_str());
+			return;
+		}
+		const YAML::Node &node = it->second;
+
+		// Remove from DB
+		if (node["Clear"]) {
+			int clear = node["Clear"].as<bool>();
+
+			if (clear < 0 || clear > 1) {
+				ShowWarning( "itemdb_read_box: Invalid Clear for group %s in '%s'.\n", group_name.c_str(), current_file.c_str() );
+				return;
+			}
+
+			if (clear == 1) {
+				DBData data;
+
+				if (itemdb_group->remove( itemdb_group, db_ui2key(group_id), &data )){
+					itemdb_group_free2(db_ui2key(group_id), &data);
+					ShowNotice( "itemdb_read_box: Item Group '%s' has been cleared.\n", group_name.c_str() );
+				} else {
+					ShowWarning( "itemdb_read_box: Item Group '%s' has not been cleared, because it did not exist.\n", group_name.c_str() );
+				}
+				return;
+			}
+		}
+
+		if (!(group = (struct s_item_group_db *) uidb_get(itemdb_group, group_id))) {
+			CREATE(group, struct s_item_group_db, 1);
+			group->id = group_id;
+			uidb_put(itemdb_group, group->id, group);
+		}
+
+		for (auto items_it = node.begin(); items_it != node.end(); ++items_it) {
+			struct s_item_group_random *random = NULL;
+			struct s_item_group_entry entry;
+
+			memset(&entry, 0, sizeof(entry));
+
+			int itemid = items_it->first.as<int>();
+			if (itemdb_exists(itemid))
+				entry.nameid = itemid;
+			else {
+				ShowWarning( "itemdb_read_box: Non-existant item '%d' in '" CL_WHITE "%s" CL_RESET "'\n", itemid, current_file.c_str() );
+				continue;
+			}
+			unsigned int prob = items_it->second.as<unsigned int>();
+			prob = prob < 1 ? 1 : prob;
+
+			entry.amount = 1;
+			entry.isAnnounced = 0;
+			entry.duration = 0;
+			entry.GUID = 0;
+			entry.bound = BOUND_NONE;
+			entry.isNamed = 0;
+
+			random = &group->random[0];
+			
+			RECREATE(random->data, struct s_item_group_entry, random->data_qty+prob);
+
+			// Put the entry to its rand_group
+			for (unsigned int j = random->data_qty; j < random->data_qty+prob; j++)
+				random->data[j] = entry;
+
+			random->data_qty += prob;
+			count_entries++;
+		}
+	}
+	ShowStatus("Done reading '" CL_BLUE "%d" CL_RESET "' items in '" CL_BLUE "%s" CL_RESET "'\n", count_entries, current_file.c_str());
+
+	return;
+}
+
 static bool itemdb_read_group(char* str[], int columns, int current) {
 	int group_id = -1;
 	unsigned int j, prob = 1;
@@ -1835,12 +1927,8 @@ static void itemdb_read(void) {
 		sv_readdb(dbsubpath2, "item_stack.txt",         ',', 3, 3, -1, &itemdb_read_stack, i > 0);
 		sv_readdb(dbsubpath1, "item_nouse.txt",         ',', 3, 3, -1, &itemdb_read_nouse, i > 0);
 		sv_readdb(dbsubpath2, "item_group_db.txt",		',', 2, 10, -1, &itemdb_read_group, i > 0);
-		sv_readdb(dbsubpath2, "item_bluebox.txt",		',', 2, 10, -1, &itemdb_read_group, i > 0);
-		sv_readdb(dbsubpath2, "item_violetbox.txt",		',', 2, 10, -1, &itemdb_read_group, i > 0);
-		sv_readdb(dbsubpath2, "item_cardalbum.txt",		',', 2, 10, -1, &itemdb_read_group, i > 0);
-		sv_readdb(dbsubpath1, "item_findingore.txt",	',', 2, 10, -1, &itemdb_read_group, i > 0);
-		sv_readdb(dbsubpath2, "item_giftbox.txt",		',', 2, 10, -1, &itemdb_read_group, i > 0);
-		sv_readdb(dbsubpath2, "item_misc.txt",			',', 2, 10, -1, &itemdb_read_group, i > 0);
+		itemdb_read_box(dbsubpath2, "item_box.yml");
+		itemdb_read_box(dbsubpath1, "item_findingore.yml");
 #ifdef RENEWAL
 		sv_readdb(dbsubpath2, "item_package.txt",		',', 2, 10, -1, &itemdb_read_group, i > 0);
 #endif
