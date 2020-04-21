@@ -1782,7 +1782,7 @@ lasagna,134,113,3	script	Hair Designer#dr	4_DR_F_02,{
 		mes "[Lonza]";
 		mes "I've lined up the attractive hairstyles that never go out of style. Will you take a look?";
 		next;
-		.@gender$ = Sex ? "m" : "f";
+		.@gender$ = (Sex == SEX_MALE) ? "m" : "f";
 		while( true ) {
 			.@i++;
 			.@i = .@i > 6 ? 1 : .@i;
@@ -1825,11 +1825,11 @@ lasagna,134,113,3	script	Hair Designer#dr	4_DR_F_02,{
 				Zeny = Zeny - 99800;
 				delitem 973,3;// Counteragent
 				delitem 974,3;// Mixture
-				delitem 901,100;// Daenggie
-				delitem 1094,100;// Short Daenggie
-				delitem 1020,100;// Black Hair
-				delitem 1060,100;// Golden Hair
-				delitem 7152,100;// Glossy Hair
+				delitem 901,100;// Danggie
+				delitem 1094,100;// Short_Daenggie
+				delitem 1020,100;// Long_Hair
+				delitem 1060,100;// Golden_Hair
+				delitem 7152,100;// Glossy_Hair
 				setlook LOOK_HAIR, .@i;
 				mes "~Snip, snip, snip~";
 				mes "~Snip, snip, snip~";
@@ -1855,16 +1855,32 @@ lasagna,134,113,3	script	Hair Designer#dr	4_DR_F_02,{
 		mes "^FF0000[!!Caution!!]^000000";
 		mes "^FF0000The Dorams inherently have the shortest hair. Even if you proceed with the dialogue, therefore, nothing will happen.^000000";
 		next;
-		setarray .@dye_id[0],976,981,980,979;
-		.@s = select( "Yellow", "Purple", "Orange", "Green" ) - 1;
-		if (countitem(.@dye_id[.@s]) < 1) {
+		setarray .@look_value[0],8,1,2,3,4,5,6,7;
+		setarray .@color_material[0],975,976,981,980,979,978,982,983;
+		.@s = select( "Red", "Yellow", "Purple", "Orange", "Green", "Blue", "White", "Black" ) - 1;
+		if (.@look_value[.@s] == getlook(LOOK_HAIR_COLOR))
+			mes "[Lonza]";
+			mes "Now your hair is this color? Are you still going to continue?";
+			next;
+			if (select( "Carry on", "Cancel" ) == 2) {
+				mes "[Lonza]";
+				mes "Why waste material in vain?~";
+				close;
+			}
+		}
+		if (countitem(.@color_material[.@s]) == 0) {
 			mes "[Lonza]";
 			mes "How can I dye your hair without the dye?";
 			close;
 		}
-		delitem .@dye_id[.@s],1;
-		Zeny = Zeny - 1000;
-		// nothing happen
+		if (Zeny < 1000) {
+			mes "[Lonza]";
+			mes "How can I dye without money?";
+			close;
+		}
+		delitem .@color_material[.@s],1;
+		Zeny -= 1000;
+		setlook LOOK_HAIR_COLOR,.@look_value[.@s];
 		mes "[Lonza]";
 		mes "It'll be done in a jiff!";
 		mes "What a lovely color! Why don't you show it off to your friends?";
