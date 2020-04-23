@@ -21,7 +21,7 @@ lasa_fild01,341,375,0	warp	lasagna_in02	1,1,lasagna,327,56
 lasagna,327,51,0	warp	lasagna_out02	1,1,lasa_fild01,344,371
 
 lasagna,358,91,0	warp	lasagna_in03	1,1,lasa_fild02,20,98
-lasa_fild02,16,98,0	warp	lasagna_in03	1,1,lasagna,355,92
+lasa_fild02,16,98,0	warp	lasagna_in03_	1,1,lasagna,355,92
 
 lasa_in01,159,61,0	warp	dining_lasa	1,1,lasagna,68,202
 

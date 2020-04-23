@@ -6284,7 +6284,7 @@ Body:
     Title: Vigilante Corp
     Drops:
       - Mob: DR_RODA_FROG
-        Item: Luxurious_Cloth
+        Item: High_Quality_Cloth
         Rate: 5000
   - Id: 11445
     Title: Vigilante Corp
@@ -8076,7 +8076,7 @@ Body:
     Title: An errand out of nowhere
     Drops:
       - Mob: DR_BASILISK1
-        Item: Basilac_Clam
+        Item: Basil_Rac
         Rate: 5000
   - Id: 14541
     Title: No news is not a good news
@@ -8127,7 +8127,7 @@ Body:
     Title: Dirty Creatures
     Drops:
       - Mob: DR_BASILISK2
-        Item: Basilac_Clam
+        Item: Basil_Rac
         Rate: 5000
   - Id: 14559
     Title: Charm Effect Duration
@@ -8136,19 +8136,19 @@ Body:
     Title: New Ingredient
     Drops:
       - Mob: DR_BASILISK2
-        Item: Basilac_Clam
+        Item: Basil_Rac
         Rate: 5000
   - Id: 14561
     Title: Dirty and Filty
     Drops:
       - Mob: DR_BASILISK2
-        Item: Basilac_Clam
+        Item: Basil_Rac
         Rate: 5000
   - Id: 14562
     Title: The basic are the best
     Drops:
       - Mob: DR_BASILISK2
-        Item: Basilac_Clam
+        Item: Basil_Rac
         Rate: 5000
   - Id: 14563
     Title: Free time

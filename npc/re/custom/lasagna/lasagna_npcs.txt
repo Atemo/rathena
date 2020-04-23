@@ -1845,6 +1845,7 @@ lasagna,134,113,3	script	Hair Designer#dr	4_DR_F_02,{
 				close;
 			}
 		}
+		end;
 	case 2:
 		mes "[Lonza]";
 		mes "Trendsetters know the right color for their hair, too!";
@@ -1858,7 +1859,7 @@ lasagna,134,113,3	script	Hair Designer#dr	4_DR_F_02,{
 		setarray .@look_value[0],8,1,2,3,4,5,6,7;
 		setarray .@color_material[0],975,976,981,980,979,978,982,983;
 		.@s = select( "Red", "Yellow", "Purple", "Orange", "Green", "Blue", "White", "Black" ) - 1;
-		if (.@look_value[.@s] == getlook(LOOK_HAIR_COLOR))
+		if (.@look_value[.@s] == getlook(LOOK_HAIR_COLOR)) {
 			mes "[Lonza]";
 			mes "Now your hair is this color? Are you still going to continue?";
 			next;
@@ -2131,8 +2132,8 @@ lasagna,232,187,6	script	Fettuccina#dorcon01	4_CAT_SAILOR2,{
 	close;
 }
 
-lasagna,131,245,5	script	The diligent second son	4_CAT_3COLOR,{
-	if (checkweight(1001,1) == 0) {
+lasagna,131,245,5	script	The diligent second son#weapon	4_CAT_3COLOR,{
+	if (checkweight(1301,1) == 0) {
 		mes "- Hold on a second here!! -";
 		mes "- You have too many items. -";
 		mes "- That means you can no longer receive any items. -";
@@ -2155,7 +2156,7 @@ lasagna,131,245,5	script	The diligent second son	4_CAT_3COLOR,{
 		mes "[Yota Chara]";
 		mes "I get startled each time some mail arrives...";
 		next;
-		emotion ET_CRY, getnpcid(0, "The skittish fourth#wea");
+		emotion ET_CRY, getnpcid(0, "The skittish fourth#weapon");
 		mes "[Dandi Chara]";
 		mes "Whatever happened to our parents? ~Bursting into crying~";
 		next;
@@ -2163,13 +2164,13 @@ lasagna,131,245,5	script	The diligent second son	4_CAT_3COLOR,{
 		mes "[Jogi Chara]";
 		mes "Well, then. I'll be your dad!!";
 		next;
-		emotion ET_CRY, getnpcid(0, "The skittish fourth#wea");
+		emotion ET_CRY, getnpcid(0, "The skittish fourth#weapon");
 		emotion ET_PROFUSELY_SWEAT;
 		mes "[Dandi Chara]";
 		mes "~Keeps crying uncontrollably~ No way!! Mom!! Dad!!";
 		next;
 		mes "[Goma Chara]";
-		emotion ET_FRET, getnpcid(0, "The sensitive-minded ela");
+		emotion ET_FRET, getnpcid(0, "The sensitive-minded ela#weapon");
 		emotion ET_PROFUSELY_SWEAT;
 		mes "Both will be totally fine and return to us soon. So quit it! Did you really have to make him cry, huh?!";
 		next;
@@ -2221,7 +2222,7 @@ lasagna,131,245,5	script	The diligent second son	4_CAT_3COLOR,{
 	}
 	if (countitem(25142) < .@cost) {
 		mes "[Yota Chara]";
-		mes "I'm sorry. My sister will get pretty mad if I don't sell it for the proper money. Will you come back with 10 Doram Tokens?";
+		mes "I'm sorry. My sister will get pretty mad if I don't sell it for the proper money. Will you come back with " + .@cost + " Doram Tokens?";
 		close;
 	}
 	mes "[Yota Chara]";
@@ -2232,7 +2233,7 @@ lasagna,131,245,5	script	The diligent second son	4_CAT_3COLOR,{
 }
 
 lasagna,131,250,5	script	The brave third#weapon	4_DR_M_02,{
-	if (checkweight(1001,1) == 0) {
+	if (checkweight(1301,1) == 0) {
 		mes "- Hold on a second here!! -";
 		mes "- You have too many items. -";
 		mes "- That means you can no longer receive any items. -";
@@ -2275,7 +2276,7 @@ lasagna,131,250,5	script	The brave third#weapon	4_DR_M_02,{
 		mes "[Jogi Chara]";
 		mes "Dandi! Today's training is to <put 10 earthworms on the head!> Get over here!";
 		next;
-		emotion ET_CRY, getnpcid(0, "The skittish fourth#wea");
+		emotion ET_CRY, getnpcid(0, "The skittish fourth#weapon");
 		mes "[Dandi Chara]";
 		mes "~Bursting into crying~ Goma Chara!!";
 		close;
@@ -2285,56 +2286,63 @@ lasagna,131,250,5	script	The brave third#weapon	4_DR_M_02,{
 	mes "Whoa, a new weapon! New power!";
 	mes "What are you going to give me? Do you have a lot of weapons? Can I search into them? Will you exchange it for <ITEM>Doram Token <INFO>25142</INFO></ITEM>?";
 	next;
-	if (select( "Search", "Cancel" ) == 1) {
-		setarray .@item_data[0],
-			1690, 1,	// Marvelous Foxtail Staff [3]
-			1691, 2,	// Wondrous Foxtail Staff [2]
-			1692, 3,	// Magic Foxtail Staff [2]
-			1693, 4,	// Magic Yellow Foxtail Staff [1]
-			1694, 1,	// Foxtail Replica [3]
-			1695, 2,	// Fine Foxtail Replica [2]
-			1696, 3,	// Elaborate Foxtail Replica [2]
-			1697, 4;	// Elaborate Yellow Foxtail Replica [1]
-		.@total_item = getarraysize(.@item_data);
+	if (select( "Search", "Cancel" ) == 2) {
+		mes "[Jogi Chara]";
+		mes "Hey! Liar!";
+		close;
+	}
+	setarray .@item_data[0],
+		1690, 1,	// Amazing_Foxtail
+		1694, 1,	// Model_Foxtail
+		1691, 2,	// Strange_Foxtail
+		1695, 2,	// Detail_Model_Foxtail
+		1692, 3,	// Magical_Foxtail
+		1696, 3,	// Ex_Model_Foxtail
+		1693, 4,	// Magical_Y_Foxtail
+		1697, 4;	// Ex_Y_Model_Foxtail
+	.@total_item = getarraysize(.@item_data);
 
-		while(true) {
-			for ( .@i = 0; .@i < .@total_item; .@i += 2 ) {
-				if ((countitem(.@item_data[.@i]) - isequippedcnt(.@item_data[.@i])) > 0)
-					break;
-			}
-			if (.@i == .@total_item) {
-				mes "[Jogi Chara]";
-				mes "That's it?";
-				next;
-				if (select( "Search again.", "Stop." ) == 2)
-					break;
-			}
-			else {
-				mes "[Jogi Chara]";
-				mes "Whoa! This is ^3131FF" + getitemname(.@item_data[.@i]) + "^000000!";
-				mes "Exchange it for " + .@item_data[.@i+1] + " <ITEM>Doram Token<INFO>25142</INFO></ITEM>! Please? Will you do it, please?";
-				next;
-				if (select( "Exchange", "Quit exchanging" ) == 2) {
-					mes "[Jogi Chara]";
-					mes "~Giggles~ We should see each other more often!";
-					close;
-				}
-				mes "[Jogi Chara]";
-				mes "Yay!! Thanks a mil!";
-				mes "Can I look for something else?";
-				delitem .@item_data[.@i],1;
-				getitem 25142,.@item_data[.@i+1];// Doram token
-				next;
-			}
+	while(true) {
+		for ( .@i = 0; .@i < .@total_item; .@i += 2 ) {
+			if ((countitem(.@item_data[.@i]) - isequippedcnt(.@item_data[.@i])) > 0)
+				break;
 		}
+		if (.@i == .@total_item) {
+			mes "[Jogi Chara]";
+			mes "That's it?";
+			next;
+			if (select( "Search again.", "Stop." ) == 2) {
+				mes "[Jogi Chara]";
+				mes "Ok, I know.";
+				close;
+			}
+			continue;
+		}
+		mes "[Jogi Chara]";
+		mes "Whoa! This is ^3131FF" + getitemname(.@item_data[.@i]) + "^000000!";
+		mes "Exchange it for " + .@item_data[.@i+1] + " <ITEM>Doram Token<INFO>25142</INFO></ITEM>! Please? Will you do it, please?";
+		next;
+		if (select( "Exchange", "Quit exchanging" ) == 2) {
+			mes "[Jogi Chara]";
+			mes "~Giggles~ We should see each other more often!";
+			close;
+		}
+		if ((countitem(.@item_data[.@i]) - isequippedcnt(.@item_data[.@i])) > 0) {
+			mes "[Jogi Chara]";
+			mes "Yay!! Thanks a mil!";
+			mes "Can I look for something else?";
+			delitem .@item_data[.@i],1;
+			getitem 25142,.@item_data[.@i+1];// DoramToken
+		}
+		next;
 	}
 	mes "[Jogi Chara]";
 	mes "~Scoffs~ Alright, then.";
 	close;
 }
 
-lasagna,140,250,3	script	The skittish fourth#wea	4_DR_F_01,{
-	if (checkweight(1001,1) == 0) {
+lasagna,140,250,3	script	The skittish fourth#weapon	4_DR_F_01,{
+	if (checkweight(1001,1) == 0) {	// additionnal check
 		mes "- Hold on a second here!! -";
 		mes "- You have too many items. -";
 		mes "- That means you can no longer receive any items. -";
@@ -2376,30 +2384,30 @@ lasagna,140,250,3	script	The skittish fourth#wea	4_DR_F_01,{
 	next;
 	if (select( "Search", "Cancel" ) == 1) {
 		setarray .@item_data[0],	// keep the order
-			15156, 4,	// Elegant Doram Suit [1]
-			20790, 4,	// Elegant Doram Manteau [1]
-			22085, 4,	// Elegant Doram Shoes [1]
-			28415, 4,	// Advanced Saurel Charm [1]
-			28418, 4,	// Advanced Leaf Charm [1]
-			28421, 4,	// Advanced Bunny Charm [1]
-			28414, 3,	// Fair Saurel Charm [1]
-			28417, 3,	// Fair Leaf Charm [1]
-			28420, 3,	// Fair Bunny Charm [1]
-			15129, 3,	// Luxurious Doram Suit [1]
-			20789, 3,	// Luxurious Doram Manteau [1]
-			22084, 3,	// Luxurious Doram Shoes [1]
-			15126, 3,	// Doram Suit [1]
-			20788, 3,	// Doram Manteau [1]
-			22083, 3,	// Doram Shoes [1]
-			28380, 2,	// Fresh Grass Necklace [1]
-			28381, 2,	// Cute Grass Necklace [1]
-			28382, 2,	// Charming Grass Necklace [1]
-			28422, 2,	// Shining Branch Charm [1]
-			28423, 2,	// Fresh Tuna Charm [1]
-			28423, 2,	// Plump Earthworm Charm [1]
-			28413, 2,	// Basic Saurel Charm [1]
-			28416, 2,	// Basic Leaf Charm [1]
-			28419, 2;	// Basic Bunny Charm [1]
+			15126, 2,	// Doram_Only_Suit
+			20788, 2,	// Doram_Only_Cape
+			22083, 2,	// Doram_Only_Shoes
+			28380, 2,	// Fresh_G_Necklace
+			28381, 2,	// Pretty_G_Necklace
+			28382, 2,	// Charm_G_Necklace
+			28413, 2,	// LowSaurelCharm
+			28416, 2,	// LowLeafCharm
+			28419, 2,	// LowRabbitCharm
+			28423, 2,	// FreshTunaCharm
+			28422, 2,	// ShiningTwigCharm
+			28424, 2,	// PlumpyWormCharm
+			15129, 3,	// Doram_High_Suit
+			20789, 3,	// Doram_High_Cape
+			22084, 3,	// Doram_High_Shoes
+			28414, 3,	// MiddleSaurelCharm
+			28417, 3,	// MiddleLeafCharm
+			28420, 3,	// MiddleRabbitCharm
+			15156, 4,	// Doram_Ele_Suit
+			20790, 4,	// Doram_Ele_Cape
+			22085, 4,	// Doram_Ele_Shoes
+			28415, 4,	// HigherSaurelCharm
+			28418, 4,	// HigherLeafCharm
+			28421, 4;	// HigherRabbitCharm
 		.@total_item = getarraysize(.@item_data);
 
 		while(true) {
@@ -2411,26 +2419,30 @@ lasagna,140,250,3	script	The skittish fourth#wea	4_DR_F_01,{
 				mes "[Dandi Chara]";
 				mes "...I think That's just it. Should I look over it again, or stop right here?";
 				next;
-				if (select( "Search again.", "Stop." ) == 2)
-					break;
-			}
-			else {
-				mes "[Dandi Chara]";
-				mes "Whoa, this must be ^3131FF" + getitemname(.@item_data[.@i]) + "^000000!!";
-				mes "Don't you want to exchange this with " + .@item_data[.@i+1] + " <ITEM>Doram Token<INFO>25142</INFO></ITEM>?";
-				next;
-				if (select( "Exchange", "Quit exchanging" ) == 2) {
+				if (select( "Search again.", "Stop." ) == 2) {
 					mes "[Dandi Chara]";
-					mes "I know. I searched into your inventory too much. Sorry...";
+					mes "Ok, I know.";
 					close;
 				}
+				continue;
+			}
+			mes "[Dandi Chara]";
+			mes "Whoa, this must be ^3131FF" + getitemname(.@item_data[.@i]) + "^000000!!";
+			mes "Don't you want to exchange this with " + .@item_data[.@i+1] + " <ITEM>Doram Token<INFO>25142</INFO></ITEM>?";
+			next;
+			if (select( "Exchange", "Quit exchanging" ) == 2) {
+				mes "[Dandi Chara]";
+				mes "I know. I searched into your inventory too much. Sorry...";
+				close;
+			}
+			if ((countitem(.@item_data[.@i]) - isequippedcnt(.@item_data[.@i])) > 0) {
 				mes "[Dandi Chara]";
 				mes "Thank you.";
 				mes "Can I look for something else?";
 				delitem .@item_data[.@i],1;
 				getitem 25142,.@item_data[.@i+1];// Doram token
-				next;
 			}
+			next;
 		}
 	}
 	mes "[Dandi Chara]";
@@ -2438,8 +2450,8 @@ lasagna,140,250,3	script	The skittish fourth#wea	4_DR_F_01,{
 	close;
 }
 
-lasagna,140,245,3	script	The sensitive-minded ela	4_CAT_SAILOR3,{
-	if (checkweight(1001,1) == 0) {
+lasagna,140,245,3	script	The sensitive-minded ela#weapon	4_CAT_SAILOR3,{
+	if (checkweight(1301,1) == 0) {
 		mes "- Hold on a second here!! -";
 		mes "- You have too many items. -";
 		mes "- That means you can no longer receive any items. -";
@@ -2479,44 +2491,88 @@ lasagna,140,245,3	script	The sensitive-minded ela	4_CAT_SAILOR3,{
 	mes "Yota often makes quality amulets, but he still needs more polishing.";
 	mes "If he pays attention to details, his amulets will be even greater. But he just doesn't care.";
 	next;
-	.@s = (select( "Polish the Horse Mackerel Amulet.", "Polish the Leaf Amulet.", "Polish the Rabbit Amulet." ) - 1) * 4;
-
-	setarray .@item_data[0],
-		28413, 30,	// Basic Saurel Charm [1]
-		28414, 90,	// Fair Saurel Charm [1]
-		28416, 30,	// Basic Leaf Charm [1]
-		28417, 90,	// Fair Leaf Charm [1]
-		28419, 30,	// Basic Bunny Charm [1]
-		28420, 90;	// Fair Bunny Charm [1]
-
-	if ((countitem(.@item_data[.@s]) - isequippedcnt(.@item_data[.@s]))  > 0)
-		.@index = .@s;
-	else if ((countitem(.@item_data[.@s+2]) - isequippedcnt(.@item_data[.@s+2])) > 0)
-		.@index = .@s + 2;
-	else {
+	switch( select( "Polish the Horse Mackerel Amulet.", "Polish the Leaf Amulet.", "Polish the Rabbit Amulet." ) ) {
+	case 1:
+		if ((countitem(28413) - isequippedcnt(28413))  > 0) {
+			.@your_charm_ID = 28413;
+			.@next_charm_ID = 28414;
+			.@needCoin = 30;
+		}
+		else if ((countitem(28414) - isequippedcnt(28413))  > 0) {
+			.@your_charm_ID = 28414;
+			.@next_charm_ID = 28415;
+			.@needCoin = 90;
+		}
+		else if ((countitem(28415) - isequippedcnt(28415))  > 0) {
+			mes "[Goma Chara]";
+			mes "This amulet is already perfect!";
+			close;
+		}
+		break;
+	case 2:
+		if ((countitem(28416) - isequippedcnt(28416))  > 0) {
+			.@your_charm_ID = 28416;
+			.@next_charm_ID = 28417;
+			.@needCoin = 30;
+		}
+		else if ((countitem(28417) - isequippedcnt(28417))  > 0) {
+			.@your_charm_ID = 28417;
+			.@next_charm_ID = 28418;
+			.@needCoin = 90;
+		}
+		else if ((countitem(28418) - isequippedcnt(28418))  > 0) {
+			mes "[Goma Chara]";
+			mes "This amulet is already perfect!";
+			close;
+		}
+		break;
+	case 3:
+		if ((countitem(28419) - isequippedcnt(28419))  > 0) {
+			.@your_charm_ID = 28419;
+			.@next_charm_ID = 28420;
+			.@needCoin = 30;
+		}
+		else if ((countitem(28420) - isequippedcnt(28420))  > 0) {
+			.@your_charm_ID = 28420;
+			.@next_charm_ID = 28421;
+			.@needCoin = 90;
+		}
+		else if ((countitem(28421) - isequippedcnt(28421))  > 0) {
+			mes "[Goma Chara]";
+			mes "This amulet is already perfect!";
+			close;
+		}
+		break;
+	}
+	if (.@your_charm_ID < 1) {
 		mes "[Goma Chara]";
 		mes "Show me your amulet, will you? I can't seem to find it in your inventory.";
 		close;
 	}
 	mes "[Goma Chara]";
-	mes "Let me. Hmm... " + getitemname(.@item_data[.@index]) + ", it is.";
+	mes "Let me. Hmm... " + getitemname(.@your_charm_ID) + ", it is.";
 	mes "...I knew this was going to happen again. Worse, this one must require a lot more time to polish!";
 	next;
 	mes "[Goma Chara]";
-	mes "Hey, if you give me " + .@item_data[.@index+1] + "<ITEM>Doram Token<INFO>25142</INFO></ITEM>, I'll fix this for you.";
-	mes "<ITEM>This should produce the <INFO>" + (.@item_data[.@index]+1) + "</INFO></ITEM> function, I guess. How do you like it?";
+	mes "Hey, if you give me " + .@needCoin + "<ITEM>Doram Token<INFO>25142</INFO></ITEM>, I'll fix this for you.";
+	mes "<ITEM>This should produce the <INFO>" + .@next_charm_ID + "</INFO></ITEM> function, I guess. How do you like it?";
 	next;
 	if (select( "Upgrade", "Cancel" ) == 2) {
 		mes "[Goma Chara]";
 		mes "As you please.";
 		close;
 	}
+	if (countitem(25142) < .@needCoin) {
+		mes "[Goma Chara]";
+		mes "Insufficient materials, can not be repaired free.";
+		close;
+	}
 	mes "[Goma Chara]";
 	mes "The inside of this amulet seems pretty tough.";
 	mes "But my dexterity is tougher. Tada! Put my brother's amulet to good use.";
-	delitem 25142, .@item_data[.@index+1];// Doram token
-	delitem .@item_data[.@index],1;
-	getitem (.@item_data[.@index] + 1),1;
+	delitem 25142, .@needCoin;// Doram token
+	delitem .@your_charm_ID,1;
+	getitem .@next_charm_ID,1;
 	close;
 }
 
