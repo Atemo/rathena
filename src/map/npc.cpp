@@ -407,7 +407,7 @@ TIMER_FUNC(npc_secure_timeout_timer){
 
 	if( DIFF_TICK(cur_tick,sd->npc_idle_tick) > (timeout*1000) ) {
 		pc_close_npc(sd,1);
-	} else if(sd->st && (sd->st->state == END || sd->st->state == CLOSE)){
+	} else if(sd->st && (sd->st->state == END || sd->st->state == CLOSE || sd->st->state == CLOSE3)){
 		sd->npc_idle_timer = INVALID_TIMER; //stop timer the script is already ending
 	} else { //Create a new instance of ourselves to continue
 		sd->npc_idle_timer = add_timer(cur_tick + (SECURE_NPCTIMEOUT_INTERVAL*1000),npc_secure_timeout_timer,sd->bl.id,0);
@@ -1502,6 +1502,11 @@ bool npc_scriptcont(struct map_session_data* sd, int id, bool closing){
 			// close2
 			case STOP:
 				sd->st->state = RUN;
+				break;
+			// close3
+			case CLOSE3:
+				clif_cutin(sd,"",255);
+				sd->st->state = END;
 				break;
 			default:
 				sd->st->state = END;
