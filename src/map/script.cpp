@@ -24897,7 +24897,6 @@ BUILDIN_FUNC(isnpccloaked)
 	return SCRIPT_CMD_SUCCESS;
 }
 
-
 #include "../custom/script.inc"
 
 // declarations that were supposed to be exported from npc_chat.cpp
