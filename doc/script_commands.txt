@@ -2874,6 +2874,9 @@ of possible equipment slots.
 ---------------------------------------
 
 *getinventorylist {<char_id>};
+*getcartlist {<char_id>};
+*getstoragelist {<char_id>};
+*getguildstoragelist {<char_id>};
 
 This command sets a bunch of arrays with a complete list of whatever the
 invoking character has in their inventory, including all the data needed to
@@ -2893,7 +2896,7 @@ recreate these items perfectly if they are destroyed. Here's what you get:
                                      craftsman.
 @inventorylist_expire[]            - expire time (Unix time stamp). 0 means never expires.
 @inventorylist_bound[]             - the bound type of the items (see BOUND_* constants)
-@inventorylist_count               - the number of items in these lists.
+@inventorylist_count[]             - the number of items in these lists.
 @inventorylist_option_id1[]        - first array of random option IDs
 @inventorylist_option_value1[]     - first array of random option values
 @inventorylist_option_parameter1[] - first array of random option parameters
@@ -2909,7 +2912,8 @@ recreate these items perfectly if they are destroyed. Here's what you get:
 @inventorylist_option_id5[]        - fifth array of random option IDs
 @inventorylist_option_value5[]     - fifth array of random option values
 @inventorylist_option_parameter5[] - fifth array of random option parameters
-@inventorylist_tradable            - Returns if an item is tradable or not (Pass item_trade.txt, bound, and rental restrictions).
+@inventorylist_tradable[]          - Returns if an item is tradable or not (Pass item_trade.txt, bound, and rental restrictions).
+@inventorylist_unique_id[]         - unique item id.
 
 This could be handy to save/restore a character's inventory, since no other
 command returns such a complete set of data, and could also be the only way to
