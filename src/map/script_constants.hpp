@@ -7911,6 +7911,12 @@
 	export_constant(BG_INFO_MAPS);
 	export_constant(BG_INFO_DESERTER_TIME);
 
+	/* storage_type */
+	export_constant(TABLE_INVENTORY);
+	export_constant(TABLE_CART);
+	export_constant(TABLE_STORAGE);
+	export_constant(TABLE_GUILD_STORAGE);
+
 	#undef export_constant
 	#undef export_constant2
 	#undef export_parameter
