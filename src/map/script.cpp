@@ -24841,6 +24841,95 @@ BUILDIN_FUNC(isnpccloaked)
 	return SCRIPT_CMD_SUCCESS;
 }
 
+/**
+ * Deletes item at given index.
+ * delitemidx(<index>{,<amount{,<table>{,<char id>}}});
+ */
+BUILDIN_FUNC(delitemidx)
+{
+	struct map_session_data *sd;
+
+	if (!script_charid2sd(4, sd))
+		return SCRIPT_CMD_SUCCESS;
+
+	int loc = TABLE_INVENTORY;
+
+	if (script_hasdata(st, 5)) {
+		loc = script_getnum(st, 5);
+		if (loc < TABLE_INVENTORY || loc > TABLE_GUILD_STORAGE) {
+			ShowError("buildin_delitemidx: invalid type of inventory.\n");
+			script_pushint(st, 0);
+			return SCRIPT_CMD_FAILURE;
+		}
+	}
+
+	int size = 0;
+	struct item *items;
+
+	switch(loc) {
+		case TABLE_CART:
+			if (!pc_iscarton(sd)) {
+				ShowError("buildin_delitemidx: player doesn't have cart (CID=%d).\n", sd->status.char_id);
+				script_pushint(st, 0);
+				return SCRIPT_CMD_FAILURE;
+			}
+			size = MAX_CART;
+			items = sd->cart.u.items_cart;
+			break;
+		case TABLE_STORAGE:
+			size = MAX_STORAGE;
+			items = sd->storage.u.items_storage;
+			break;
+		case TABLE_GUILD_STORAGE:
+		{
+			struct s_storage *gstor = guild2storage2(sd->status.guild_id);
+			if (gstor == NULL) {
+				ShowError("buildin_delitemidx: player doesn't have a guild (CID=%d).\n", sd->status.char_id);
+				script_pushint(st, 0);
+				return SCRIPT_CMD_FAILURE;
+			}
+			if (sd->state.storage_flag) {
+				script_pushint(st, 0);
+				return SCRIPT_CMD_SUCCESS;
+			}
+
+			size = MAX_GUILD_STORAGE;
+			items = gstor->u.items_guild;
+		}
+			break;
+		default: // TABLE_INVENTORY
+			size = MAX_INVENTORY;
+			items = sd->inventory.u.items_inventory;
+			break;
+	}
+
+	int i = script_getnum(st, 2);
+	if (i < 0 || i >= size) {
+		ShowError("buildin_delitemidx: Index (%d) should be from 0-%d.\n", i, size - 1);
+		st->state = END;
+		script_pushint(st, 0);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	if (!itemdb_exists(items[i].nameid))
+		ShowWarning("buildin_delitemidx: Deleting invalid Item ID (%d).\n", items[i].nameid);
+
+	int amount;
+	if (!script_hasdata(st, 3))
+		amount = items[i].amount;
+	else {
+		amount = script_getnum(st, 3);
+		amount = ((amount > items[i].amount) ? items[i].amount : amount);
+	}
+
+	if (amount < 1)
+		return SCRIPT_CMD_SUCCESS;
+
+	buildin_delitem_delete(sd, i, &amount, static_cast<uint8>(loc), true);
+
+	return SCRIPT_CMD_SUCCESS;
+}
+
 #include "../custom/script.inc"
 
 // declarations that were supposed to be exported from npc_chat.cpp
@@ -25523,6 +25612,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(rentalcountitem, "v?"),
 	BUILDIN_DEF2(rentalcountitem, "rentalcountitem2", "viiiiiii?"),
 	BUILDIN_DEF2(rentalcountitem, "rentalcountitem3", "viiiiiiirrr?"),
+	BUILDIN_DEF(delitemidx, "i???"),
 
 #include "../custom/script_def.inc"
 
