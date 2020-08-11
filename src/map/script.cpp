@@ -14205,7 +14205,6 @@ BUILDIN_FUNC(getinventorylist)
 			}
 			pc_setreg(sd,reference_uid(add_str("@inventorylist_tradable"), j),pc_can_trade_item(sd, itm));
 			pc_setreg(sd,reference_uid(add_str("@inventorylist_unique_id"), j),itm->unique_id);
-			pc_setreg(sd,reference_uid(add_str("@inventorylist_idx"), j),i);
 			j++;
 		}
 	}
