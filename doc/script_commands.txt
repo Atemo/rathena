@@ -644,6 +644,10 @@ value from another array) to get at an array value:
 
 This will make .@arrayofnumbers[100] equal to 10.
 
+	.@arrayofnumbers[-1] = 20;
+
+This will make .@arrayofnumbers[100] (the last index) equal to 20.
+
 Index numbering always starts with 0 and arrays can hold over 2 billion
 variables. As such, the (guaranteed) allowed values for indices are in the
 range 0 ~ 2147483647.

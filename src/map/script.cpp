@@ -6522,12 +6522,16 @@ BUILDIN_FUNC(getelementofarray)
 	id = reference_getid(data);
 
 	i = script_getnum(st, 3);
-	if (i < 0 || i >= SCRIPT_MAX_ARRAYSIZE) {
+	if (std::abs(i) >= SCRIPT_MAX_ARRAYSIZE) {
 		ShowWarning("script:getelementofarray: index out of range (%" PRId64 ")\n", i);
 		script_reportdata(data);
 		script_pushnil(st);
 		st->state = END;
 		return SCRIPT_CMD_FAILURE;// out of range
+	}
+	if (i < 0) {
+		struct map_session_data* sd = NULL;
+		i = cap_value( (script_array_highest_key(st, sd, reference_getname(data), reference_getref(data)) + i), 0, SCRIPT_MAX_ARRAYSIZE );
 	}
 
 	push_val2(st->stack, C_NAME, reference_uid(id, i), reference_getref(data));
