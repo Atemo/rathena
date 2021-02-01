@@ -14203,7 +14203,7 @@ BUILDIN_FUNC(getinventorylist)
 				sprintf(randopt_var, "@inventorylist_option_parameter%d",k+1);
 				pc_setreg(sd,reference_uid(add_str(randopt_var), j),itm->option[k].param);
 			}
-			pc_setreg(sd,reference_uid(add_str("@inventorylist_tradable"), j),pc_can_trade_item(sd, itm));
+			pc_setreg(sd,reference_uid(add_str("@inventorylist_tradable"), j),pc_can_trade_item(*sd, *itm));
 			pc_setreg(sd,reference_uid(add_str("@inventorylist_unique_id"), j),itm->unique_id);
 			j++;
 		}
@@ -24327,7 +24327,7 @@ BUILDIN_FUNC(getequiptradability) {
 	}
 
 	if (i >= 0)
-		script_pushint(st, pc_can_trade_item(sd, &sd->inventory.u.items_inventory[i]));
+		script_pushint(st, pc_can_trade_item(*sd, sd->inventory.u.items_inventory[i]));
 	else
 		script_pushint(st, false);
 
