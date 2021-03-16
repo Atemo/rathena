@@ -2705,10 +2705,10 @@ See 'getequipid' for a full list of valid equipment slots.
 ---------------------------------------
 
 *getitemname(<item id>)
+*getitemname("<aegis item name>")
 
 Given the database ID number of an item, this function will return the text
-stored in the 'japanese name' field (which, in rAthena, stores an English name
-the players would normally see on screen.)
+stored in the 'name_english' field in SQL or 'Name' in item_db.yml.
 
 ---------------------------------------
 
@@ -2911,7 +2911,6 @@ recreate these items perfectly if they are destroyed. Here's what you get:
                                      craftsman.
 @inventorylist_expire[]            - expire time (Unix time stamp). 0 means never expires.
 @inventorylist_bound[]             - the bound type of the items (see BOUND_* constants)
-@inventorylist_count               - the number of items in these lists.
 @inventorylist_option_id1[]        - first array of random option IDs
 @inventorylist_option_value1[]     - first array of random option values
 @inventorylist_option_parameter1[] - first array of random option parameters
@@ -2927,7 +2926,11 @@ recreate these items perfectly if they are destroyed. Here's what you get:
 @inventorylist_option_id5[]        - fifth array of random option IDs
 @inventorylist_option_value5[]     - fifth array of random option values
 @inventorylist_option_parameter5[] - fifth array of random option parameters
-@inventorylist_tradable            - Returns if an item is tradable or not (Pass item_trade.txt, bound, and rental restrictions).
+@inventorylist_tradable[]          - Returns if an item is tradable or not (Pass item_trade.txt, bound, and rental restrictions).
+@inventorylist_unique_id[]         - array of unique item ids.
+@inventorylist_idx[]               - array of index of items in the player inventory.
+
+@inventorylist_count               - the number of items in these lists.
 
 This could be handy to save/restore a character's inventory, since no other
 command returns such a complete set of data, and could also be the only way to
@@ -5092,8 +5095,9 @@ See 'getitem2' for an explanation of the expanded parameters.
 *countbound({<bound type>{,<char_id>}})
 
 This function will return the number of different bounded items in the character's
-inventory, and sets the arrays @bound_items[] and @bound_amount[] containing all item IDs of the
-counted items and their respective amount. If a bound type is specified, only those items will be counted.
+inventory, and sets the arrays @bound_items[], @bound_amount[] and @bound_idx[] containing all item IDs of the
+counted items, their respective amount and index in the player inventory.
+If a bound type is specified, only those items will be counted.
 
 For a list of bound types see 'getitembound'.
 
@@ -7042,6 +7046,8 @@ The label "OnSellItem" sets the following arrays:
 	@sold_option_id5    - random option ID 5
 	@sold_option_val5   - random option value 5
 	@sold_option_param5 - random option param 5
+	@sold_unique_id     - unique ID of the item
+	@sold_bound         - bound type of the items (see BOUND_* constants)
 
 Note: These labels will only be triggered if an npcshop* command is executed because these
 commands set a special data on the shop NPC, named master_nd in the source. The above labels
