@@ -4996,6 +4996,44 @@ If player is not in a guild or storage is open, 'guildstoragedelitem2' will retu
 
 ---------------------------------------
 
+*delitemidx <index>{,<amount>{,<char id>}};
+*delcartitemidx <index>{,<amount>{,<char id>}};
+*delstorageitemidx <index>{,<amount>{,<char id>}};
+*delguildstorageitemidx <index>{,<amount>{,<char id>}};
+	
+This command will remove the <amount> of items at the given storage index or
+if <amount> is not specified, all of the items at this index.
+
+Note that after deleting an item at the given index that index
+remain empty until the player relogs.
+The command can be used to make sure to delete the item at the index
+when the user have multiple same ID's.
+
+The command returns 0 on failure and 1 on success.
+Unlike delitem, the script will not terminate with an error on failure.
+
+Example 1:
+	...
+	callshop "random_shop",2;
+	npcshopattach "random_shop";
+	end;
+OnSell:
+	// delete the items at the given inventory index
+	.@size = getarraysize(@sold_idx);
+	for ( .@i = 0; .@i < .@size; ++.@i )
+		delitemidx @sold_idx[.@i];
+	end;
+
+Example 2:
+	// delete the bound items only
+	getinventorylist();
+	.@size = getarraysize(@inventorylist_count);
+	for ( .@i = 0; .@i < .@size; ++.@i )
+		if (@inventorylist_bound[.@i])
+			delitemidx @inventorylist_idx[.@i];
+
+---------------------------------------
+
 *countitem(<item id>{,<accountID>})
 *countitem("<item name>"{,<accountID>})
 
@@ -7048,6 +7086,7 @@ The label "OnSellItem" sets the following arrays:
 	@sold_option_param5 - random option param 5
 	@sold_unique_id     - unique ID of the item
 	@sold_bound         - bound type of the items (see BOUND_* constants)
+	@sold_idx           - index of item in the player inventory
 
 Note: These labels will only be triggered if an npcshop* command is executed because these
 commands set a special data on the shop NPC, named master_nd in the source. The above labels

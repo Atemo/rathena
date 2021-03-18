@@ -8072,12 +8072,6 @@
 	export_constant(MADO_ROBOT);
 	export_constant(MADO_SUIT);
 
-	/* storage_type */
-	export_constant(TABLE_INVENTORY);
-	export_constant(TABLE_CART);
-	export_constant(TABLE_STORAGE);
-	export_constant(TABLE_GUILD_STORAGE);
-
 	#undef export_constant
 	#undef export_constant2
 	#undef export_parameter

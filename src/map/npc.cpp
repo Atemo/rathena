@@ -2137,6 +2137,7 @@ static int npc_selllist_sub(struct map_session_data* sd, int n, unsigned short* 
 	int key_identify = 0;
 	int key_bound = 0;
 	int key_unique_id = 0;
+	int key_idx = 0;
 	int key_card[MAX_SLOTS];
 	int key_option_id[MAX_ITEM_RDM_OPT], key_option_val[MAX_ITEM_RDM_OPT], key_option_param[MAX_ITEM_RDM_OPT];
 
@@ -2174,6 +2175,7 @@ static int npc_selllist_sub(struct map_session_data* sd, int n, unsigned short* 
 		script_setarray_pc( sd, "@sold_quantity", i, item_list[i*2+1], &key_amount );
 		script_setarray_pc( sd, "@sold_bound", i, sd->inventory.u.items_inventory[idx].bound, &key_bound );
 		script_setarray_pc( sd, "@sold_unique_id", i, sd->inventory.u.items_inventory[idx].unique_id, &key_unique_id );
+		script_setarray_pc( sd, "@sold_idx", i, idx, &key_idx );
 
 		if( itemdb_isequip(sd->inventory.u.items_inventory[idx].nameid) )
 		{// process equipment based information into the arrays

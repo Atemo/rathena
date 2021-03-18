@@ -25034,7 +25034,11 @@ BUILDIN_FUNC(delitemidx)
 		return SCRIPT_CMD_SUCCESS;
 
 	const char* command = script_getfuncname(st);
-	storage_type loc = TABLE_INVENTORY;
+
+	int size = 0;
+	struct item *items;
+	struct s_storage *gstor = nullptr;
+	int loc = TABLE_INVENTORY;
 
 	if (!strcmp(command, "delcartitemidx"))
 		loc = TABLE_CART;
@@ -25043,101 +25047,71 @@ BUILDIN_FUNC(delitemidx)
 	else if (!strcmp(command, "delguildstorageitemidx"))
 		loc = TABLE_GUILD_STORAGE;
 
-	int size = 0;
-	struct item *items;
-	struct s_storage *gstor = nullptr;
-
 	switch(loc) {
-		case TABLE_CART:
-			if (!pc_iscarton(sd)) {
-				ShowError("buildin_%s: player doesn't have cart (CID=%d).\n", command, sd->status.char_id);
-				script_pushint(st, 0);
-				return SCRIPT_CMD_FAILURE;
-			}
-			size = MAX_CART;
-			items = sd->cart.u.items_cart;
-			break;
-		case TABLE_STORAGE:
-			if (sd->state.storage_flag) {
-				script_pushint(st, 0);
-				return SCRIPT_CMD_SUCCESS;
-			}
-			size = MAX_STORAGE;
-			items = sd->storage.u.items_storage;
-			break;
-		case TABLE_GUILD_STORAGE:
-		{
-			struct s_storage *gstor = guild2storage2(sd->status.guild_id);
-			if (gstor == NULL) {
-				ShowError("buildin_%s: player doesn't have a guild (CID=%d).\n", command, sd->status.char_id);
-				script_pushint(st, 0);
-				return SCRIPT_CMD_FAILURE;
-			}
-			if (sd->state.storage_flag) {
-				script_pushint(st, 0);
-				return SCRIPT_CMD_SUCCESS;
-			}
-
-			gstor = guild2storage(sd->status.guild_id);
-
-			if (!gstor || (gstor && sd->state.storage_flag != 0)) {
-				script_pushint(st, 0);
-				return SCRIPT_CMD_SUCCESS;
-			}
-			size = MAX_GUILD_STORAGE;
-			items = gstor->u.items_guild;
-			gstor->lock = true;
+	case TABLE_CART:
+		if (!pc_iscarton(sd)) {
+			ShowError("buildin_%s: player doesn't have cart (CID=%d).\n", command, sd->status.char_id);
+			st->state = END;
+			script_pushint(st, 0);
+			return SCRIPT_CMD_FAILURE;
 		}
-			break;
-		default: // TABLE_INVENTORY
-			size = MAX_INVENTORY;
-			items = sd->inventory.u.items_inventory;
-			break;
+		size = MAX_CART;
+		items = sd->cart.u.items_cart;
+		break;
+	case TABLE_STORAGE:
+		if (sd->state.storage_flag) {
+			script_pushint(st, 0);
+			return SCRIPT_CMD_SUCCESS;
+		}
+		size = MAX_STORAGE;
+		items = sd->storage.u.items_storage;
+		break;
+	case TABLE_GUILD_STORAGE:
+	{
+		gstor = guild2storage(sd->status.guild_id);
+		if (gstor == nullptr) {
+			ShowError("buildin_%s: player doesn't have a guild (CID=%d).\n", command, sd->status.char_id);
+			st->state = END;
+			script_pushint(st, 0);
+			return SCRIPT_CMD_FAILURE;
+		}
+		if (sd->state.storage_flag) {
+			script_pushint(st, 0);
+			return SCRIPT_CMD_SUCCESS;
+		}
+		size = MAX_GUILD_STORAGE;
+		items = gstor->u.items_guild;
+		gstor->lock = true;
+	}
+		break;
+	default: // TABLE_INVENTORY
+		size = MAX_INVENTORY;
+		items = sd->inventory.u.items_inventory;
+		break;
 	}
 
+	int val = 0;
 	int i = script_getnum(st, 2);
-	if (i < 0 || i >= size) {
-		ShowError("buildin_%s: Index (%d) should be from 0-%d.\n", command, i, size - 1);
-		st->state = END;
-		script_pushint(st, 0);
-		if (gstor && loc == TABLE_GUILD_STORAGE) {
-			storage_guild_storageclose(sd);
-			gstor->lock = false;
+	if (i < 0 || i >= size)
+		ShowWarning("buildin_%s: Index (%d) should be from 0-%d.\n", command, i, size - 1);
+	else {
+		if (itemdb_exists(items[i].nameid)) {
+			int amount;
+			if (!script_hasdata(st, 3))
+				amount = items[i].amount;
+			else
+				amount = cap_value(script_getnum(st, 3), 0, items[i].amount);
+
+			if (amount > 0)
+				buildin_delitem_delete(sd, i, &amount, static_cast<uint8>(loc), true);
+			val = 1;
 		}
-		return SCRIPT_CMD_FAILURE;
 	}
-
-	if (!itemdb_exists(items[i].nameid)) {
-		ShowWarning("buildin_%s: Deleting invalid Item ID (%d).\n", command, items[i].nameid);
-		st->state = END;
-		script_pushint(st, 0);
-		if (gstor && loc == TABLE_GUILD_STORAGE) {
-			storage_guild_storageclose(sd);
-			gstor->lock = false;
-		}
-		return SCRIPT_CMD_FAILURE;
-	}
-
-	int amount;
-	if (!script_hasdata(st, 3))
-		amount = items[i].amount;
-	else
-		amount = cap_value(script_getnum(st, 3), 0, items[i].amount);
-
-	if (amount < 1) {
-		if (gstor && loc == TABLE_GUILD_STORAGE) {
-			storage_guild_storageclose(sd);
-			gstor->lock = false;
-		}
-		return SCRIPT_CMD_SUCCESS;
-	}
-
-	buildin_delitem_delete(sd, i, &amount, static_cast<uint8>(loc), true);
-
-	if (gstor && loc == TABLE_GUILD_STORAGE) {
+	if (gstor) {
 		storage_guild_storageclose(sd);
 		gstor->lock = false;
 	}
+	script_pushint(st, val);
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -25805,7 +25779,6 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(achievementexists,"i?"),
 	BUILDIN_DEF(achievementupdate,"iii?"),
 
-
 	BUILDIN_DEF(getequiprefinecost,"iii?"),
 	BUILDIN_DEF2(round, "round", "ii"),
 	BUILDIN_DEF2(round, "ceil", "ii"),
@@ -25828,6 +25801,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(rentalcountitem, "v?"),
 	BUILDIN_DEF2(rentalcountitem, "rentalcountitem2", "viiiiiii?"),
 	BUILDIN_DEF2(rentalcountitem, "rentalcountitem3", "viiiiiiirrr?"),
+
 	BUILDIN_DEF(delitemidx, "i??"),
 	BUILDIN_DEF2(delitemidx,"delcartitemidx","i??"),
 	BUILDIN_DEF2(delitemidx,"delstorageitemidx","i??"),
