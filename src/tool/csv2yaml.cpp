@@ -303,6 +303,18 @@ int do_init( int argc, char** argv ){
 		return 0;
 	}
 
+	if (!process("PRODUCE_DB", 1, { path_db_mode }, "produce_db", [](const std::string &path, const std::string &name_ext) -> bool {
+		return sv_readdb(path.c_str(), name_ext.c_str(), ',', 5, 5+2*MAX_PRODUCE_RESOURCE, MAX_SKILL_PRODUCE_DB, &skill_parse_row_producedb, false);
+	})) {
+		return 0;
+	}
+
+	if (!process("PRODUCE_DB", 1, { path_db_import }, "produce_db", [](const std::string &path, const std::string &name_ext) -> bool {
+		return sv_readdb(path.c_str(), name_ext.c_str(), ',', 5, 5+2*MAX_PRODUCE_RESOURCE, MAX_SKILL_PRODUCE_DB, &skill_parse_row_producedb, false);
+	})) {
+		return 0;
+	}
+
 	// TODO: add implementations ;-)
 
 	return 0;
@@ -3495,5 +3507,88 @@ static bool read_homunculus_expdb(const char* file) {
 
 	fclose(fp);
 	ShowStatus("Done reading '" CL_WHITE "%d" CL_RESET "' entries in '" CL_WHITE "%s" CL_RESET "'.\n", count, file);
+	return true;
+}
+
+// Copied and adjusted from skill.cpp
+static bool skill_parse_row_producedb(char* split[], int columns, int current) {
+	t_itemid nameid = static_cast<t_itemid>(strtoul(split[1], nullptr, 10));
+
+	if (nameid == 0)
+		return true;
+
+	std::string *produced_name = util::umap_find(aegis_itemnames, nameid);
+
+	if (!produced_name) {
+		ShowError("skill_parse_row_producedb: Invalid item %u.\n", nameid);
+		return false;
+	}
+
+	uint16 skill_id = static_cast<uint16>(strtoul(split[3], nullptr, 10));
+	std::string* skill_name = util::umap_find( aegis_skillnames, skill_id );
+
+	if (skill_id != 0 && skill_name == nullptr) {
+		ShowError( "Skill name for skill id %hu is not known.\n", skill_id );
+		return false;
+	}
+	uint32 skill_lv = strtoul(split[4], nullptr, 10);
+
+	std::map<std::string, uint32> item_consumed;
+	std::map<std::string, uint32> item_notconsumed;
+
+	for (uint8 x = 5; x+1 < columns && split[x] && split[x+1]; x += 2) {
+		nameid = static_cast<t_itemid>(strtoul(split[x], nullptr, 10));
+		std::string* item_name = util::umap_find(aegis_itemnames, nameid);
+
+		if (!item_name) {
+			ShowError("skill_parse_row_producedb: Invalid item %u.\n", nameid);
+			return false;
+		}
+
+		uint32 amount = strtoul(split[x+1], nullptr, 10);
+		if (amount == 0)
+			item_notconsumed.insert({ *item_name, amount });
+		else
+			item_consumed.insert({ *item_name, amount });
+	}
+
+	body << YAML::BeginMap;
+	body << YAML::Key << "Id" << YAML::Value << strtoul(split[0], nullptr, 10);
+	body << YAML::Key << "ItemLV" << YAML::Value << strtoul(split[2], nullptr, 10);
+	body << YAML::Key << "Produced" << YAML::Value << *produced_name;
+
+	if (skill_id > 0 && skill_lv > 0) {
+		body << YAML::Key << "Skill";
+		body << YAML::BeginMap;
+		body << YAML::Key << "Name" << YAML::Value << *skill_name;
+		body << YAML::Key << "Level" << YAML::Value << skill_lv;
+		body << YAML::EndMap;
+	}
+	if (!item_consumed.empty()) {
+		body << YAML::Key << "Consumed";
+		body << YAML::BeginSeq;
+		for (const auto &it : item_consumed) {
+			body << YAML::BeginMap;
+			body << YAML::Key << "Item" << YAML::Value << it.first;
+			body << YAML::Key << "Amount" << YAML::Value << it.second;
+			body << YAML::EndMap;
+		}
+		body << YAML::EndSeq;
+	}
+	if (!item_notconsumed.empty()) {
+		body << YAML::Key << "NotConsumed";
+		body << YAML::BeginSeq;
+		for (const auto &it : item_notconsumed) {
+			body << YAML::BeginMap;
+			body << YAML::Key << "Item" << YAML::Value << it.first;
+			if (it.second != 0)
+				body << YAML::Key << "Amount" << YAML::Value << it.second;
+			body << YAML::EndMap;
+		}
+		body << YAML::EndSeq;
+	}
+
+	body << YAML::EndMap;
+
 	return true;
 }

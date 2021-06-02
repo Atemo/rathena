@@ -1,0 +1,19 @@
+###########################################################################
+# Item Produce Database
+###########################################################################
+#
+# Item Produce Settings
+#
+###########################################################################
+# - Id                      Unique Index.
+#   ItemLV                  Number which determines what kind of a crafting window will pop-up.
+#   Produced                Item produced.
+#   Skill:
+#     Name                  Skill name required.
+#     Level                 Skill level required.
+#   Consumed:               List of Item/Amount consumed to produce the item.
+#     - Item                AegisName of the item.
+#       Amount              Amount required.
+#   NotConsumed:            List of Item not consumed.
+#     - Item                AegisName of the item.
+###########################################################################

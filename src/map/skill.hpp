@@ -421,14 +421,28 @@ enum e_skill_blown	{
 
 /// Create Database item
 struct s_skill_produce_db {
+	uint16 id;
 	t_itemid nameid; /// Product ID
-	unsigned short req_skill; /// Required Skill
-	unsigned char req_skill_lv, /// Required Skill Level
+	uint16 req_skill; /// Required Skill
+	uint8 req_skill_lv, /// Required Skill Level
 		itemlv; /// Item Level
-	t_itemid mat_id[MAX_PRODUCE_RESOURCE]; /// Materials needed
-	unsigned short mat_amount[MAX_PRODUCE_RESOURCE]; /// Amount of each materials
+	std::unordered_map<t_itemid, uint16> materials;
 };
-extern struct s_skill_produce_db skill_produce_db[MAX_SKILL_PRODUCE_DB];
+
+class SkillProduceDatabase : public TypesafeYamlDatabase<uint16, s_skill_produce_db> {
+private:
+	std::unordered_map<uint16, std::unordered_map<uint16, uint16>> tmp;
+
+public:
+	SkillProduceDatabase() : TypesafeYamlDatabase("PRODUCE_DB", 1) {
+
+	}
+
+	const std::string getDefaultLocation();
+	uint64 parseBodyNode(const YAML::Node& node);
+};
+
+extern SkillProduceDatabase skill_produce_db;
 
 /// Creating database arrow
 struct s_skill_arrow_db {
@@ -606,8 +620,8 @@ bool skill_isNotOk_mercenary(uint16 skill_id, struct mercenary_data *md);
 bool skill_isNotOk_npcRange(struct block_list *src, uint16 skill_id, uint16 skill_lv, int pos_x, int pos_y);
 
 // Item creation
-short skill_can_produce_mix( struct map_session_data *sd, t_itemid nameid, int trigger, int qty);
-bool skill_produce_mix( struct map_session_data *sd, uint16 skill_id, t_itemid nameid, int slot1, int slot2, int slot3, int qty, short produce_idx );
+std::shared_ptr<s_skill_produce_db> skill_can_produce_mix(map_session_data *sd, t_itemid nameid, int trigger, int qty);
+bool skill_produce_mix( struct map_session_data *sd, uint16 skill_id, t_itemid nameid, int slot1, int slot2, int slot3, int qty, std::shared_ptr<s_skill_produce_db> produce );
 
 bool skill_arrow_create( struct map_session_data *sd, t_itemid nameid);
 
