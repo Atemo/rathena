@@ -27,6 +27,17 @@ std::unordered_map<uint16, s_skill_unit_csv> skill_unit;
 std::unordered_map<uint16, s_skill_copyable> skill_copyable;
 std::unordered_map<uint16, s_skill_db> skill_nearnpc;
 
+struct s_skill_produce_db_csv {
+	std::string produced_name,
+		req_skill_name;
+	uint32 req_skill_lv,
+		itemlv;
+	std::map<std::string, uint32> item_consumed;
+	std::vector<std::string> item_notconsumed;
+};
+
+std::map<uint32, std::vector<s_skill_produce_db_csv>> skill_produce;
+
 static unsigned int level_penalty[3][CLASS_MAX][MAX_LEVEL * 2 + 1];
 
 struct s_item_flag_csv2yaml {
@@ -68,19 +79,6 @@ struct s_random_opt_group_csv : s_random_opt_group {
 
 std::unordered_map<uint16, std::string> rand_opt_db;
 std::unordered_map<uint16, s_random_opt_group_csv> rand_opt_group;
-
-struct s_randomsummon_entry_csv2yaml {
-	std::string mob_name;
-	uint32 rate;
-};
-
-struct s_randomsummon_group_csv2yaml {
-	std::string group_name,
-		default_mob;
-	std::vector<std::shared_ptr<s_randomsummon_entry_csv2yaml>> list;
-};
-
-std::map<std::string, s_randomsummon_group_csv2yaml> summon_group;
 
 static std::map<std::string, int> um_mapid2jobname {
 	{ "Novice", JOB_NOVICE }, // Novice and Super Novice share the same value
@@ -395,7 +393,7 @@ static bool pc_readdb_levelpenalty(char* fields[], int columns, int current);
 static bool pc_levelpenalty_yaml();
 static bool mob_parse_row_chatdb(char* fields[], int columns, int current);
 static bool read_homunculus_expdb(const char* file);
-static bool mob_readdb_group(char* str[], int columns, int current);
-static bool mob_readdb_group_yaml(void);
+static bool skill_parse_row_producedb(char* fields[], int columns, int current);
+static bool skill_producedb_yaml();
 
 #endif /* CSV2YAML_HPP */

@@ -77,24 +77,12 @@ static void mob_txt_data(const std::string &modePath, const std::string &fixedPa
 		sv_readdb(modePath.c_str(), "mob_drop.txt", ',', 3, 5, -1, mob_readdb_drop, false);
 }
 
-// Branch database data to memory
-static void branch_txt_data(const std::string& modePath, const std::string& fixedPath) {
-	summon_group.clear();
+// Mob database data to memory
+static void produce_txt_data(const std::string &modePath, const std::string &fixedPath) {
+	skill_produce.clear();
 
-	if (fileExists(modePath + "/mob_branch.txt"))
-		sv_readdb(modePath.c_str(), "mob_branch.txt", ',', 4, 4, -1, mob_readdb_group, false);
-	if (fileExists(modePath + "/mob_random_db.txt"))
-		sv_readdb(modePath.c_str(), "mob_random_db.txt", ',', 4, 4, -1, mob_readdb_group, false);
-	if (fileExists(modePath + "/mob_poring.txt"))
-		sv_readdb(modePath.c_str(), "mob_poring.txt", ',', 4, 4, -1, mob_readdb_group, false);
-	if (fileExists(modePath + "/mob_boss.txt"))
-		sv_readdb(modePath.c_str(), "mob_boss.txt", ',', 4, 4, -1, mob_readdb_group, false);
-	if (fileExists(fixedPath + "/mob_pouch.txt"))
-		sv_readdb(fixedPath.c_str(), "mob_pouch.txt", ',', 4, 4, -1, mob_readdb_group, false);
-	if (fileExists(fixedPath + "/mob_mission.txt"))
-		sv_readdb(fixedPath.c_str(), "mob_mission.txt", ',', 4, 4, -1, mob_readdb_group, false);
-	if (fileExists(fixedPath + "/mob_classchange.txt"))
-		sv_readdb(fixedPath.c_str(), "mob_classchange.txt", ',', 4, 4, -1, mob_readdb_group, false);
+	if (fileExists(modePath + "/produce_db.txt"))
+		sv_readdb(modePath.c_str(), "produce_db.txt", ',', 5, 5+2*MAX_PRODUCE_RESOURCE, MAX_SKILL_PRODUCE_DB, skill_parse_row_producedb, false);
 }
 
 template<typename Func>
@@ -323,19 +311,19 @@ int do_init( int argc, char** argv ){
 		return 0;
 	}
 
-	branch_txt_data(path_db_mode, path_db);
-	if (!process("MOB_SUMMONABLE_DB", 1, { path_db_mode }, "mob_branch", [](const std::string &path, const std::string &name_ext) -> bool {
-		return mob_readdb_group_yaml();
-	}, "mob_summon")) {
+	produce_txt_data(path_db_mode, path_db);
+	if (!process("PRODUCE_DB", 1, { path_db_mode }, "produce_db", [](const std::string &path, const std::string &name_ext) -> bool {
+		return skill_producedb_yaml();
+	})) {
 		return 0;
 	}
 
-	branch_txt_data(path_db_import, path_db_import);
-	if (!process("MOB_SUMMONABLE_DB", 1, { path_db_import }, "mob_branch", [](const std::string &path, const std::string &name_ext) -> bool {
-		return mob_readdb_group_yaml();
-	}, "mob_summon")) {
-		return 0;
-	}
+	// produce_txt_data(path_db_import, path_db_import);
+	// if (!process("PRODUCE_DB", 1, { path_db_import }, "produce_db", [](const std::string &path, const std::string &name_ext) -> bool {
+		// return producedb_read_db((path + name_ext).c_str());
+	// })) {
+		// return 0;
+	// }
 
 	// TODO: add implementations ;-)
 
@@ -3532,74 +3520,113 @@ static bool read_homunculus_expdb(const char* file) {
 	return true;
 }
 
-// Copied and adjusted from mob.cpp
-static bool mob_readdb_group(char* str[], int columns, int current) {
-	if (strncasecmp(str[0], "MOBG_", 5) != 0) {
-		ShowError("The group %s must start with 'MOBG_'.\n", str[0]);
+// Copied and adjusted from skill.cpp
+static bool skill_parse_row_producedb(char* split[], int columns, int current) {
+	t_itemid nameid = static_cast<t_itemid>(strtoul(split[1], nullptr, 10));
+
+	if (nameid == 0)
+		return true;
+
+	std::string *item_name = util::umap_find(aegis_itemnames, nameid);
+
+	if (!item_name) {
+		ShowError("skill_parse_row_producedb: Invalid item %u.\n", nameid);
 		return false;
 	}
 
-	uint16 mob_id = static_cast<uint16>(strtol(str[1], nullptr, 10));
-	bool is_default = mob_id == 0;
+	uint16 skill_id = static_cast<uint16>(strtoul(split[3], nullptr, 10));
+	std::string* skill_name = util::umap_find( aegis_skillnames, skill_id );
 
-	std::string group_name = str[0];
-	group_name.erase(0, 5);
-	std::transform(group_name.begin(), group_name.end(), group_name.begin(), ::toupper);
-
-	s_randomsummon_group_csv2yaml *group = util::map_find(summon_group, group_name);
-	bool exists = group != nullptr;
-
-	s_randomsummon_group_csv2yaml group_entry;
-
-	if (is_default)
-		mob_id = static_cast<uint16>(strtol(str[3], nullptr, 10));
-	
-	std::string *mob_name = util::umap_find(aegis_mobnames, mob_id);
-
-	if (!mob_name) {
-		ShowError("Unknown mob id %d for group %s.\n", mob_id, str[0]);
+	if (skill_id != 0 && skill_name == nullptr) {
+		ShowError( "Skill name for skill id %hu is not known.\n", skill_id );
 		return false;
 	}
 
-	if (!exists) {
-		group_entry.default_mob = *mob_name;
-		group_entry.group_name = group_name;
+	s_skill_produce_db_csv entry = {};
+
+	uint32 skill_lv = strtoul(split[4], nullptr, 10);
+	uint32 itemlv = strtoul(split[2], nullptr, 10);
+
+	entry.produced_name = *item_name;
+	if (skill_name != nullptr) {
+		entry.req_skill_name = *skill_name;
+		entry.req_skill_lv = skill_lv;
 	}
 
-	if (is_default) {
-		if (exists)
-			group->default_mob = *mob_name;
-		else
-			summon_group.insert({ group_name, group_entry });
-	}
-	else {
-		std::shared_ptr<s_randomsummon_entry_csv2yaml> entry = std::make_shared<s_randomsummon_entry_csv2yaml>();
+	for (uint8 x = 5; x+1 < columns && split[x] && split[x+1]; x += 2) {
+		nameid = static_cast<t_itemid>(strtoul(split[x], nullptr, 10));
+		item_name = util::umap_find(aegis_itemnames, nameid);
 
-		entry->mob_name = *mob_name;
-		entry->rate = strtol(str[3], nullptr, 10);
-
-		if (exists)
-			group->list.push_back(entry);
-		else {
-			group_entry.list.push_back(entry);
-			summon_group.insert({ group_name, group_entry });
+		if (!item_name) {
+			ShowError("skill_parse_row_producedb: Invalid item %u.\n", nameid);
+			return false;
 		}
+
+		uint32 amount = strtoul(split[x+1], nullptr, 10);
+		if (amount == 0)
+			entry.item_notconsumed.push_back(*item_name);
+		else
+			entry.item_consumed[ *item_name ] = amount;
+	}
+
+	const auto &exists = skill_produce.find(itemlv);
+
+	if (exists != skill_produce.end())
+		exists->second.push_back(entry);
+	else {
+		std::vector<s_skill_produce_db_csv> produce;
+
+		produce.push_back(entry);
+		skill_produce.insert({ itemlv, produce });
 	}
 
 	return true;
 }
 
-static bool mob_readdb_group_yaml(void) {
-	for (const auto &it : summon_group) {
+static bool skill_producedb_yaml(void) {
+	for (const auto &produceit : skill_produce) {
+		uint32 count = 0;
 		body << YAML::BeginMap;
-		body << YAML::Key << "Group" << YAML::Value << it.first;
-		body << YAML::Key << "Default" << YAML::Value << it.second.default_mob;
-		body << YAML::Key << "Summon";
+		body << YAML::Key << "ItemLV" << YAML::Value << produceit.first;
+		body << YAML::Key << "Recipe";
 		body << YAML::BeginSeq;
-		for (const auto &sumit : it.second.list) {
+
+		for (const auto &it : produceit.second) {
+			count++;
 			body << YAML::BeginMap;
-			body << YAML::Key << "Mob" << YAML::Value << sumit->mob_name;
-			body << YAML::Key << "Rate" << YAML::Value << sumit->rate;
+			body << YAML::Key << "Id" << YAML::Value << count;
+			body << YAML::Key << "Produced" << YAML::Value << it.produced_name;
+
+			if (it.req_skill_lv > 0) {
+				body << YAML::Key << "Skill";
+				body << YAML::BeginMap;
+				body << YAML::Key << "Name" << YAML::Value << it.req_skill_name;
+				body << YAML::Key << "Level" << YAML::Value << it.req_skill_lv;
+				body << YAML::EndMap;
+			}
+
+			if (!it.item_consumed.empty()) {
+				body << YAML::Key << "Consumed";
+				body << YAML::BeginSeq;
+				for (const auto &itemit : it.item_consumed) {
+					body << YAML::BeginMap;
+					body << YAML::Key << "Item" << YAML::Value << itemit.first;
+					body << YAML::Key << "Amount" << YAML::Value << itemit.second;
+					body << YAML::EndMap;
+				}
+				body << YAML::EndSeq;
+			}
+
+			if (!it.item_notconsumed.empty()) {
+				body << YAML::Key << "NotConsumed";
+				body << YAML::BeginSeq;
+				for (const auto &itemit : it.item_notconsumed) {
+					body << YAML::BeginMap;
+					body << YAML::Key << "Item" << YAML::Value << itemit;
+					body << YAML::EndMap;
+				}
+				body << YAML::EndSeq;
+			}
 			body << YAML::EndMap;
 		}
 		body << YAML::EndSeq;
