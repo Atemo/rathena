@@ -1,0 +1,34 @@
+# This file is a part of rAthena.
+#   Copyright(C) 2021 rAthena Development Team
+#   https://rathena.org - https://github.com/rathena
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+#
+###########################################################################
+# Change Material Database
+###########################################################################
+#
+# Change Material Settings
+#
+###########################################################################
+# - Product           AegisName of the item created.
+#   BaseRate          Base rate (in n/10%). Default: 1000.
+#   Make:             List of amount/rate.
+#     - Amount        Amount of item created (unique to the list).
+#       Rate          Rate to create the Amount (in n/10%). 0 to remove on import.
+###########################################################################
+
+Header:
+  Type: SKILL_CHANGEMATERIAL_DB
+  Version: 1

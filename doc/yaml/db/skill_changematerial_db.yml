@@ -1,0 +1,13 @@
+###########################################################################
+# Change Material Database
+###########################################################################
+#
+# Change Material Settings
+#
+###########################################################################
+# - Product           AegisName of the item created.
+#   BaseRate          Base rate (in n/10%). Default: 1000.
+#   Make:             List of amount/rate.
+#     - Amount        Amount of item created (unique to the list).
+#       Rate          Rate to create the Amount (in n/10%). 0 to remove on import.
+###########################################################################

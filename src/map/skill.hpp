@@ -438,6 +438,22 @@ struct s_skill_arrow_db {
 };
 extern struct s_skill_arrow_db skill_arrow_db[MAX_SKILL_ARROW_DB];
 
+struct s_skill_changematerial_db {
+	t_itemid nameid;
+	uint16 rate;
+	std::map<uint16, uint16> qty;
+};
+
+class SkillChangeMaterialDatabase : public TypesafeYamlDatabase<t_itemid, s_skill_changematerial_db> {
+public:
+	SkillChangeMaterialDatabase() : TypesafeYamlDatabase("SKILL_CHANGEMATERIAL_DB", 1) {
+
+	}
+
+	const std::string getDefaultLocation();
+	uint64 parseBodyNode(const YAML::Node& node);
+};
+
 /// Abracadabra database
 struct s_skill_abra_db {
 	uint16 skill_id; /// Skill ID

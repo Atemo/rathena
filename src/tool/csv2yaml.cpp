@@ -337,6 +337,12 @@ int do_init( int argc, char** argv ){
 		return 0;
 	}
 
+	if (!process("SKILL_CHANGEMATERIAL_DB", 1, root_paths, "skill_changematerial_db", [](const std::string& path, const std::string& name_ext) -> bool {
+		return sv_readdb(path.c_str(), name_ext.c_str(), ',', 5, 5+2*MAX_SKILL_CHANGEMATERIAL_SET, MAX_SKILL_CHANGEMATERIAL_DB, &skill_parse_row_changematerialdb, false);
+	})) {
+		return 0;
+	}
+
 	// TODO: add implementations ;-)
 
 	return 0;
@@ -3605,5 +3611,43 @@ static bool mob_readdb_group_yaml(void) {
 		body << YAML::EndSeq;
 		body << YAML::EndMap;
 	}
+	return true;
+}
+
+// Copied and adjusted from skill.cpp
+static bool skill_parse_row_changematerialdb(char* split[], int columns, int current)
+{
+	t_itemid nameid = static_cast<t_itemid>(strtoul(split[1], nullptr, 10));
+
+	// Import just for clearing/disabling from original data
+	// NOTE: If import for disabling, better disable list from produce_db instead of here, or creation just failed with deleting requirements.
+	if (nameid == 0) {
+		ShowError("skill_parse_row_changematerialdb: Removing an item for this DB must be done manually. Skipping.\n");
+		return false;
+	}
+
+	std::string *produced_name = util::umap_find(aegis_itemnames, nameid);
+
+	if (!produced_name) {
+		ShowError("skill_parse_row_changematerialdb: Invalid item %u.\n", nameid);
+		return false;
+	}
+	uint16 baserate = static_cast<uint16>(strtoul(split[2], nullptr, 10));
+	
+	body << YAML::BeginMap;
+	body << YAML::Key << "Product" << YAML::Value << *produced_name;
+	if (baserate != 1000)
+		body << YAML::Key << "BaseRate" << YAML::Value << baserate;
+	body << YAML::Key << "Make";
+	body << YAML::BeginSeq;
+	for (uint16 x = 3; x+1 < columns && split[x] && split[x+1]; x += 2) {
+		body << YAML::BeginMap;
+		body << YAML::Key << "Amount" << YAML::Value << strtoul(split[x], nullptr, 10);
+		body << YAML::Key << "Rate" << YAML::Value << strtoul(split[x+1], nullptr, 10);
+		body << YAML::EndMap;
+	}
+	body << YAML::EndSeq;
+	body << YAML::EndMap;
+
 	return true;
 }
