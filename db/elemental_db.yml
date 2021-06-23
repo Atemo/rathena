@@ -1,0 +1,273 @@
+####################################################################
+#
+# Structure of Database:
+#
+####################################################################
+#
+#-   ID:                         (int)                              Elemental ID
+#    Sprite_Name:                (string)                           Elemental Aegis name
+#    Name:                       (string)                           Elemental displayed name
+#    Scale:                      (constant)                         Elemental size - See doc/item_bonus.txt
+#    Element:
+#        Type:                   (constant)                         See doc/item_bonus.txt
+#        Level:                  (int)
+#    SpiritMode:
+#        Passive:
+#        -   SkillID:            (constant)
+#            SkillLevel:         (int)                              (0 to remove the skill on import)
+#        Defensive:
+#        -   SkillID:            (constant)
+#            SkillLevel:         (int)
+#        Aggressive:
+#        -   SkillID:            (constant)
+#            SkillLevel:         (int)
+#
+#                                                                   (Optional fields)
+#
+#    LV:                         (int, default 100)
+#    HP:                         (int, default 0)
+#    SP:                         (int, default 1)
+#    Range1:                     (int, default 1)                   Elemental basic attaque range
+#    ATK1:                       (int, default 0)
+#    ATK2:                       (int, default 0)
+#    DEF:                        (int, default 0)
+#    MDEF:                       (int, default 0)
+#    STR:                        (int, default 0)
+#    AGI:                        (int, default 0)
+#    VIT:                        (int, default 0)
+#    INT:                        (int, default 0)
+#    DEX:                        (int, default 0)
+#    LUK:                        (int, default 0)
+#    Range2:                     (int, default 5)                   Elemental skill attaque range
+#    Range3:                     (int, default 12)                  Elemental visual range
+#    Race:                       (constant, default RC_Formless)    See doc/item_bonus.txt
+#    Speed:                      (int, default 200)
+#    aDelay:                     (int, default 504)
+#    aMotion:                    (int, default 1020)
+#    dMotion:                    (int, default 360)
+#
+####################################################################
+#
+# Notes:
+# Summoned Elemental’s STATs are affected by the Caster’s Base Level and STATs.
+# In other words, all values specified will be added to (and will not override) the calculated STATs of the summoned elemental.
+
+# SkillLevel 0 remove the skill
+#
+####################################################################
+
+-   ID: 2114
+    SpriteName: "EL_AGNI_S"
+    Name: "Agni"
+    Scale: Size_Small
+    Element:
+        Type: Ele_Fire
+        Level: 4
+    SpiritMode:
+        Passive:
+        -   SkillID: EL_PYROTECHNIC
+            SkillLevel: 1
+        Defensive:
+        -   SkillID: EL_CIRCLE_OF_FIRE
+            SkillLevel: 1
+        Aggressive:
+        -   SkillID: EL_FIRE_ARROW
+            SkillLevel: 1
+
+-   ID: 2115
+    SpriteName: "EL_AGNI_M"
+    Name: "Agni"
+    Scale: Size_Medium
+    Element:
+        Type: Ele_Fire
+        Level: 4
+    SpiritMode:
+        Passive:
+        -   SkillID: EL_HEATER
+            SkillLevel: 1
+        Defensive:
+        -   SkillID: EL_FIRE_CLOAK
+            SkillLevel: 1
+        Aggressive:
+        -   SkillID: EL_FIRE_BOMB
+            SkillLevel: 1
+
+-   ID: 2116
+    SpriteName: "EL_AGNI_L"
+    Name: "Agni"
+    Scale: Size_Large
+    Element:
+        Type: Ele_Fire
+        Level: 4
+    SpiritMode:
+        Passive:
+        -   SkillID: EL_TROPIC
+            SkillLevel: 1
+        Defensive:
+        -   SkillID: EL_FIRE_MANTLE
+            SkillLevel: 1
+        Aggressive:
+        -   SkillID: EL_FIRE_WAVE
+            SkillLevel: 1
+
+-   ID: 2117
+    SpriteName: "EL_AQUA_S"
+    Name: "Aqua"
+    Scale: Size_Small
+    Element:
+        Type: Ele_Water
+        Level: 4
+    SpiritMode:
+        Passive:
+        -   SkillID: EL_AQUAPLAY
+            SkillLevel: 1
+        Defensive:
+        -   SkillID: EL_WATER_SCREEN
+            SkillLevel: 1
+        Aggressive:
+        -   SkillID: EL_ICE_NEEDLE
+            SkillLevel: 1
+
+-   ID: 2118
+    SpriteName: "EL_AQUA_M"
+    Name: "Aqua"
+    Scale: Size_Medium
+    Element:
+        Type: Ele_Water
+        Level: 4
+    SpiritMode:
+        Passive:
+        -   SkillID: EL_COOLER
+            SkillLevel: 1
+        Defensive:
+        -   SkillID: EL_WATER_DROP
+            SkillLevel: 1
+        Aggressive:
+        -   SkillID: EL_WATER_SCREW
+            SkillLevel: 1
+
+-   ID: 2119
+    SpriteName: "EL_AQUA_L"
+    Name: "Aqua"
+    Scale: Size_Large
+    Element:
+        Type: Ele_Water
+        Level: 4
+    SpiritMode:
+        Passive:
+        -   SkillID: EL_CHILLY_AIR
+            SkillLevel: 1
+        Defensive:
+        -   SkillID: EL_WATER_BARRIER
+            SkillLevel: 1
+        Aggressive:
+        -   SkillID: EL_TIDAL_WEAPON
+            SkillLevel: 1
+
+-   ID: 2120
+    SpriteName: "EL_VENTUS_S"
+    Name: "Ventus"
+    Scale: Size_Small
+    Element:
+        Type: Ele_Wind
+        Level: 4
+    SpiritMode:
+        Passive:
+        -   SkillID: EL_GUST
+            SkillLevel: 1
+        Defensive:
+        -   SkillID: EL_WIND_STEP
+            SkillLevel: 1
+        Aggressive:
+        -   SkillID: EL_WIND_SLASH
+            SkillLevel: 1
+
+-   ID: 2121
+    SpriteName: "EL_VENTUS_M"
+    Name: "Ventus"
+    Scale: Size_Medium
+    Element:
+        Type: Ele_Wind
+        Level: 4
+    SpiritMode:
+        Passive:
+        -   SkillID: EL_BLAST
+            SkillLevel: 1
+        Defensive:
+        -   SkillID: EL_WIND_CURTAIN
+            SkillLevel: 1
+        Aggressive:
+        -   SkillID: EL_HURRICANE
+            SkillLevel: 1
+
+-   ID: 2122
+    SpriteName: "EL_VENTUS_L"
+    Name: "Ventus"
+    Scale: Size_Large
+    Element:
+        Type: Ele_Wind
+        Level: 4
+    SpiritMode:
+        Passive:
+        -   SkillID: EL_WILD_STORM
+            SkillLevel: 1
+        Defensive:
+        -   SkillID: EL_ZEPHYR
+            SkillLevel: 1
+        Aggressive:
+        -   SkillID: EL_TYPOON_MIS
+            SkillLevel: 1
+
+-   ID: 2123
+    SpriteName: "EL_TERA_S"
+    Name: "Tera"
+    Scale: Size_Small
+    Element:
+        Type: Ele_Earth
+        Level: 4
+    SpiritMode:
+        Passive:
+        -   SkillID: EL_PETROLOGY
+            SkillLevel: 1
+        Defensive:
+        -   SkillID: EL_SOLID_SKIN
+            SkillLevel: 1
+        Aggressive:
+        -   SkillID: EL_STONE_HAMMER
+            SkillLevel: 1
+
+-   ID: 2124
+    SpriteName: "EL_TERA_M"
+    Name: "Tera"
+    Scale: Size_Medium
+    Element:
+        Type: Ele_Earth
+        Level: 4
+    SpiritMode:
+        Passive:
+        -   SkillID: EL_CURSED_SOIL
+            SkillLevel: 1
+        Defensive:
+        -   SkillID: EL_STONE_SHIELD
+            SkillLevel: 1
+        Aggressive:
+        -   SkillID: EL_ROCK_CRUSHER
+            SkillLevel: 1
+
+-   ID: 2125
+    SpriteName: "EL_TERA_L"
+    Name: "Tera"
+    Scale: Size_Large
+    Element:
+        Type: Ele_Earth
+        Level: 4
+    SpiritMode:
+        Passive:
+        -   SkillID: EL_UPHEAVAL
+            SkillLevel: 1
+        Defensive:
+        -   SkillID: EL_POWER_OF_GAIA
+            SkillLevel: 1
+        Aggressive:
+        -   SkillID: EL_STONE_RAIN
+            SkillLevel: 1

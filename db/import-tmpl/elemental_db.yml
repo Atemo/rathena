@@ -1,0 +1,57 @@
+####################################################################
+#
+# Structure of Database:
+#
+####################################################################
+#
+#-   ID:                         (int)                              Elemental ID
+#    Sprite_Name:                (string)                           Elemental Aegis name
+#    Name:                       (string)                           Elemental displayed name
+#    Scale:                      (constant)                         Elemental size - See doc/item_bonus.txt
+#    Element:
+#        Type:                   (constant)                         See doc/item_bonus.txt
+#        Level:                  (int)
+#    SpiritMode:
+#        Passive:
+#        -   SkillID:            (constant)
+#            SkillLevel:         (int)                              (0 to remove the skill on import)
+#        Defensive:
+#        -   SkillID:            (constant)
+#            SkillLevel:         (int)
+#        Aggressive:
+#        -   SkillID:            (constant)
+#            SkillLevel:         (int)
+#
+#                                                                   (Optional fields)
+#
+#    LV:                         (int, default 100)
+#    HP:                         (int, default 0)
+#    SP:                         (int, default 1)
+#    Range1:                     (int, default 1)                   Elemental basic attaque range
+#    ATK1:                       (int, default 0)
+#    ATK2:                       (int, default 0)
+#    DEF:                        (int, default 0)
+#    MDEF:                       (int, default 0)
+#    STR:                        (int, default 0)
+#    AGI:                        (int, default 0)
+#    VIT:                        (int, default 0)
+#    INT:                        (int, default 0)
+#    DEX:                        (int, default 0)
+#    LUK:                        (int, default 0)
+#    Range2:                     (int, default 5)                   Elemental skill attaque range
+#    Range3:                     (int, default 12)                  Elemental visual range
+#    Race:                       (constant, default RC_Formless)    See doc/item_bonus.txt
+#    Speed:                      (int, default 200)
+#    aDelay:                     (int, default 504)
+#    aMotion:                    (int, default 1020)
+#    dMotion:                    (int, default 360)
+#
+####################################################################
+#
+# Notes:
+# Summoned Elemental’s STATs are affected by the Caster’s Base Level and STATs.
+# In other words, all values specified will be added to (and will not override) the calculated STATs of the summoned elemental.
+
+# SkillLevel 0 remove the skill
+#
+####################################################################
