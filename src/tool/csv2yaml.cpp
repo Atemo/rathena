@@ -360,6 +360,12 @@ int do_init( int argc, char** argv ){
 		return 0;
 	}
 
+	if (!process("MAP_DB", 1, root_paths, "map_index", [](const std::string &path, const std::string &name_ext) -> bool {
+		return mapindex_init((path + "/" + name_ext).c_str());
+	})) {
+		return 0;
+	}
+
 	// TODO: add implementations ;-)
 
 	return 0;
@@ -3724,5 +3730,53 @@ static bool guild_read_castledb(char* str[], int columns, int current) {
 	body << YAML::Key << "Name" << YAML::Value << trim(str[2]);
 	body << YAML::Key << "Npc" << YAML::Value << trim(str[3]);
 	body << YAML::EndMap;
+	return true;
+}
+
+static bool mapindex_init(const char* file) {
+	int last_index = -1;
+	int index;
+	char map_name[MAP_NAME_LENGTH];
+	
+	FILE* fp = fopen( file, "r" );
+
+	if( fp == nullptr ){
+		ShowError( "Can't read %s\n", file );
+		return false;
+	}
+
+	uint32 lines = 0, count = 0;
+	char line[1024];
+	
+	while (fgets(line, sizeof(line), fp)) {
+		lines++;
+
+		trim(line);
+		if (line[0] == '/' && line[1] == '/')
+			continue;
+
+		switch (sscanf(line, "%11s\t%d", map_name, &index)) {
+			case 1: //Map with no ID given, auto-assign
+				index = last_index+1;
+				body << YAML::BeginMap;
+				body << YAML::Key << "Map" << YAML::Value << map_name;
+				body << YAML::EndMap;
+				break;
+			case 2: //Map with ID given
+				body << YAML::BeginMap;
+				body << YAML::Key << "Map" << YAML::Value << map_name;
+				body << YAML::Key << "Index" << YAML::Value << index;
+				body << YAML::EndMap;
+				break;
+			default:
+				continue;
+		}
+		last_index = index;
+
+		count++;
+	}
+
+	fclose(fp);
+	ShowStatus("Done reading '" CL_WHITE "%d" CL_RESET "' entries in '" CL_WHITE "%s" CL_RESET "'.\n", count, file);
 	return true;
 }

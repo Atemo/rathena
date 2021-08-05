@@ -297,7 +297,7 @@ uint64 CastleDatabase::parseBodyNode(const YAML::Node &node) {
 		if (!this->asString(node, "Map", map_name))
 			return 0;
 
-		uint16 mapindex = mapindex_name2idx(map_name.c_str(), nullptr);
+		uint16 mapindex = mapindex_db.name2idx(map_name.c_str(), nullptr);
 
 		if (map_mapindex2mapid(mapindex) < 0) {
 			this->invalidWarning(node["Map"], "Map %s doesn't exist, skipping.\n", map_name.c_str());

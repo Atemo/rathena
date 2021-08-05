@@ -63,9 +63,9 @@ We want to give a custom mob a Novice player sprite.
 
 ### Custom Maps
 ---
-We want to add our own custom maps. For this we need to add our map names to `import/map_index.txt` and then to the `import/map_cache.dat` file for the Map Server to load.
+We want to add our own custom maps. For this we need to add our map names to `import/map_index.yml` and then to the `import/map_cache.dat` file for the Map Server to load.
 
-#### /db/import/map_index.txt
+#### /db/import/map_index.yml
 
     1@home	1250
     2@home

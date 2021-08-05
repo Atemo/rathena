@@ -5,6 +5,7 @@
 #define MAPINDEX_HPP
 
 #include "../common/mmo.hpp"
+#include "../common/database.hpp"
 
 #define MAX_MAPINDEX 2000
 
@@ -55,18 +56,47 @@
 const char* mapindex_getmapname(const char* string, char* output);
 const char* mapindex_getmapname_ext(const char* string, char* output);
 
-unsigned short mapindex_name2idx(const char* name, const char *func);
-#define mapindex_name2id(mapname) mapindex_name2idx((mapname), __FUNCTION__)
+#define mapindex_name2id(mapname) mapindex_db.name2idx((mapname), __FUNCTION__)
+#define mapindex_id2name(mapindex) mapindex_db.idx2name((mapindex), __FUNCTION__)
 
-const char* mapindex_idx2name(unsigned short id, const char *func);
-#define mapindex_id2name(mapindex) mapindex_idx2name((mapindex), __FUNCTION__)
 
-int mapindex_addmap(int index, const char* name);
-int mapindex_removemap(int index);
-
-void mapindex_check_mapdefault(const char *mapname);
 
 void mapindex_init(void);
 void mapindex_final(void);
+
+
+
+
+
+class MapIndexDatabase : public YamlDatabase {
+private:
+	int32 last_index;
+	int32 max_index;
+	std::unordered_map<const char*, int32> mapindex;
+
+public:
+	MapIndexDatabase() : YamlDatabase("MAP_DB", 1) {
+
+	}
+
+	void clear() {
+		mapindex.clear();
+		last_index = 0;
+		max_index = 0;
+	}
+	const std::string getDefaultLocation();
+	uint64 parseBodyNode(const YAML::Node &node);
+
+	// Additional
+	const char* get_map(int index);
+	int addmap(int index, const char* name);
+	void removemap(int index);
+	uint16 name2idx(const char* name, const char *func);
+	const char* idx2name(unsigned short id, const char *func);
+	void check_mapdefault(const char *mapname);
+};
+
+extern MapIndexDatabase mapindex_db;
+
 
 #endif /* MAPINDEX_HPP */

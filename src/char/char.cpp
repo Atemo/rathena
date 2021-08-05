@@ -3289,7 +3289,7 @@ int do_init(int argc, char **argv)
 	}
 
 	do_init_chcnslif();
-	mapindex_check_mapdefault(charserv_config.default_map);
+	mapindex_db.check_mapdefault(charserv_config.default_map);
 	ShowInfo("Default map: '" CL_WHITE "%s %d,%d" CL_RESET "'\n", charserv_config.default_map, charserv_config.default_map_x, charserv_config.default_map_y);
 
 	ShowStatus("The char-server is " CL_GREEN "ready" CL_RESET " (Server is listening on the port %d).\n\n", charserv_config.char_port);

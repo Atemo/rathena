@@ -2762,7 +2762,7 @@ int map_addinstancemap(int src_m, int instance_id)
 	dst_map->block = (struct block_list **)aCalloc(1,size);
 	dst_map->block_mob = (struct block_list **)aCalloc(1,size);
 
-	dst_map->index = mapindex_addmap(-1, dst_map->name);
+	dst_map->index = mapindex_db.addmap(-1, dst_map->name);
 	dst_map->channel = nullptr;
 	dst_map->mob_delete_timer = INVALID_TIMER;
 
@@ -2857,7 +2857,7 @@ int map_delinstancemap(int m)
 	mapdata->skill_damage.clear();
 	mapdata->instance_id = 0;
 
-	mapindex_removemap(mapdata->index);
+	mapindex_db.removemap(mapdata->index);
 	map_removemapdb(mapdata);
 
 	mapdata->index = 0;

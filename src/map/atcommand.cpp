@@ -592,7 +592,7 @@ ACMD_FUNC(mapmove)
 			return -1;
 	}
 
-	mapindex = mapindex_name2idx(map_name, nullptr);
+	mapindex = mapindex_db.name2idx(map_name, nullptr);
 	if (mapindex)
 		m = map_mapindex2mapid(mapindex);
 
