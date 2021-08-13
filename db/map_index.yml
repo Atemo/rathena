@@ -1126,3 +1126,7 @@ Body:
   - Map: tra_fild
   - Map: verus02_a
   - Map: verus02_b
+
+Footer:
+  Imports:
+  - Path: db/import/map_index.yml

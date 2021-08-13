@@ -59,14 +59,8 @@ const char* mapindex_getmapname_ext(const char* string, char* output);
 #define mapindex_name2id(mapname) mapindex_db.name2idx((mapname), __FUNCTION__)
 #define mapindex_id2name(mapindex) mapindex_db.idx2name((mapindex), __FUNCTION__)
 
-
-
 void mapindex_init(void);
 void mapindex_final(void);
-
-
-
-
 
 class MapIndexDatabase : public YamlDatabase {
 private:
@@ -97,6 +91,5 @@ public:
 };
 
 extern MapIndexDatabase mapindex_db;
-
 
 #endif /* MAPINDEX_HPP */

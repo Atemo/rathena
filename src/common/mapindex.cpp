@@ -10,9 +10,6 @@
 #include "showmsg.hpp"
 #include "strlib.hpp"
 
-
-
-
 const char* MapIndexDatabase::get_map(int index) {
 	for (const auto &it : this->mapindex) {
 		if (it.second == index)
@@ -76,7 +73,7 @@ const char* mapindex_getmapname_ext(const char* string, char* output) {
 int MapIndexDatabase::addmap(int index, const char* name) {
 	char map_name[MAP_NAME_LENGTH];
 
-	if (index == -1 && this->mapindex.size() < MAX_MAPINDEX) // auto increment index
+	if (index == -1 && this->mapindex.size() < MAX_MAPINDEX) // increment the index
 		index = this->max_index;
 
 	if (index <= 0) {
@@ -176,7 +173,7 @@ uint64 MapIndexDatabase::parseBodyNode(const YAML::Node &node) {
 
 		this->last_index = index;
 	} else {
-		index = this->last_index++;	// inccrement from the last index given by the user
+		index = this->last_index++;
 	}
 
 	return this->addmap(index, map_name.c_str()) > 0;
