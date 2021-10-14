@@ -2822,27 +2822,27 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 		dlist->third_charid = (third_sd ? third_sd->status.char_id : 0);
 		dlist->item = NULL;
 
-		for (i = 0; i < MAX_MOB_DROP_TOTAL; i++) {
-			if (md->db->dropitem[i].nameid == 0)
+		for (auto &dropitem : md->db->dropitem) {
+			if (dropitem.second.nameid == 0)
 				continue;
-			if ( !(it = itemdb_exists(md->db->dropitem[i].nameid)) )
+			if ( !(it = itemdb_exists(dropitem.second.nameid)) )
 				continue;
 			
-			drop_rate = mob_getdroprate(src, md->db, md->db->dropitem[i].rate, drop_modifier);
+			drop_rate = mob_getdroprate(src, md->db, dropitem.second.rate, drop_modifier);
 
 			// attempt to drop the item
 			if (rnd() % 10000 >= drop_rate)
 				continue;
 
 			if( mvp_sd && it->type == IT_PETEGG ) {
-				pet_create_egg(mvp_sd, md->db->dropitem[i].nameid);
+				pet_create_egg(mvp_sd, dropitem.second.nameid);
 				continue;
 			}
 
-			ditem = mob_setdropitem(&md->db->dropitem[i], 1, md->mob_id);
+			ditem = mob_setdropitem(&dropitem.second, 1, md->mob_id);
 
 			//A Rare Drop Global Announce by Lupus
-			if( mvp_sd && md->db->dropitem[i].rate <= battle_config.rare_drop_announce ) {
+			if( mvp_sd && dropitem.second.rate <= battle_config.rare_drop_announce ) {
 				char message[128];
 				sprintf (message, msg_txt(NULL,541), mvp_sd->status.name, md->name, it->ename.c_str(), (float)drop_rate/100);
 				//MSG: "'%s' won %s's %s (chance: %0.02f%%)"
@@ -2850,7 +2850,7 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 			}
 			// Announce first, or else ditem will be freed. [Lance]
 			// By popular demand, use base drop rate for autoloot code. [Skotlex]
-			mob_item_drop(md, dlist, ditem, 0, battle_config.autoloot_adjust ? drop_rate : md->db->dropitem[i].rate, homkillonly || merckillonly);
+			mob_item_drop(md, dlist, ditem, 0, battle_config.autoloot_adjust ? drop_rate : dropitem.second.rate, homkillonly || merckillonly);
 		}
 
 		// Ore Discovery [Celest]
@@ -2958,41 +2958,27 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 
 		if( !(map_getmapflag(m, MF_NOMVPLOOT) || type&1) ) {
 			//Order might be random depending on item_drop_mvp_mode config setting
-			struct s_mob_drop mdrop[MAX_MVP_DROP_TOTAL];
+			std::vector<uint16> mdrop;
 
-			memset(&mdrop,0,sizeof(mdrop));
+			for (const auto &dropitem : md->db->mvpitem)
+				mdrop.push_back(dropitem.first);
 
 			if(battle_config.item_drop_mvp_mode == 1) {
 				//Random order
-				for(i = 0; i < MAX_MVP_DROP_TOTAL; i++) {
-					while( 1 ) {
-						uint8 va = rnd()%MAX_MVP_DROP_TOTAL;
-						if (mdrop[va].nameid == 0) {
-							if (md->db->mvpitem[i].nameid > 0)
-								memcpy(&mdrop[va],&md->db->mvpitem[i],sizeof(mdrop[va]));
-							break;
-						}
-					}
-				}
-			} else {
-				//Normal order
-				for(i = 0; i < MAX_MVP_DROP_TOTAL; i++) {
-					if (md->db->mvpitem[i].nameid > 0)
-						memcpy(&mdrop[i],&md->db->mvpitem[i],sizeof(mdrop[i]));
-				}
+				std::random_shuffle(mdrop.begin(), mdrop.end());
 			}
 
 #if defined(RENEWAL_DROP)
 			int penalty = pc_level_penalty_mod( mvp_sd, PENALTY_MVP_DROP, nullptr, md );
 #endif
 
-			for(i = 0; i < MAX_MVP_DROP_TOTAL; i++) {
+			for (const auto &num : mdrop) {
 				struct item_data *i_data;
 
-				if(mdrop[i].nameid == 0 || !(i_data = itemdb_exists(mdrop[i].nameid)))
+				if(md->db->mvpitem[num].nameid == 0 || !(i_data = itemdb_exists(md->db->mvpitem[num].nameid)))
 					continue;
 
-				temp = mdrop[i].rate;
+				temp = md->db->mvpitem[num].rate;
 
 #if defined(RENEWAL_DROP)
 				temp = cap_value( apply_rate( temp, penalty ), 0, 10000 );
@@ -3006,7 +2992,7 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 				}
 
 				struct item item = {};
-				item.nameid=mdrop[i].nameid;
+				item.nameid=md->db->mvpitem[num].nameid;
 				item.identify= itemdb_isidentified(item.nameid);
 				clif_mvp_item(mvp_sd,item.nameid);
 				log_mvp_nameid = item.nameid;
@@ -3019,7 +3005,7 @@ int mob_dead(struct mob_data *md, struct block_list *src, int type)
 					intif_broadcast(message,strlen(message)+1,BC_DEFAULT);
 				}
 
-				mob_setdropitem_option(&item, &mdrop[i]);
+				mob_setdropitem_option(&item, &md->db->mvpitem[num]);
 
 				if((temp = pc_additem(mvp_sd,&item,1,LOG_TYPE_PICKDROP_PLAYER)) != 0) {
 					clif_additem(mvp_sd,0,0,temp);
@@ -4194,18 +4180,11 @@ const std::string MobDatabase::getDefaultLocation() {
 	return std::string(db_path) + "/mob_db.yml";
 }
 
-bool MobDatabase::parseDropNode(std::string nodeName, YAML::Node node, uint8 max, s_mob_drop *drops) {
+bool MobDatabase::parseDropNode(std::string nodeName, YAML::Node node, uint8 max, std::unordered_map<uint16, s_mob_drop> &drops) {
 	const YAML::Node &dropNode = node[nodeName];
-	uint16 i;
-
-	// Find first empty spot
-	for( i = 0; i < max; i++ ){
-		if( drops[i].nameid == 0 ){
-			break;
-		}
-	}
 
 	for (const YAML::Node &dropit : dropNode) {
+
 		uint16 index;
 
 		if (this->nodeExists(dropit, "Index")) {
@@ -4217,13 +4196,26 @@ bool MobDatabase::parseDropNode(std::string nodeName, YAML::Node node, uint8 max
 				continue;
 			}
 		} else {
-			index = i++;
+			// Find first empty spot
+			for( index = 0; index < max; index++ ){
+				if( drops.count(index) == 0 || drops[index].nameid == 0 ){
+					break;
+				}
+			}
 
 			if (index >= max) {
 				this->invalidWarning(dropit, "Maximum of %d monster %s met, skipping.\n", max, nodeName.c_str());
 				continue;
 			}
 		}
+
+		bool exists = drops.count(index) > 0 ? true : false;
+		s_mob_drop entry = {};
+
+		if (!exists)
+			entry = {};
+		else
+			entry = drops[index];
 
 		std::string item_name;
 
@@ -4261,10 +4253,15 @@ bool MobDatabase::parseDropNode(std::string nodeName, YAML::Node node, uint8 max
 				this->invalidWarning(dropit["RandomOptionGroup"], "Unknown random option group %s for monster %s, defaulting to no group.\n", group_name.c_str(), nodeName.c_str());
 		}
 
-		drops[index].nameid = item->nameid;
-		drops[index].rate = rate;
-		drops[index].steal_protected = steal;
-		drops[index].randomopt_group = group;
+		entry.nameid = item->nameid;
+		entry.rate = rate;
+		entry.steal_protected = steal;
+		entry.randomopt_group = group;
+
+		if (!exists)
+			drops.insert({ index, entry });
+		else
+			drops[index] = entry;
 	}
 
 	return true;
@@ -6044,15 +6041,15 @@ static void mob_drop_ratio_adjust(void){
 		std::shared_ptr<s_mob_db> mob = pair.second;
 		struct item_data *id;
 		t_itemid nameid;
-		int j, rate, rate_adjust = 0, mob_id = pair.first;
+		int rate, rate_adjust = 0, mob_id = pair.first;
 
 		if( mob_is_clone( mob_id ) ){
 			continue;
 		}
 
-		for( j = 0; j < MAX_MVP_DROP_TOTAL; j++ ){
-			nameid = mob->mvpitem[j].nameid;
-			rate = mob->mvpitem[j].rate;
+		for (auto &dropitem : mob->mvpitem) {
+			nameid = dropitem.second.nameid;
+			rate = dropitem.second.rate;
 
 			if( nameid == 0 || rate == 0 ){
 				continue;
@@ -6065,8 +6062,8 @@ static void mob_drop_ratio_adjust(void){
 
 			// remove the item if the rate of item_dropratio_adjust is 0
 			if (rate_adjust == 0) {
-				mob->mvpitem[j].nameid = 0;
-				mob->mvpitem[j].rate = 0;
+				dropitem.second.nameid = 0;
+				dropitem.second.rate = 0;
 				continue;
 			}
 
@@ -6080,8 +6077,8 @@ static void mob_drop_ratio_adjust(void){
 				// Item is not known anymore(should never happen)
 				if( !id ){
 					ShowWarning( "Monster \"%s\"(id:%u) is dropping an unknown item(id: %u)\n", mob->name.c_str(), mob_id, nameid );
-					mob->mvpitem[j].nameid = 0;
-					mob->mvpitem[j].rate = 0;
+					dropitem.second.nameid = 0;
+					dropitem.second.rate = 0;
 					continue;
 				}
 
@@ -6091,15 +6088,15 @@ static void mob_drop_ratio_adjust(void){
 				}
 			}
 
-			mob->mvpitem[j].rate = rate;
+			dropitem.second.rate = rate;
 		}
 
-		for( j = 0; j < MAX_MOB_DROP_TOTAL; j++ ){
+		for (auto &dropitem : mob->dropitem) {
 			unsigned short ratemin, ratemax;
 			bool is_treasurechest;
 
-			nameid = mob->dropitem[j].nameid;
-			rate = mob->dropitem[j].rate;
+			nameid = dropitem.second.nameid;
+			rate = dropitem.second.rate;
 
 			if( nameid == 0 || rate == 0 ){
 				continue;
@@ -6110,8 +6107,8 @@ static void mob_drop_ratio_adjust(void){
 			// Item is not known anymore(should never happen)
 			if( !id ){
 				ShowWarning( "Monster \"%s\"(id:%hu) is dropping an unknown item(id: %u)\n", mob->name.c_str(), mob_id, nameid );
-				mob->dropitem[j].nameid = 0;
-				mob->dropitem[j].rate = 0;
+				dropitem.second.nameid = 0;
+				dropitem.second.rate = 0;
 				continue;
 			}
 
@@ -6169,8 +6166,8 @@ static void mob_drop_ratio_adjust(void){
 
 			// remove the item if the rate of item_dropratio_adjust is 0
 			if (rate_adjust == 0) {
-				mob->dropitem[j].nameid = 0;
-				mob->dropitem[j].rate = 0;
+				dropitem.second.nameid = 0;
+				dropitem.second.rate = 0;
 				continue;
 			}
 
@@ -6201,7 +6198,7 @@ static void mob_drop_ratio_adjust(void){
 				}
 			}
 
-			mob->dropitem[j].rate = rate;
+			dropitem.second.rate = rate;
 		}
 	}
 
@@ -6345,20 +6342,19 @@ void mob_db_load(bool is_reload){
  */
 void mob_reload_itemmob_data(void) {
 	for( auto const &pair : mob_db ){
-		int d, k;
+		int k;
 
 		if( mob_is_clone( pair.first ) ){
 			continue;
 		}
 
-		for(d = 0; d < MAX_MOB_DROP_TOTAL; d++) {
-			struct item_data *id;
-			if( !pair.second->dropitem[d].nameid )
+		for (const auto &dropitem : pair.second->dropitem) {
+			if( !dropitem.second.nameid )
 				continue;
-			id = itemdb_search(pair.second->dropitem[d].nameid);
+			struct item_data *id = itemdb_search(dropitem.second.nameid);
 
 			for (k = 0; k < MAX_SEARCH; k++) {
-				if (id->mob[k].chance <= pair.second->dropitem[d].rate)
+				if (id->mob[k].chance <= dropitem.second.rate)
 					break;
 			}
 
@@ -6367,7 +6363,7 @@ void mob_reload_itemmob_data(void) {
 
 			if (id->mob[k].id != pair.first)
 				memmove(&id->mob[k+1], &id->mob[k], (MAX_SEARCH-k-1)*sizeof(id->mob[0]));
-			id->mob[k].chance = pair.second->dropitem[d].rate;
+			id->mob[k].chance = dropitem.second.rate;
 			id->mob[k].id = pair.first;
 		}
 	}

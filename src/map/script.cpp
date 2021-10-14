@@ -10733,7 +10733,7 @@ BUILDIN_FUNC(monster)
 BUILDIN_FUNC(getmobdrops)
 {
 	int class_ = script_getnum(st,2);
-	int i, j = 0;
+	int j = 0;
 
 	if( !mobdb_checkid(class_) )
 	{
@@ -10743,15 +10743,14 @@ BUILDIN_FUNC(getmobdrops)
 
 	std::shared_ptr<s_mob_db> mob = mob_db.find(class_);
 
-	for( i = 0; i < MAX_MOB_DROP_TOTAL; i++ )
-	{
-		if( mob->dropitem[i].nameid == 0 )
+	for (const auto &dropitem : mob->dropitem) {
+		if( dropitem.second.nameid == 0 )
 			continue;
-		if( itemdb_exists(mob->dropitem[i].nameid) == NULL )
+		if( item_db.exists(dropitem.second.nameid) )
 			continue;
 
-		mapreg_setreg(reference_uid(add_str("$@MobDrop_item"), j), mob->dropitem[i].nameid);
-		mapreg_setreg(reference_uid(add_str("$@MobDrop_rate"), j), mob->dropitem[i].rate);
+		mapreg_setreg(reference_uid(add_str("$@MobDrop_item"), j), dropitem.second.nameid);
+		mapreg_setreg(reference_uid(add_str("$@MobDrop_rate"), j), dropitem.second.rate);
 
 		j++;
 	}
@@ -17614,17 +17613,17 @@ BUILDIN_FUNC(addmonsterdrop)
 	}
 
 	if(mob) { //We got a valid monster, check for available drop slot
-		unsigned char i, c = 0;
-		for(i = 0; i < MAX_MOB_DROP_TOTAL; i++) {
-			if(mob->dropitem[i].nameid) {
-				if(mob->dropitem[i].nameid == item_id) { //If it equals item_id we update that drop
-					c = i;
+		uint16 c = 0;
+		for (const auto &dropitem : mob->dropitem) {
+			if(dropitem.second.nameid) {
+				if(dropitem.second.nameid == item_id) { //If it equals item_id we update that drop
+					c = dropitem.first;
 					break;
 				}
 				continue;
 			}
 			if(!c) //Accept first available slot only
-				c = i;
+				c = dropitem.first;
 		}
 		if(c) { //Fill in the slot with the item and rate
 			mob->dropitem[c].nameid = item_id;
@@ -17666,11 +17665,10 @@ BUILDIN_FUNC(delmonsterdrop)
 	}
 
 	if(mob) { //We got a valid monster, check for item drop on monster
-		unsigned char i;
-		for(i = 0; i < MAX_MOB_DROP_TOTAL; i++) {
-			if(mob->dropitem[i].nameid == item_id) {
-				mob->dropitem[i].nameid = 0;
-				mob->dropitem[i].rate = 0;
+		for (auto &dropitem : mob->dropitem) {
+			if(dropitem.second.nameid == item_id) {
+				dropitem.second.nameid = 0;
+				dropitem.second.rate = 0;
 				mob_reload_itemmob_data(); // Reload the mob search data stored in the item_data
 				script_pushint(st,1);
 				return SCRIPT_CMD_SUCCESS;

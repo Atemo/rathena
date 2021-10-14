@@ -24,10 +24,6 @@ struct guardian_data;
 //The number of drops all mobs have and the max drop-slot that the steal skill will attempt to steal from.
 #define MAX_MOB_DROP 10
 #define MAX_MVP_DROP 3
-#define MAX_MOB_DROP_ADD 5
-#define MAX_MVP_DROP_ADD 2
-#define MAX_MOB_DROP_TOTAL (MAX_MOB_DROP+MAX_MOB_DROP_ADD)
-#define MAX_MVP_DROP_TOTAL (MAX_MVP_DROP+MAX_MVP_DROP_ADD)
 
 //Min time between AI executions
 const t_tick MIN_MOBTHINKTIME = 100;
@@ -250,7 +246,8 @@ struct s_mob_db {
 	uint16 range2, range3;
 	std::vector<e_race2> race2;	// celest
 	uint16 lv;
-	s_mob_drop dropitem[MAX_MOB_DROP_TOTAL], mvpitem[MAX_MVP_DROP_TOTAL];
+	std::unordered_map<uint16, s_mob_drop> dropitem;
+	std::unordered_map<uint16, s_mob_drop> mvpitem;
 	status_data status;
 	view_data vd;
 	uint32 option;
@@ -262,7 +259,7 @@ struct s_mob_db {
 
 class MobDatabase : public TypesafeCachedYamlDatabase <uint32, s_mob_db> {
 private:
-	bool parseDropNode(std::string nodeName, YAML::Node node, uint8 max, s_mob_drop *drops);
+	bool parseDropNode(std::string nodeName, YAML::Node node, uint8 max, std::unordered_map<uint16, s_mob_drop> &drops);
 
 public:
 	MobDatabase() : TypesafeCachedYamlDatabase("MOB_DB", 2, 1) {

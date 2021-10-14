@@ -7486,11 +7486,11 @@ ACMD_FUNC(mobinfo)
 		}
 #endif
 
-		for (i = 0; i < MAX_MOB_DROP_TOTAL; i++) {
-			if (mob->dropitem[i].nameid == 0 || mob->dropitem[i].rate < 1 || (item_data = itemdb_exists(mob->dropitem[i].nameid)) == NULL)
+		for (const auto &dropitem : mob->dropitem) {
+			if (dropitem.second.nameid == 0 || dropitem.second.rate < 1 || (item_data = itemdb_exists(dropitem.second.nameid)) == nullptr)
 				continue;
 
-			int droprate = mob_getdroprate( &sd->bl, mob, mob->dropitem[i].rate, drop_modifier );
+			int droprate = mob_getdroprate( &sd->bl, mob, dropitem.second.rate, drop_modifier );
 
 			if (item_data->slots)
 				sprintf(atcmd_output2, " - %s[%d]  %02.02f%%", item_data->ename.c_str(), item_data->slots, (float)droprate / 100);
@@ -7514,11 +7514,11 @@ ACMD_FUNC(mobinfo)
 			strcpy(atcmd_output, msg_txt(sd,1248)); //  MVP Items:
 			mvpremain = 100.0; //Remaining drop chance for official mvp drop mode
 			j = 0;
-			for (i = 0; i < MAX_MVP_DROP_TOTAL; i++) {
-				if (mob->mvpitem[i].nameid == 0 || (item_data = itemdb_exists(mob->mvpitem[i].nameid)) == NULL)
+			for (const auto &dropitem : mob->mvpitem) {
+				if (dropitem.second.nameid == 0 || (item_data = itemdb_exists(dropitem.second.nameid)) == NULL)
 					continue;
 				//Because if there are 3 MVP drops at 50%, the first has a chance of 50%, the second 25% and the third 12.5%
-				mvppercent = (float)mob->mvpitem[i].rate * mvpremain / 10000.0f;
+				mvppercent = (float)dropitem.second.rate * mvpremain / 10000.0f;
 				if(battle_config.item_drop_mvp_mode == 0) {
 					mvpremain -= mvppercent;
 				}
