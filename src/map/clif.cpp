@@ -10858,12 +10858,8 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 
 	struct map_data *mapdata = map_getmapdata(sd->bl.m);
 
-	if(battle_config.pc_invincible_time > 0) {
-		if(mapdata_flag_gvg(mapdata))
-			pc_setinvincibletimer(sd,battle_config.pc_invincible_time<<1);
-		else
-			pc_setinvincibletimer(sd,battle_config.pc_invincible_time);
-	}
+	if (mapdata->flag[MF_INVINCIBLE_TIME] > 0)
+		pc_setinvincibletimer(sd, mapdata->flag[MF_INVINCIBLE_TIME]);
 
 	if( mapdata->users++ == 0 && battle_config.dynamic_mobs )
 		map_spawnmobs(sd->bl.m);
@@ -11108,7 +11104,7 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 			sd->state.hpmeter_visible = 1;
 		}
 
-		status_change_clear_onChangeMap(&sd->bl, &sd->sc);
+		status_change_clear_onChangeMap(&sd->bl);
 		map_iwall_get(sd); // Updates Walls Info on this Map to Client
 		status_calc_pc(sd, sd->state.autotrade ? SCO_FIRST : SCO_NONE); // Some conditions are map-dependent so we must recalculate
 
@@ -11188,7 +11184,7 @@ void clif_parse_LoadEndAck(int fd,struct map_session_data *sd)
 	}
 
 	// Trigger skill effects if you appear standing on them
-	if(!battle_config.pc_invincible_time)
+	if (mapdata && mapdata->flag[MF_INVINCIBLE_TIME])
 		skill_unit_move(&sd->bl,gettick(),1);
 
 	pc_show_questinfo_reinit(sd);

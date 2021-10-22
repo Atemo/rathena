@@ -146,6 +146,29 @@ struct s_mercenary_skill_csv {
 
 std::unordered_map<uint16, std::vector<s_mercenary_skill_csv>> mercenary_skill_tree;
 
+
+
+// struct s_job_noenter_map_csv2yaml {
+	// uint16 zone;
+	// uint16 group_lv;
+// };
+
+std::map<std::string, uint16> itemdb_noequip;	/// item name, zone
+std::map<std::string, uint16> skill_nocast_db;	/// skill name, zone
+std::map<std::string, uint16> status_disabled;	/// status name, zone
+std::map<std::string, uint16> job_noenter_map;	/// job name, zone
+
+// std::unordered_map<std::string, std::vector<s_job_noenter_map_csv2yaml>> job_noenter_map;;	/// job name, zone/GM lv
+
+
+static std::unordered_map<uint32, std::string> um_zone_name {
+	{ 1, "ZONE_NORMAL" },
+	{ 2, "ZONE_PVP" },
+	{ 4, "ZONE_GVG" },
+	{ 8, "ZONE_BATTLEGROUNDS" },
+	{ 16, "ZONE_WOE_TE" },
+};
+
 static std::map<std::string, int> um_mapid2jobname {
 	{ "Novice", JOB_NOVICE }, // Novice and Super Novice share the same value
 	{ "SuperNovice", JOB_NOVICE },
@@ -508,5 +531,11 @@ static bool mercenary_read_skilldb(char* str[], int columns, int current);
 static bool mercenary_readdb(char* str[], int columns, int current);
 static bool pc_readdb_skilltree(char* str[], int columns, int current);
 static bool pc_readdb_skilltree_yaml(void);
+static bool skill_parse_row_nocastdb(char* str[], int columns, int current);
+// map_zone.yml
+static bool pc_readdb_job_noenter_map(char* str[], int columns, int current);
+static bool itemdb_read_noequip(char* str[], int columns, int current);
+static bool status_readdb_status_disabled(char* str[], int columns, int current);
+static bool map_zone_to_yaml(void);
 
 #endif /* CSV2YAML_HPP */

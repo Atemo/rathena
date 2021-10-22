@@ -494,7 +494,6 @@
 	export_constant(MF_NOWARPTO);
 	export_constant(MF_PVP_NIGHTMAREDROP);
 	export_deprecated_constant3("mf_nightmaredrop", MF_PVP_NIGHTMAREDROP, "MF_PVP_NIGHTMAREDROP");
-	export_constant(MF_RESTRICTED);
 	export_constant(MF_NOCOMMAND);
 	export_constant(MF_NODROP);
 	export_constant(MF_JEXP);
@@ -504,7 +503,6 @@
 	export_constant(MF_NOCHAT);
 	export_constant(MF_NOEXPPENALTY);
 	export_constant(MF_GUILDLOCK);
-	export_constant(MF_TOWN);
 	export_constant(MF_AUTOTRADE);
 	export_constant(MF_ALLOWKS);
 	export_constant(MF_MONSTER_NOTELEPORT);
@@ -531,6 +529,12 @@
 	export_constant(MF_SKILL_DURATION);
 	export_constant(MF_NOCASHSHOP);
 	export_constant(MF_NORODEX);
+	export_constant(MF_INVINCIBLE_TIME);
+	export_constant(MF_WEAPON_DAMAGE_RATE);
+	export_constant(MF_MAGIC_DAMAGE_RATE);
+	export_constant(MF_MISC_DAMAGE_RATE);
+	export_constant(MF_LONG_DAMAGE_RATE);
+	export_constant(MF_SHORT_DAMAGE_RATE);
 
 	/* setcell types */
 	export_constant(CELL_WALKABLE);

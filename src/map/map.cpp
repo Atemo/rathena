@@ -18,7 +18,6 @@
 #include "../common/socket.hpp" // WFIFO*()
 #include "../common/strlib.hpp"
 #include "../common/timer.hpp"
-#include "../common/utilities.hpp"
 #include "../common/utils.hpp"
 
 #include "achievement.hpp"
@@ -49,8 +48,6 @@
 #include "quest.hpp"
 #include "storage.hpp"
 #include "trade.hpp"
-
-using namespace rathena;
 
 char default_codepage[32] = "";
 
@@ -182,6 +179,280 @@ struct s_map_default map_default;
 int console = 0;
 int enable_spy = 0; //To enable/disable @spy commands, which consume too much cpu time when sending packets. [Skotlex]
 int enable_grf = 0;	//To enable/disable reading maps from GRF files, bypassing mapcache [blackhole89]
+
+const std::string MapZoneDatabase::getDefaultLocation() {
+	return std::string(db_path) + "/map_zone_db.yml";
+}
+
+uint64 MapZoneDatabase::parseBodyNode(const YAML::Node &node) {
+	std::string zone_name;
+
+	if (!this->asString(node, "Zone", zone_name))
+		return 0;
+
+	int64 constant;
+
+	if (!script_get_constant(zone_name.c_str(), &constant)) {
+		this->invalidWarning(node, "Zone %s does not exist.\n", zone_name.c_str());
+		continue;
+	}
+
+	uint16 zone_id = static_cast<uint16>(constant);
+
+	std::shared_ptr<s_map_zone_db> zone = this->find(zone_id);
+	bool exists = zone != nullptr;
+
+	if (!exists) {
+		zone = std::make_shared<s_map_zone_db>();
+		zone->id = zone_id;
+	}
+
+	if (this->nodeExists(node, "DisabledCommands")) {
+		for (const YAML::Node &commandNode : node["DisabledCommands"]) {
+			std::string command_name = commandNode.as<std::string>();
+
+			if (!atcommand_exists(command_name.c_str())) {
+				this->invalidWarning(commandNode, "Atcommand %s does not exist.\n", command_name.c_str());
+				continue;
+			}
+
+			uint16 group_lv;
+
+			if (!this->asUInt16(commandNode, command_name, group_lv))
+				continue;
+
+			if (group_lv > 100) {
+				this->invalidWarning(commandNode, "Atcommand Group Level can not be above 100, capping to 100.\n", group_lv);
+				group_lv = 100;
+			}
+
+			zone->disabled_commands[command_name] = group_lv;
+		}
+	}
+
+	if (this->nodeExists(node, "SkillRestrictions")) {
+		const YAML::Node &n_restrictions = node["SkillRestrictions"];
+
+		for (const auto &it_restrictions : n_restrictions) {
+
+			if (!this->nodesExist(it_restrictions, { "Targets", "Skills" }))
+				return 0;
+
+			uint16 target_type = BL_NUL;
+
+			for (const YAML::Node &n_target : it_restrictions["Targets"]) {
+				std::string target_name = it_restrictions.first.as<std::string>();
+
+				// todo check BL
+				// BL_PC NPC MOB only
+
+				if (!script_get_constant(target_name.c_str(), &constant)) {
+					this->invalidWarning(n_target, "Unknown type of Target %s.\n", target_name.c_str());
+					continue;
+				}
+
+				bool enabled;
+
+				if (!this->asBool(n_target, target_name, enabled))
+					continue;
+
+				if (enabled)
+					zone->disabled_items.push_back(item->nameid);
+				else
+					util::vector_erase_if_exists(zone->disabled_items, item->nameid);
+
+				target_type |= static_cast<uint16>(constant);
+			}
+
+			if (target_type == BL_NUL)
+				continue;
+	
+			for (const YAML::Node &skillNode : node["Skills"]) {
+				std::string skill_name = skillNode.as<std::string>();
+				uint16 skill_id;
+
+				if ((skill_id = skill_name2id(skill_name.c_str())) == 0) {
+					this->invalidWarning(skillNode, "Skill %s does not exist.\n", skill_name.c_str());
+					continue;
+				}
+
+				bool enabled;
+
+				if (!this->asBool(skillNode, skill_name, enabled))
+					continue;
+
+				if (enabled)
+					type |= target_type;
+				else
+					type &= ~target_type;
+
+				if (*util::umap_find(zone->disabled_skills, skill_id) == BL_NUL)
+					zone->disabled_skills.erase(skill_id);
+				else
+					zone->disabled_skills[skill_id] = type;
+			}
+		}
+	}
+
+	if (this->nodeExists(node, "DisabledItems")) {
+		for (const YAML::Node &itemNode : node["DisabledItems"]) {
+			std::string item_name = itemNode.as<std::string>();
+			std::shared_ptr<item_data> item = item_db.search_aegisname(item_name.c_str());
+
+			if (item == nullptr) {
+				this->invalidWarning(itemNode, "Item %s does not exist.\n", item_name.c_str());
+				continue;
+			}
+
+			bool enabled;
+
+			if (!this->asBool(itemNode, item_name, enabled))
+				continue;
+
+			if (enabled)
+				zone->disabled_items.push_back(item->nameid);
+			else
+				util::vector_erase_if_exists(zone->disabled_items, item->nameid);
+		}
+	}
+
+	if (this->nodeExists(node, "DisabledStatuses")) {
+		for (const YAML::Node &statusNode : node["DisabledStatuses"]) {
+			std::string status_name = statusNode.as<std::string>();
+			int status;
+
+			if (!script_get_constant(status_name.c_str(), &status)) {
+				this->invalidWarning(statusNode, "Status %s does not exist.\n", status_name.c_str());
+				continue;
+			}
+
+			bool enabled;
+
+			if (!this->asBool(statusNode, status_name, enabled))
+				continue;
+
+			if (enabled)
+				zone->disabled_statuses.push_back(static_cast<sc_type>(status));
+			else
+				util::vector_erase_if_exists(zone->disabled_statuses, static_cast<sc_type>(status));
+		}
+	}
+
+	if (this->nodeExists(node, "RestrictedJobs")) {
+		for (const YAML::Node &jobNode : node["RestrictedJobs"]) {
+			std::string job_name = jobNode.as<std::string>();
+			int32 job_id;
+
+			if (!script_get_constant(job_name.c_str(), &job_id)) {
+				this->invalidWarning(jobNode, "Job %s does not exist.\n", job_name.c_str());
+				continue;
+			}
+
+			bool enabled;
+
+			if (!this->asBool(jobNode, job_name, enabled))
+				continue;
+
+			if (enabled)
+				zone->restricted_jobs.push_back(static_cast<int32>(job_id));
+			else
+				util::vector_erase_if_exists(zone->restricted_jobs, static_cast<int32>(job_id));
+		}
+	}
+
+	if (this->nodeExists(node, "Maps")) {
+		for (const YAML::Node &mapNode : node["Maps"]) {
+			std::string map_name;
+			int16 map_id;
+
+			if (!this->asString(mapNode, "Map", map_name))
+				return 0;
+
+			if ((map_id = map_mapname2mapid(map_name.c_str())) == -1) {
+				this->invalidWarning(mapNode, "Map %s does not exist.\n", map_name.c_str());
+				continue;
+			}
+
+			bool enabled;
+
+			if (!this->asBool(mapNode, map_name, enabled))
+				continue;
+
+			if (enabled) {
+				if (std::find(zone->maps.begin(), zone->maps.end(), map_id) != zone->maps.end()) {
+					this->invalidWarning(mapNode, "Map %s already part of this zone.\n", map_name.c_str());
+					continue;
+				}
+				
+				// todo check if map on other zone
+
+				zone->maps.push_back(map_id);
+			} else
+				util::vector_erase_if_exists(zone->maps, map_id);
+		}
+	}
+
+	if (this->nodeExists(node, "Mapflags")) {
+		for (const YAML::Node &mapflagNode : node["Mapflags"]) {
+			// todo clear
+
+			std::string flag_name;
+
+			if (!this->asString(mapflagNode, "Flag", flag_name))
+				return 0;
+
+			int flag;
+
+			if (!script_get_constant(flag_name.c_str(), &flag)) {
+				this->invalidWarning(mapflagNode, "Mapflag %s does not exist.\n", flag_name.c_str());
+				continue;
+			}
+
+			std::string value;
+
+			if (!this->asString(mapflagNode, "Value", value))
+				continue;
+
+			zone->mapflags[flag] = value;
+		}
+	}
+
+	if (!exists)
+		this->put(zone_id, zone);
+
+	return 1;
+}
+
+/**
+ * Initialize Map Zone data
+ */
+void do_init_mapzone(void)
+{
+	map_zone_db.load();
+
+	// Copy Map Zone DB data to Map Zone class
+	// This allows for live modifications to the map without affecting the Map Zone DB
+	for (const auto &zone : map_zone_db) {
+		for (const auto &map : zone.second->maps) {
+			struct map_data *mapdata = map_getmapdata(map);
+
+			if (mapdata) {
+				mapdata->zone.disabled_commands = zone.second->disabled_commands;
+				mapdata->zone.disabled_items = zone.second->disabled_items;
+				mapdata->zone.disabled_skills = zone.second->disabled_skills;
+				mapdata->zone.disabled_statuses = zone.second->disabled_statuses;
+				mapdata->zone.restricted_jobs = zone.second->restricted_jobs;
+			}
+		}
+	}
+}
+
+void MapZoneDatabase::reload() {
+	TypesafeYamlDatabase::clear();
+	do_init_mapzone();
+}
+
+MapZoneDatabase map_zone_db;
 
 /**
  * Get the map data
@@ -3658,7 +3929,6 @@ void map_flags_init(void){
 		args.flag_val = 100;
 
 		// additional mapflag data
-		mapdata->zone = 0; // restricted mapflag zone
 		mapdata->flag[MF_NOCOMMAND] = false; // nocommand mapflag level
 		map_setmapflag_sub(i, MF_BEXP, true, &args); // per map base exp multiplicator
 		map_setmapflag_sub(i, MF_JEXP, true, &args); // per map job exp multiplicator
@@ -3673,8 +3943,23 @@ void map_flags_init(void){
 			continue;
 
 		// adjustments
-		if( battle_config.pk_mode && !mapdata_flag_vs2(mapdata) )
-			mapdata->flag[MF_PVP] = true; // make all maps pvp for pk_mode [Valaris]
+		//if( battle_config.pk_mode && !mapdata_flag_vs2(mapdata) ) // !TODO: Is this needed now that the PK zone exists?
+		//	mapdata->flag[MF_PVP] = true; // make all maps pvp for pk_mode [Valaris]
+	}
+
+	// Apply mapflags from Map Zone DB
+	for (const auto &zone : map_zone_db) {
+		for (const auto &map : zone.second->maps) {
+			for (const auto &flag : zone.second->mapflags) {
+				char flag_name[50], empty[1];
+
+				memset(flag_name, '\0', sizeof(flag_name));
+				memset(empty, '\0', sizeof(empty));
+				map_getmapflag_name(static_cast<e_mapflag>(flag.first), flag_name);
+
+				npc_parse_mapflag(const_cast<char*>(map_mapid2mapname(map)), empty, flag_name, const_cast<char*>(flag.second.c_str()), empty, empty, empty);
+			}
+		}
 	}
 }
 
@@ -4573,8 +4858,6 @@ int map_getmapflag_sub(int16 m, enum e_mapflag mapflag, union u_mapflag_args *ar
 	}
 
 	switch(mapflag) {
-		case MF_RESTRICTED:
-			return mapdata->zone;
 		case MF_NOLOOT:
 			return util::umap_get(mapdata->flag, static_cast<int16>(MF_NOMOBLOOT), 0) && util::umap_get(mapdata->flag, static_cast<int16>(MF_NOMVPLOOT), 0);
 		case MF_NOPENALTY:
@@ -4748,25 +5031,6 @@ bool map_setmapflag_sub(int16 m, enum e_mapflag mapflag, bool status, union u_ma
 			}
 			mapdata->flag[mapflag] = status;
 			break;
-		case MF_RESTRICTED:
-			if (!status) {
-				if (args == nullptr) {
-					mapdata->zone = 0;
-				} else {
-					mapdata->zone ^= (1 << (args->flag_val + 1)) << 3;
-				}
-
-				// Don't completely disable the mapflag's status if other zones are active
-				if (mapdata->zone == 0) {
-					mapdata->flag[mapflag] = status;
-				}
-			} else {
-				nullpo_retr(false, args);
-
-				mapdata->zone |= (1 << (args->flag_val + 1)) << 3;
-				mapdata->flag[mapflag] = status;
-			}
-			break;
 		case MF_NOCOMMAND:
 			if (status) {
 				nullpo_retr(false, args);
@@ -4857,6 +5121,19 @@ bool map_setmapflag_sub(int16 m, enum e_mapflag mapflag, bool status, union u_ma
 				map_skill_duration_add(mapdata, args->skill_duration.skill_id, args->skill_duration.per);
 			}
 			mapdata->flag[mapflag] = status;
+			break;
+		case MF_INVINCIBLE_TIME:
+		case MF_WEAPON_DAMAGE_RATE:
+		case MF_MAGIC_DAMAGE_RATE:
+		case MF_MISC_DAMAGE_RATE:
+		case MF_LONG_DAMAGE_RATE:
+		case MF_SHORT_DAMAGE_RATE:
+			if (status) {
+				nullpo_retr(false, args);
+
+				mapdata->flag[mapflag] = ((args->flag_val < 0) ? 0 : args->flag_val);
+			} else
+				mapdata->flag[mapflag] = false;
 			break;
 		default:
 			mapdata->flag[mapflag] = status;
@@ -5248,6 +5525,7 @@ int do_init(int argc, char *argv[])
 	do_init_channel();
 	do_init_cashshop();
 	do_init_skill();
+	do_init_mapzone();
 	do_init_mob();
 	do_init_pc();
 	do_init_status();

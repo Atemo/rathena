@@ -57,8 +57,6 @@ int current_equip_card_id; /// To prevent card-stacking (from jA) [Skotlex]
 // We need it for new cards 15 Feb 2005, to check if the combo cards are insrerted into the CURRENT weapon only to avoid cards exploits
 short current_equip_opt_index; /// Contains random option index of an equipped item. [Secret]
 
-unsigned int SCDisabled[SC_MAX]; ///< List of disabled SC on map zones. [Cydh]
-
 sc_type SkillStatusChangeTable[MAX_SKILL];
 int StatusIconChangeTable[SC_MAX];
 uint64 StatusChangeFlagTable[SC_MAX];
@@ -118,9 +116,6 @@ static int status_get_apbonus(struct block_list *bl, enum e_status_bonus type);
 static unsigned int status_calc_maxhpsp_pc(struct map_session_data* sd, unsigned int stat, bool isHP);
 static unsigned int status_calc_maxap_pc(struct map_session_data* sd);
 static int status_get_sc_interval(enum sc_type type);
-
-static bool status_change_isDisabledOnMap_(sc_type type, bool mapIsVS, bool mapIsPVP, bool mapIsGVG, bool mapIsBG, unsigned int mapZone, bool mapIsTE);
-#define status_change_isDisabledOnMap(type, m) ( status_change_isDisabledOnMap_((type), mapdata_flag_vs2((m)), m->flag[MF_PVP] != 0, mapdata_flag_gvg2_no_te((m)), m->flag[MF_BATTLEGROUND] != 0, (m->zone << 3) != 0, mapdata_flag_gvg2_te((m))) )
 
 const std::string RefineDatabase::getDefaultLocation(){
 	return std::string( db_path ) + "/refine.yml";
@@ -664,7 +659,6 @@ void initChangeTables(void)
 	memset(StatusChangeFlagTable, 0, sizeof(StatusChangeFlagTable));
 	memset(StatusChangeStateTable, 0, sizeof(StatusChangeStateTable));
 	memset(StatusDisplayType, 0, sizeof(StatusDisplayType));
-	memset(SCDisabled, 0, sizeof(SCDisabled));
 
 	/* First we define the skill for common ailments. These are used in skill_additional_effect through sc cards. [Skotlex] */
 	set_sc( NPC_PETRIFYATTACK	, SC_STONE		, EFST_BLANK		, SCB_DEF_ELE|SCB_DEF|SCB_MDEF );
@@ -3106,6 +3100,14 @@ bool status_check_skilluse(struct block_list *src, struct block_list *target, ui
 		// on dead characters, said checks are left to skill.cpp [Skotlex]
 		if (target && status_isdead(target))
 			return false;
+	} else {
+		struct map_data *mapdata = map_getmapdata(src->m);
+
+		if (mapdata && mapdata->zone.isSkillDisabled(skill_id, src->type)) {
+			if (src->type == BL_PC)
+				clif_msg((TBL_PC *)src, SKILL_CANT_USE_AREA); // This skill cannot be used within this area
+			return false;
+		}
 	}
 
 	switch( skill_id ) {
@@ -4891,7 +4893,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 
 		// Items may be equipped, their effects however are nullified.
 		if (opt&SCO_FIRST && sd->inventory_data[index]->equip_script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT)
-			|| !itemdb_isNoEquip(sd->inventory_data[index],sd->bl.m))) { // Execute equip-script on login
+			|| !itemdb_isNoEquip(sd->inventory_data[index]->nameid,sd->bl.m))) { // Execute equip-script on login
 			run_script(sd->inventory_data[index]->equip_script,0,sd->bl.id,0);
 			if (!calculating)
 				return 1;
@@ -4949,7 +4951,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 			}
 
 			wa->range += sd->inventory_data[index]->range;
-			if(sd->inventory_data[index]->script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(sd->inventory_data[index],sd->bl.m))) {
+			if(sd->inventory_data[index]->script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(sd->inventory_data[index]->nameid,sd->bl.m))) {
 				if (wd == &sd->left_weapon) {
 					sd->state.lr_flag = 1;
 					run_script(sd->inventory_data[index]->script,0,sd->bl.id,0);
@@ -4983,7 +4985,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 #endif
 			}
 
-			if(sd->inventory_data[index]->script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(sd->inventory_data[index],sd->bl.m))) {
+			if(sd->inventory_data[index]->script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(sd->inventory_data[index]->nameid,sd->bl.m))) {
 				if( i == EQI_HAND_L ) // Shield
 					sd->state.lr_flag = 3;
 				run_script(sd->inventory_data[index]->script,0,sd->bl.id,0);
@@ -4993,7 +4995,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 					return 1;
 			}
 		} else if( sd->inventory_data[index]->type == IT_SHADOWGEAR ) { // Shadow System
-			if (sd->inventory_data[index]->script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(sd->inventory_data[index],sd->bl.m))) {
+			if (sd->inventory_data[index]->script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(sd->inventory_data[index]->nameid,sd->bl.m))) {
 				run_script(sd->inventory_data[index]->script,0,sd->bl.id,0);
 				if( !calculating )
 					return 1;
@@ -5033,7 +5035,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 				item_data *id = itemdb_exists(item_combo->nameid[j]);
 
 				// Don't run the script if at least one of combo's pair has restriction
-				if (id && !pc_has_permission(sd, PC_PERM_USE_ALL_EQUIPMENT) && itemdb_isNoEquip(id, sd->bl.m)) {
+				if (id && !pc_has_permission(sd, PC_PERM_USE_ALL_EQUIPMENT) && itemdb_isNoEquip(id->nameid, sd->bl.m)) {
 					no_run = true;
 					break;
 				}
@@ -5083,14 +5085,14 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 				data = itemdb_exists(c);
 				if(!data)
 					continue;
-				if (opt&SCO_FIRST && data->equip_script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(data,sd->bl.m))) {// Execute equip-script on login
+				if (opt&SCO_FIRST && data->equip_script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(data->nameid,sd->bl.m))) {// Execute equip-script on login
 					run_script(data->equip_script,0,sd->bl.id,0);
 					if (!calculating)
 						return 1;
 				}
 				if(!data->script)
 					continue;
-				if(!pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) && itemdb_isNoEquip(data,sd->bl.m)) // Card restriction checks.
+				if(!pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) && itemdb_isNoEquip(data->nameid,sd->bl.m)) // Card restriction checks.
 					continue;
 				if(i == EQI_HAND_L && sd->inventory.u.items_inventory[index].equip == EQP_HAND_L) { // Left hand status.
 					sd->state.lr_flag = 1;
@@ -5130,7 +5132,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 
 				if (!data || !data->script)
 					continue;
-				if (!pc_has_permission(sd, PC_PERM_USE_ALL_EQUIPMENT) && itemdb_isNoEquip(sd->inventory_data[index], sd->bl.m))
+				if (!pc_has_permission(sd, PC_PERM_USE_ALL_EQUIPMENT) && itemdb_isNoEquip(sd->inventory_data[index]->nameid, sd->bl.m))
 					continue;
 				if (i == EQI_HAND_L && sd->inventory.u.items_inventory[index].equip == EQP_HAND_L) { // Left hand status.
 					sd->state.lr_flag = 1;
@@ -10751,7 +10753,9 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 	if( bl->type != BL_NPC && status_isdead(bl) && ( type != SC_NOCHAT && type != SC_JAILED ) ) // SC_NOCHAT and SC_JAILED should work even on dead characters
 		return 0;
 
-	if (status_change_isDisabledOnMap(type, map_getmapdata(bl->m)))
+	struct map_data *mapdata = map_getmapdata(bl->m);
+
+	if (mapdata && mapdata->zone.isStatusDisabled(type))
 		return 0;
 
 	if (sc->data[SC_GRAVITYCONTROL])
@@ -17450,91 +17454,46 @@ static TIMER_FUNC(status_natural_heal_timer){
 }
 
 /**
- * Check if status is disabled on a map
- * @param type: Status Change data
- * @param mapIsVS: If the map is a map_flag_vs type
- * @param mapisPVP: If the map is a PvP type
- * @param mapIsGVG: If the map is a map_flag_gvg type
- * @param mapIsBG: If the map is a Battleground type
- * @param mapZone: Map Zone type
- * @param mapIsTE: If the map us WOE TE
- * @return True - SC disabled on map; False - SC not disabled on map/Invalid SC
- */
-static bool status_change_isDisabledOnMap_(sc_type type, bool mapIsVS, bool mapIsPVP, bool mapIsGVG, bool mapIsBG, unsigned int mapZone, bool mapIsTE)
-{
-	if (type <= SC_NONE || type >= SC_MAX)
-		return false;
-
-	if ((!mapIsVS && SCDisabled[type]&1) ||
-		(mapIsPVP && SCDisabled[type]&2) ||
-		(mapIsGVG && SCDisabled[type]&4) ||
-		(mapIsBG && SCDisabled[type]&8) ||
-		(mapIsTE && SCDisabled[type]&16) ||
-		(SCDisabled[type]&(mapZone)))
-	{
-		return true;
-	}
-
-	return false;
-}
-
-/**
- * Clear a status if it is disabled on a map
+ * Clear a status if it is disabled on a map.
  * @param bl: Block list data
- * @param sc: Status Change data
  */
-void status_change_clear_onChangeMap(struct block_list *bl, struct status_change *sc)
+void status_change_clear_onChangeMap(struct block_list *bl)
 {
 	nullpo_retv(bl);
 
+	struct status_change *sc = status_get_sc(bl);
+
 	if (sc && sc->count) {
 		struct map_data *mapdata = map_getmapdata(bl->m);
-		unsigned short i;
-		bool mapIsVS = mapdata_flag_vs2(mapdata);
-		bool mapIsPVP = mapdata->flag[MF_PVP] != 0;
-		bool mapIsGVG = mapdata_flag_gvg2_no_te(mapdata);
-		bool mapIsBG = mapdata->flag[MF_BATTLEGROUND] != 0;
-		bool mapIsTE = mapdata_flag_gvg2_te(mapdata);
 
-		for (i = 0; i < SC_MAX; i++) {
-			if (!sc->data[i] || !SCDisabled[i])
+		if (!mapdata)
+			return;
+
+		for (size_t i = 0; i < SC_MAX; i++) {
+			if (!sc->data[i])
 				continue;
 
-			if (status_change_isDisabledOnMap_((sc_type)i, mapIsVS, mapIsPVP, mapIsGVG, mapIsBG, mapdata->zone, mapIsTE))
-				status_change_end(bl, (sc_type)i, INVALID_TIMER);
+			if (mapdata->zone.isStatusDisabled(static_cast<sc_type>(i)))
+				status_change_end(bl, static_cast<sc_type>(i), INVALID_TIMER);
 		}
 	}
 }
 
 /**
- * Read status_disabled.txt file
- * @param str: Fields passed from sv_readdb
+ * Read sizefix database for attack calculations
+ * @param fields: Fields passed from sv_readdb
  * @param columns: Columns passed from sv_readdb function call
- * @param current: Current row being read into SCDisabled array
- * @return True - Successfully stored, False - Invalid SC
+ * @param current: Current row being read into atkmods array
+ * @return True
  */
-static bool status_readdb_status_disabled(char **str, int columns, int current)
+static bool status_readdb_sizefix(char* fields[], int columns, int current)
 {
-	int64 type = SC_NONE;
+	unsigned int i;
 
-	if (ISDIGIT(str[0][0]))
-		type = atoi(str[0]);
-	else {
-		if (!script_get_constant(str[0],&type))
-			type = SC_NONE;
-	}
+	for(i = 0; i < MAX_WEAPON_TYPE; i++)
+		atkmods[current][i] = atoi(fields[i]);
 
-	if (type <= SC_NONE || type >= SC_MAX) {
-		ShowError("status_readdb_status_disabled: Invalid SC with type %s.\n", str[0]);
-		return false;
-	}
-
-	SCDisabled[type] = (unsigned int)atol(str[1]);
 	return true;
-}
-
-const std::string AttributeDatabase::getDefaultLocation() {
-	return std::string(db_path) + "/attr_fix.yml";
 }
 
 /**
@@ -17618,7 +17577,6 @@ int status_readdb( bool reload ){
 	};
 
 	// Initialize databases to default
-	memset(SCDisabled, 0, sizeof(SCDisabled));
 
 	// read databases
 	// path,filename,separator,mincol,maxcol,maxrow,func_parsor
@@ -17637,7 +17595,6 @@ int status_readdb( bool reload ){
 			safesnprintf(dbsubpath2,n1,"%s%s",db_path,dbsubpath[i]);
 		}
 
-		sv_readdb(dbsubpath1, "status_disabled.txt", ',', 2, 2, -1, &status_readdb_status_disabled, i > 0);
 
 		aFree(dbsubpath1);
 		aFree(dbsubpath2);

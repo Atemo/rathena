@@ -10,6 +10,7 @@
 #include "../common/random.hpp"
 #include "../common/showmsg.hpp"
 #include "../common/strlib.hpp"
+#include "../common/utilities.hpp"
 #include "../common/utils.hpp"
 #include "../common/utilities.hpp"
 
@@ -1907,31 +1908,6 @@ void ItemGroupDatabase::loadingFinished() {
 	}
 }
 
-/** Read item forbidden by mapflag (can't equip item)
-* Structure: <nameid>,<mode>
-*/
-static bool itemdb_read_noequip(char* str[], int columns, int current) {
-	t_itemid nameid;
-	int flag;
-	struct item_data *id;
-
-	nameid = strtoul(str[0], nullptr, 10);
-	flag = atoi(str[1]);
-
-	if( ( id = itemdb_exists(nameid) ) == NULL )
-	{
-		ShowWarning("itemdb_read_noequip: Invalid item id %u.\n", nameid);
-		return false;
-	}
-
-	if (flag >= 0)
-		id->flag.no_equip |= flag;
-	else
-		id->flag.no_equip &= ~abs(flag);
-
-	return true;
-}
-
 /**
  * @return: amount of retrieved entries.
  **/
@@ -2518,24 +2494,19 @@ static int itemdb_read_sqldb(void) {
 	return 0;
 }
 
-/** Check if the item is restricted by item_noequip.txt
-* @param id Item that will be checked
-* @param m Map ID
-* @return true: can't be used; false: can be used
-*/
-bool itemdb_isNoEquip(struct item_data *id, uint16 m) {
-	if (!id->flag.no_equip)
-		return false;
-	
+/**
+ * Check if the item is restricted.
+ * @param nameid: Item that will be checked
+ * @param m: Map ID
+ * @return true: can't be used; false: can be used
+ */
+bool itemdb_isNoEquip(int nameid, uint16 m) {
 	struct map_data *mapdata = map_getmapdata(m);
 
-	if ((id->flag.no_equip&1 && !mapdata_flag_vs2(mapdata)) || // Normal
-		(id->flag.no_equip&2 && mapdata->flag[MF_PVP]) || // PVP
-		(id->flag.no_equip&4 && mapdata_flag_gvg2_no_te(mapdata)) || // GVG
-		(id->flag.no_equip&8 && mapdata->flag[MF_BATTLEGROUND]) || // Battleground
-		(id->flag.no_equip&16 && mapdata_flag_gvg2_te(mapdata)) || // WOE:TE
-		(id->flag.no_equip&(mapdata->zone) && mapdata->flag[MF_RESTRICTED]) // Zone restriction
-		)
+	if (!mapdata)
+		return true;
+
+	if (mapdata->zone.isItemDisabled(nameid))
 		return true;
 	return false;
 }
@@ -2899,7 +2870,6 @@ static void itemdb_read(void) {
 		}
 
 		itemdb_read_combos(dbsubpath2,i > 0); //TODO change this to sv_read ? id#script ?
-		sv_readdb(dbsubpath2, "item_noequip.txt",       ',', 2, 2, -1, &itemdb_read_noequip, i > 0);
 		aFree(dbsubpath1);
 		aFree(dbsubpath2);
 	}

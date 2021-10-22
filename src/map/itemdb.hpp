@@ -1131,7 +1131,7 @@ bool itemdb_isequip2(struct item_data *id);
 char itemdb_isidentified(t_itemid nameid);
 bool itemdb_isstackable2(struct item_data *id);
 #define itemdb_isstackable(nameid) itemdb_isstackable2(itemdb_search(nameid))
-bool itemdb_isNoEquip(struct item_data *id, uint16 m);
+bool itemdb_isNoEquip(int nameid, uint16 m);
 
 s_item_combo *itemdb_combo_exists(uint32 combo_id);
 

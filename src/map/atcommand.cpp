@@ -4248,6 +4248,9 @@ ACMD_FUNC(reload) {
 	} else if (strstr(command, "attendancedb") || strncmp(message, "attendancedb", 4) == 0) {
 		attendance_db.reload();
 		clif_displaymessage(fd, msg_txt(sd, 795)); // Attendance database has been reloaded.
+	} else if (strstr(command, "zonedb") || strncmp(message, "zonedb", 4) == 0) {
+		map_zone_db.reload();
+		clif_displaymessage(fd, msg_txt(sd, 798)); // Map Zone database has been reloaded.
 	}
 
 	return 0;
@@ -4337,16 +4340,9 @@ ACMD_FUNC(mapinfo) {
 
 	struct map_data *mapdata = map_getmapdata(m_id);
 
-	sprintf(atcmd_output, msg_txt(sd,1040), mapname, mapdata->users, mapdata->npc_num, chat_num, vend_num); // Map: %s | Players: %d | NPCs: %d | Chats: %d | Vendings: %d
+	sprintf(atcmd_output, msg_txt(sd,1040), mapname, mapdata->zone, mapdata->users, mapdata->npc_num, chat_num, vend_num); // Map: %s (Zone: %d) | Players: %d | NPCs: %d | Chats: %d | Vendings: %d
 	clif_displaymessage(fd, atcmd_output);
 	clif_displaymessage(fd, msg_txt(sd,1041)); // ------ Map Flags ------
-	if (map_getmapflag(m_id, MF_TOWN))
-		clif_displaymessage(fd, msg_txt(sd,1042)); // Town Map
-	if (map_getmapflag(m_id, MF_RESTRICTED)){
-		sprintf(atcmd_output, " Restricted (zone %d)",mapdata->zone);
-		clif_displaymessage(fd, atcmd_output);
-	}
-
 	if (battle_config.autotrade_mapflag == map_getmapflag(m_id, MF_AUTOTRADE))
 		clif_displaymessage(fd, msg_txt(sd,1043)); // Autotrade Enabled
 	else
@@ -8630,7 +8626,6 @@ ACMD_FUNC(mapflag) {
 		if( mapflag != MF_INVALID ){
 			std::vector<e_mapflag> disabled_mf = { MF_NOSAVE,
 												MF_PVP_NIGHTMAREDROP,
-												MF_RESTRICTED,
 												MF_NOCOMMAND,
 												MF_BEXP,
 												MF_JEXP,
@@ -11104,15 +11099,15 @@ bool is_atcommand(const int fd, struct map_session_data* sd, const char* message
 	//Reconstructed message
 	char atcmd_msg[CHAT_SIZE_MAX * 2];
 
-	TBL_PC * ssd = NULL; //sd for target
-	AtCommandInfo * info;
+	TBL_PC* ssd = NULL; //sd for target
+	AtCommandInfo* info;
 
 	bool is_atcommand = true; // false if it's a charcommand
 
 	nullpo_retr(false, sd);
 
 	//Shouldn't happen
-	if ( !message || !*message )
+	if (!message || !*message)
 		return false;
 
 	//If cannot use atcomamnd while talking with NPC [Kichi]
@@ -11120,22 +11115,24 @@ bool is_atcommand(const int fd, struct map_session_data* sd, const char* message
 		return false;
 
 	//Block NOCHAT but do not display it as a normal message
-	if ( sd->sc.data[SC_NOCHAT] && sd->sc.data[SC_NOCHAT]->val1&MANNER_NOCOMMAND )
+	if (sd->sc.data[SC_NOCHAT] && sd->sc.data[SC_NOCHAT]->val1 & MANNER_NOCOMMAND)
 		return true;
 
 	// skip 10/11-langtype's codepage indicator, if detected
-	if ( message[0] == '|' && strlen(message) >= 4 && (message[3] == atcommand_symbol || message[3] == charcommand_symbol) )
+	if (message[0] == '|' && strlen(message) >= 4 && (message[3] == atcommand_symbol || message[3] == charcommand_symbol))
 		message += 3;
 
 	//Should display as a normal message
-	if ( *message != atcommand_symbol && *message != charcommand_symbol )
+	if (*message != atcommand_symbol && *message != charcommand_symbol)
 		return false;
 
+	int16 groupLevel = pc_get_group_level(sd);
+
 	// type value 0|2 = script|console invoked: bypass restrictions
-	if ( type == 1 || type == 3) {
+	if (type == 1 || type == 3) {
 		//Commands are disabled on maps flagged as 'nocommand'
-		if ( pc_get_group_level(sd) < map_getmapflag(sd->bl.m, MF_NOCOMMAND) ) {
-			clif_displaymessage(fd, msg_txt(sd,143)); // Commands are disabled on this map.
+		if (groupLevel < map_getmapflag(sd->bl.m, MF_NOCOMMAND)) {
+			clif_displaymessage(fd, msg_txt(sd, 143)); // Commands are disabled on this map.
 			return false;
 		}
 	}
@@ -11152,9 +11149,9 @@ bool is_atcommand(const int fd, struct map_session_data* sd, const char* message
 
 		//Checks to see if #command has a name or a name + parameters.
 		if ((n = sscanf(message, "%255s \"%23[^\"]\" %255[^\n]", command, charname, params)) < 2
-		 && (n = sscanf(message, "%255s %23s %255[^\n]", command, charname, params)) < 2
-		) {
-			if (pc_get_group_level(sd) == 0) {
+			&& (n = sscanf(message, "%255s %23s %255[^\n]", command, charname, params)) < 2
+			) {
+			if (groupLevel == 0) {
 				if (n < 1)
 					return false; // No command found. Display as normal message.
 
@@ -11163,14 +11160,14 @@ bool is_atcommand(const int fd, struct map_session_data* sd, const char* message
 					return false;
 			}
 
-			sprintf(output, msg_txt(sd,1388), charcommand_symbol); // Charcommand failed (usage: %c<command> <char name> <parameters>).
+			sprintf(output, msg_txt(sd, 1388), charcommand_symbol); // Charcommand failed (usage: %c<command> <char name> <parameters>).
 			clif_displaymessage(fd, output);
 			return true;
 		}
 
-		ssd = map_nick2sd(charname,true);
+		ssd = map_nick2sd(charname, true);
 		if (ssd == NULL) {
-			sprintf(output, msg_txt(sd,1389), command); // %s failed. Player not found.
+			sprintf(output, msg_txt(sd, 1389), command); // %s failed. Player not found.
 			clif_displaymessage(fd, output);
 			return true;
 		}
@@ -11181,7 +11178,7 @@ bool is_atcommand(const int fd, struct map_session_data* sd, const char* message
 			sprintf(atcmd_msg, "%s", command);
 	}
 
-	if (battle_config.idletime_option&IDLE_ATCOMMAND)
+	if (battle_config.idletime_option & IDLE_ATCOMMAND)
 		sd->idletime = last_tick;
 	if (battle_config.hom_idle_no_share && sd->hd && battle_config.idletime_hom_option&IDLE_ATCOMMAND)
 		sd->idletime_hom = last_tick;
@@ -11193,23 +11190,23 @@ bool is_atcommand(const int fd, struct map_session_data* sd, const char* message
 	memset(params, '\0', sizeof(params));
 
 	//check to see if any params exist within this command
-	if( sscanf(atcmd_msg, "%255s %255[^\n]", command, params) < 2 )
+	if (sscanf(atcmd_msg, "%255s %255[^\n]", command, params) < 2)
 		params[0] = '\0';
 
 	if (type == 1 && (sd->state.block_action & PCBLOCK_COMMANDS)) {
-		sprintf(output,msg_txt(sd,154), command); // %s failed.
+		sprintf(output, msg_txt(sd, 154), command); // %s failed.
 		clif_displaymessage(fd, output);
 		return true;
 	}
 
 	// @commands (script based)
-	if((type == 1 || type == 3) && atcmd_binding_count > 0) {
-		struct atcmd_binding_data *binding = get_atcommandbind_byname(command);
+	if ((type == 1 || type == 3) && atcmd_binding_count > 0) {
+		struct atcmd_binding_data* binding = get_atcommandbind_byname(command);
 
 		// Check if the binding isn't NULL and there is a NPC event, level of usage met, et cetera
-		if( binding != NULL && binding->npc_event[0] &&
-			((is_atcommand && pc_get_group_level(sd) >= binding->level) ||
-			 (!is_atcommand && pc_get_group_level(sd) >= binding->level2)))
+		if (binding != NULL && binding->npc_event[0] &&
+			((is_atcommand && groupLevel >= binding->level) ||
+			(!is_atcommand && groupLevel >= binding->level2)))
 		{
 			// Check if self or character invoking; if self == character invoked, then self invoke.
 			npc_do_atcmd_event(ssd, command, params, binding->npc_event);
@@ -11220,10 +11217,10 @@ bool is_atcommand(const int fd, struct map_session_data* sd, const char* message
 	//Grab the command information and check for the proper GM level required to use it or if the command exists
 	info = get_atcommandinfo_byname(atcommand_alias_db.checkAlias(command + 1));
 	if (info == NULL) {
-		if (pc_get_group_level(sd) == 0) // TODO: remove or replace with proper permission
+		if (groupLevel == 0) // TODO: remove or replace with proper permission
 			return false;
 
-		sprintf(output, msg_txt(sd,153), command); // "%s is Unknown Command."
+		sprintf(output, msg_txt(sd, 153), command); // "%s is Unknown Command."
 		clif_displaymessage(fd, output);
 		atcommand_get_suggestions(sd, command + 1, is_atcommand);
 		return true;
@@ -11231,11 +11228,11 @@ bool is_atcommand(const int fd, struct map_session_data* sd, const char* message
 
 	//check restriction
 	if (info->restriction) {
-		if (info->restriction&ATCMD_NOCONSOLE && type == 2) //console prevent
+		if (info->restriction & ATCMD_NOCONSOLE && type == 2) //console prevent
 			return true;
-		if (info->restriction&ATCMD_NOSCRIPT && (type == 0 || type == 3)) //scripts prevent
+		if (info->restriction & ATCMD_NOSCRIPT && (type == 0 || type == 3)) //scripts prevent
 			return true;
-		if (info->restriction&ATCMD_NOAUTOTRADE && (type == 0 || type == 3)
+		if (info->restriction & ATCMD_NOAUTOTRADE && (type == 0 || type == 3)
 			&& ((is_atcommand && sd && sd->state.autotrade) || (ssd && ssd->state.autotrade)))
 			return true;
 	}
@@ -11243,13 +11240,20 @@ bool is_atcommand(const int fd, struct map_session_data* sd, const char* message
 	// type == 1 : player invoked
 	if (type == 1) {
 		if ((is_atcommand && info->at_groups[sd->group_pos] == 0) ||
-			(!is_atcommand && info->char_groups[sd->group_pos] == 0) )
+			(!is_atcommand && info->char_groups[sd->group_pos] == 0))
 			return false;
 
-		if( pc_isdead(sd) && pc_has_permission(sd,PC_PERM_DISABLE_CMD_DEAD) ) {
-			clif_displaymessage(fd, msg_txt(sd,1393)); // You can't use commands while dead
+		if (pc_isdead(sd) && pc_has_permission(sd, PC_PERM_DISABLE_CMD_DEAD)) {
+			clif_displaymessage(fd, msg_txt(sd, 1393)); // You can't use commands while dead
 			return true;
 		}
+	}
+
+	struct map_data *mapdata = map_getmapdata(sd->bl.m);
+
+	if (mapdata->zone.isCommandDisabled(info->command, groupLevel)) {
+		clif_messagecolor(&sd->bl, color_table[COLOR_RED], msg_txt(sd, 795), false, SELF); // This command is disabled on this map.
+		return true;
 	}
 
 	//Attempt to use the command

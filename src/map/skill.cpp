@@ -225,7 +225,6 @@ int skill_get_maxcount( uint16 skill_id ,uint16 skill_lv )         { skill_get_l
 int skill_get_blewcount( uint16 skill_id ,uint16 skill_lv )        { skill_get_lv(skill_id, skill_lv, skill_db.find(skill_id)->blewcount); }
 int skill_get_castnodex( uint16 skill_id )                         { skill_get(skill_id, skill_db.find(skill_id)->castnodex); }
 int skill_get_delaynodex( uint16 skill_id )                        { skill_get(skill_id, skill_db.find(skill_id)->delaynodex); }
-int skill_get_nocast ( uint16 skill_id )                           { skill_get(skill_id, skill_db.find(skill_id)->nocast); }
 int skill_get_type( uint16 skill_id )                              { skill_get(skill_id, skill_db.find(skill_id)->skill_type); }
 int skill_get_unit_id ( uint16 skill_id )                          { skill_get(skill_id, skill_db.find(skill_id)->unit_id); }
 int skill_get_unit_id2 ( uint16 skill_id )                         { skill_get(skill_id, skill_db.find(skill_id)->unit_id2); }
@@ -896,18 +895,6 @@ bool skill_isNotOk(uint16 skill_id, struct map_session_data *sd)
 	if( sd->skillitem == skill_id && !sd->skillitem_keep_requirement && !sd->state.abra_flag)
 		return false;
 
-	uint32 skill_nocast = skill_get_nocast(skill_id);
-	// Check skill restrictions [Celest]
-	if( (skill_nocast&1 && !mapdata_flag_vs2(mapdata)) ||
-		(skill_nocast&2 && mapdata->flag[MF_PVP]) ||
-		(skill_nocast&4 && mapdata_flag_gvg2_no_te(mapdata)) ||
-		(skill_nocast&8 && mapdata->flag[MF_BATTLEGROUND]) ||
-		(skill_nocast&16 && mapdata_flag_gvg2_te(mapdata)) || // WOE:TE
-		(mapdata->zone && skill_nocast&(mapdata->zone) && mapdata->flag[MF_RESTRICTED]) ){
-			clif_msg(sd, SKILL_CANT_USE_AREA); // This skill cannot be used within this area
-			return true;
-	}
-
 	if( sd->sc.data[SC_ALL_RIDING] )
 		return true; //You can't use skills while in the new mounts (The client doesn't let you, this is to make cheat-safe)
 
@@ -924,6 +911,7 @@ bool skill_isNotOk(uint16 skill_id, struct map_session_data *sd)
 			return false;
 		case AL_TELEPORT:
 		case NPC_FATALMENACE:
+		case RG_INTIMIDATE:
 		case SC_DIMENSIONDOOR:
 		case ALL_ODINS_RECALL:
 		case WE_CALLALLFAMILY:
@@ -24401,21 +24389,6 @@ uint64 MagicMushroomDatabase::parseBodyNode(const YAML::Node &node) {
 	return 1;
 }
 
-/** Reads skill no cast db
- * Structure: SkillID,Flag
- */
-static bool skill_parse_row_nocastdb(char* split[], int columns, int current)
-{
-	std::shared_ptr<s_skill_db> skill = skill_db.find(atoi(split[0]));
-
-	if (!skill)
-		return false;
-
-	skill->nocast |= atoi(split[1]);
-
-	return true;
-}
-
 /** Reads Produce db
  * Structure: ProduceItemID,ItemLV,RequireSkill,Requireskill_lv,MaterialID1,MaterialAmount1,...
  */
@@ -24736,7 +24709,6 @@ static bool skill_parse_row_skilldamage(char* split[], int columns, int current)
 /*===============================
  * DB reading.
  * skill_db.yml
- * skill_nocast_db.txt
  * produce_db.txt
  * create_arrow_db.txt
  *------------------------------*/
@@ -24768,7 +24740,6 @@ static void skill_readdb(void)
 			safesnprintf(dbsubpath1,n1,"%s%s",db_path,dbsubpath[i]);
 			safesnprintf(dbsubpath2,n1,"%s%s",db_path,dbsubpath[i]);
 		}
-		sv_readdb(dbsubpath2, "skill_nocast_db.txt"   , ',',   2,  2, -1, skill_parse_row_nocastdb, i > 0);
 
 		sv_readdb(dbsubpath2, "produce_db.txt"        , ',',   5,  5+2*MAX_PRODUCE_RESOURCE, MAX_SKILL_PRODUCE_DB, skill_parse_row_producedb, i > 0);
 		sv_readdb(dbsubpath1, "skill_changematerial_db.txt" , ',',   5,  5+2*MAX_SKILL_CHANGEMATERIAL_SET, MAX_SKILL_CHANGEMATERIAL_DB, skill_parse_row_changematerialdb, i > 0);
