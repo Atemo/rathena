@@ -216,6 +216,26 @@ template <typename R> bool YamlDatabase::asType( const YAML::Node& node, const s
 	}
 }
 
+template <typename R> bool YamlDatabase::asTypeSimple( const YAML::Node& node, const std::string& name, R& out, bool exists, R default_val ){
+	if( this->nodeExists( node, name ) ){
+		const YAML::Node& dataNode = node[name];
+
+		try {
+			R value = dataNode.as<R>();
+
+			out = value;
+
+			return true;
+		}catch( const YAML::BadConversion& ){
+			return false;
+		}
+	}else{
+		if (!exists)
+			out = default_val;
+		return true;
+	}
+}
+
 bool YamlDatabase::asBool(const YAML::Node &node, const std::string &name, bool &out) {
 	return asType<bool>(node, name, out);
 }
@@ -290,6 +310,14 @@ bool YamlDatabase::asUInt32Rate( const YAML::Node& node, const std::string& name
 	}else{
 		return false;
 	}
+}
+
+bool YamlDatabase::asUInt32simple(const YAML::Node &node, const std::string &name, uint32 &out, bool exists, uint32 default_val) {
+	return asTypeSimple<uint32>(node, name, out, exists, default_val);
+}
+
+bool YamlDatabase::asBoolsimple(const YAML::Node &node, const std::string &name, bool &out, bool exists, bool default_val) {
+	return asTypeSimple<bool>(node, name, out, exists, default_val);
 }
 
 void YamlDatabase::invalidWarning( const YAML::Node &node, const char* fmt, ... ){

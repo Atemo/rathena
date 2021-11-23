@@ -28,6 +28,7 @@ private:
 	void parse( const YAML::Node& rootNode );
 	void parseImports( const YAML::Node& rootNode );
 	template <typename R> bool asType( const YAML::Node& node, const std::string& name, R& out );
+	template <typename R> bool asTypeSimple( const YAML::Node& node, const std::string& name, R& out, bool exists, R default_val );
 
 // These should be visible/usable by the implementation provider
 protected:
@@ -50,6 +51,9 @@ protected:
 	bool asString(const YAML::Node &node, const std::string &name, std::string &out);
 	bool asUInt16Rate(const YAML::Node& node, const std::string& name, uint16& out, uint16 maximum=10000);
 	bool asUInt32Rate(const YAML::Node& node, const std::string& name, uint32& out, uint32 maximum=10000);
+
+	bool asBoolsimple(const YAML::Node &node, const std::string &name, bool &out, bool exists, bool default_val);
+	bool asUInt32simple(const YAML::Node &node, const std::string &name, uint32 &out, bool exists, uint32 default_val);
 
 	virtual void loadingFinished();
 

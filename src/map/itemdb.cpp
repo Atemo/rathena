@@ -207,42 +207,15 @@ uint64 ItemDatabase::parseBodyNode(const YAML::Node &node) {
 		}
 	}
 
-	if (this->nodeExists(node, "Weight")) {
-		uint32 weight;
+	if (!this->asUInt32simple(node, "Weight", item->weight, exists, 0))
+		return 0;
 
-		if (!this->asUInt32(node, "Weight", weight))
-			return 0;
-
-		item->weight = weight;
-	} else {
-		if (!exists)
-			item->weight = 0;
-	}
-
-	if (this->nodeExists(node, "Attack")) {
-		uint32 atk;
-
-		if (!this->asUInt32(node, "Attack", atk))
-			return 0;
-
-		item->atk = atk;
-	} else {
-		if (!exists)
-			item->atk = 0;
-	}
+	if (!this->asUInt32simple(node, "Attack", item->atk, exists, 0))
+		return 0;
 
 #ifdef RENEWAL
-	if (this->nodeExists(node, "MagicAttack")) {
-		uint32 matk;
-
-		if (!this->asUInt32(node, "MagicAttack", matk))
-			return 0;
-
-		item->matk = matk;
-	} else {
-		if (!exists)
-			item->matk = 0;
-	}
+	if (!this->asUInt32simple(node, "MagicAttack", item->matk, exists, 0))
+		return 0;
 #endif
 
 	if (this->nodeExists(node, "Defense")) {
@@ -545,17 +518,8 @@ uint64 ItemDatabase::parseBodyNode(const YAML::Node &node) {
 			item->flag.no_refine = true;
 	}
 
-	if (this->nodeExists(node, "View")) {
-		uint32 look;
-
-		if (!this->asUInt32(node, "View", look))
-			return 0;
-
-		item->look = look;
-	} else {
-		if (!exists)
-			item->look = 0;
-	}
+	if (!this->asUInt32simple(node, "View", item->look, exists, 0))
+		return 0;
 
 	if (this->nodeExists(node, "AliasName")) {
 		std::string view;
@@ -596,29 +560,11 @@ uint64 ItemDatabase::parseBodyNode(const YAML::Node &node) {
 				item->flag.buyingstore = false;
 		}
 
-		if (this->nodeExists(flagNode, "DeadBranch")) {
-			bool active;
+		if (!this->asBoolsimple(flagNode, "DeadBranch", item->flag.dead_branch, exists, false))
+			return 0;
 
-			if (!this->asBool(flagNode, "DeadBranch", active))
-				return 0;
-
-			item->flag.dead_branch = active;
-		} else {
-			if (!exists)
-				item->flag.dead_branch = false;
-		}
-
-		if (this->nodeExists(flagNode, "Container")) {
-			bool active;
-
-			if (!this->asBool(flagNode, "Container", active))
-				return 0;
-
-			item->flag.group = active;
-		} else {
-			if (!exists)
-				item->flag.group = false;
-		}
+		if (!this->asBoolsimple(flagNode, "Container", item->flag.group, exists, false))
+			return 0;
 
 		if (this->nodeExists(flagNode, "UniqueId")) {
 			bool active;
@@ -637,29 +583,11 @@ uint64 ItemDatabase::parseBodyNode(const YAML::Node &node) {
 				item->flag.guid = false;
 		}
 
-		if (this->nodeExists(flagNode, "BindOnEquip")) {
-			bool active;
+		if (!this->asBoolsimple(flagNode, "BindOnEquip", item->flag.bindOnEquip, exists, false))
+			return 0;
 
-			if (!this->asBool(flagNode, "BindOnEquip", active))
-				return 0;
-
-			item->flag.bindOnEquip = active;
-		} else {
-			if (!exists)
-				item->flag.bindOnEquip = false;
-		}
-
-		if (this->nodeExists(flagNode, "DropAnnounce")) {
-			bool active;
-
-			if (!this->asBool(flagNode, "DropAnnounce", active))
-				return 0;
-
-			item->flag.broadcast = active;
-		} else {
-			if (!exists)
-				item->flag.broadcast = false;
-		}
+		if (!this->asBoolsimple(flagNode, "DropAnnounce", item->flag.broadcast, exists, false))
+			return 0;
 
 		if (this->nodeExists(flagNode, "NoConsume")) {
 			bool active;
@@ -714,17 +642,8 @@ uint64 ItemDatabase::parseBodyNode(const YAML::Node &node) {
 	if (this->nodeExists(node, "Delay")) {
 		const YAML::Node &delayNode = node["Delay"];
 
-		if (this->nodeExists(delayNode, "Duration")) {
-			uint32 duration;
-
-			if (!this->asUInt32(delayNode, "Duration", duration))
-				return 0;
-
-			item->delay.duration = duration;
-		} else {
-			if (!exists)
-				item->delay.duration = 0;
-		}
+		if (!this->asUInt32simple(delayNode, "Duration", item->delay.duration, exists, 0))
+			return 0;
 
 		if (this->nodeExists(delayNode, "Status")) {
 			std::string status;
@@ -772,53 +691,17 @@ uint64 ItemDatabase::parseBodyNode(const YAML::Node &node) {
 				item->stack.amount = 0;
 		}
 
-		if (this->nodeExists(stackNode, "Inventory")) {
-			bool active;
+		if (!this->asBoolsimple(stackNode, "Inventory", item->stack.inventory, exists, false))
+			return 0;
 
-			if (!this->asBool(stackNode, "Inventory", active))
-				return 0;
+		if (!this->asBoolsimple(stackNode, "Cart", item->stack.cart, exists, false))
+			return 0;
 
-			item->stack.inventory = active;
-		} else {
-			if (!exists)
-				item->stack.inventory = false;
-		}
+		if (!this->asBoolsimple(stackNode, "Storage", item->stack.storage, exists, false))
+			return 0;
 
-		if (this->nodeExists(stackNode, "Cart")) {
-			bool active;
-
-			if (!this->asBool(stackNode, "Cart", active))
-				return 0;
-
-			item->stack.cart = active;
-		} else {
-			if (!exists)
-				item->stack.cart = false;
-		}
-
-		if (this->nodeExists(stackNode, "Storage")) {
-			bool active;
-
-			if (!this->asBool(stackNode, "Storage", active))
-				return 0;
-
-			item->stack.storage = active;
-		} else {
-			if (!exists)
-				item->stack.storage = false;
-		}
-
-		if (this->nodeExists(stackNode, "GuildStorage")) {
-			bool active;
-
-			if (!this->asBool(stackNode, "GuildStorage", active))
-				return 0;
-
-			item->stack.guild_storage = active;
-		} else {
-			if (!exists)
-				item->stack.guild_storage = false;
-		}
+		if (!this->asBoolsimple(stackNode, "GuildStorage", item->stack.guild_storage, exists, false))
+			return 0;
 	} else {
 		if (!exists) {
 			item->stack.amount = 0;
@@ -849,17 +732,8 @@ uint64 ItemDatabase::parseBodyNode(const YAML::Node &node) {
 				item->item_usage.override = 0;
 		}
 
-		if (this->nodeExists(nouseNode, "Sitting")) {
-			bool active;
-
-			if (!this->asBool(nouseNode, "Sitting", active))
-				return 0;
-
-			item->item_usage.sitting = active;
-		} else {
-			if (!exists)
-				item->item_usage.sitting = false;
-		}
+		if (!this->asBoolsimple(nouseNode, "Sitting", item->item_usage.sitting, exists, false))
+			return 0;
 	} else {
 		if (!exists) {
 			item->item_usage.override = 0;
@@ -887,113 +761,32 @@ uint64 ItemDatabase::parseBodyNode(const YAML::Node &node) {
 				item->gm_lv_trade_override = 0;
 		}
 
-		if (this->nodeExists(tradeNode, "NoDrop")) {
-			bool active;
+		if (!this->asBoolsimple(tradeNode, "NoDrop", item->flag.trade_restriction.drop, exists, false))
+			return 0;
 
-			if (!this->asBool(tradeNode, "NoDrop", active))
-				return 0;
+		if (!this->asBoolsimple(tradeNode, "NoTrade", item->flag.trade_restriction.trade, exists, false))
+			return 0;
 
-			item->flag.trade_restriction.drop = active;
-		} else {
-			if (!exists)
-				item->flag.trade_restriction.drop = false;
-		}
+		if (!this->asBoolsimple(tradeNode, "TradePartner", item->flag.trade_restriction.trade_partner, exists, false))
+			return 0;
 
-		if (this->nodeExists(tradeNode, "NoTrade")) {
-			bool active;
+		if (!this->asBoolsimple(tradeNode, "NoSell", item->flag.trade_restriction.sell, exists, false))
+			return 0;
 
-			if (!this->asBool(tradeNode, "NoTrade", active))
-				return 0;
+		if (!this->asBoolsimple(tradeNode, "NoCart", item->flag.trade_restriction.cart, exists, false))
+			return 0;
 
-			item->flag.trade_restriction.trade = active;
-		} else {
-			if (!exists)
-				item->flag.trade_restriction.trade = false;
-		}
+		if (!this->asBoolsimple(tradeNode, "NoStorage", item->flag.trade_restriction.storage, exists, false))
+			return 0;
 
-		if (this->nodeExists(tradeNode, "TradePartner")) {
-			bool active;
+		if (!this->asBoolsimple(tradeNode, "NoGuildStorage", item->flag.trade_restriction.guild_storage, exists, false))
+			return 0;
 
-			if (!this->asBool(tradeNode, "TradePartner", active))
-				return 0;
+		if (!this->asBoolsimple(tradeNode, "NoMail", item->flag.trade_restriction.mail, exists, false))
+			return 0;
 
-			item->flag.trade_restriction.trade_partner = active;
-		} else {
-			if (!exists)
-				item->flag.trade_restriction.trade_partner = false;
-		}
-
-		if (this->nodeExists(tradeNode, "NoSell")) {
-			bool active;
-
-			if (!this->asBool(tradeNode, "NoSell", active))
-				return 0;
-
-			item->flag.trade_restriction.sell = active;
-		} else {
-			if (!exists)
-				item->flag.trade_restriction.sell = false;
-		}
-
-		if (this->nodeExists(tradeNode, "NoCart")) {
-			bool active;
-
-			if (!this->asBool(tradeNode, "NoCart", active))
-				return 0;
-
-			item->flag.trade_restriction.cart = active;
-		} else {
-			if (!exists)
-				item->flag.trade_restriction.cart = false;
-		}
-
-		if (this->nodeExists(tradeNode, "NoStorage")) {
-			bool active;
-
-			if (!this->asBool(tradeNode, "NoStorage", active))
-				return 0;
-
-			item->flag.trade_restriction.storage = active;
-		} else {
-			if (!exists)
-				item->flag.trade_restriction.storage = false;
-		}
-
-		if (this->nodeExists(tradeNode, "NoGuildStorage")) {
-			bool active;
-
-			if (!this->asBool(tradeNode, "NoGuildStorage", active))
-				return 0;
-
-			item->flag.trade_restriction.guild_storage = active;
-		} else {
-			if (!exists)
-				item->flag.trade_restriction.guild_storage = false;
-		}
-
-		if (this->nodeExists(tradeNode, "NoMail")) {
-			bool active;
-
-			if (!this->asBool(tradeNode, "NoMail", active))
-				return 0;
-
-			item->flag.trade_restriction.mail = active;
-		} else {
-			if (!exists)
-				item->flag.trade_restriction.mail = false;
-		}
-
-		if (this->nodeExists(tradeNode, "NoAuction")) {
-			bool active;
-
-			if (!this->asBool(tradeNode, "NoAuction", active))
-				return 0;
-
-			item->flag.trade_restriction.auction = active;
-		} else {
-			if (!exists)
-				item->flag.trade_restriction.auction = false;
-		}
+		if (!this->asBoolsimple(tradeNode, "NoAuction", item->flag.trade_restriction.auction, exists, false))
+			return 0;
 	} else {
 		if (!exists) {
 			item->gm_lv_trade_override = 0;
