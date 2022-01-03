@@ -15,1215 +15,1536 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
+###########################################################################
+# Map Zone Database
+###########################################################################
+#
+# Map Zone Settings
+#
+###########################################################################
+# - Name                      Zone name
+#   GmLevel                   GM Level to bypass the restrictions. Group permissions bypass this setting. (Default: 99)
+#   Commands:                 List of disabled @commands (Optional) (Default: null)
+#     - Name                  Command name
+#       Flag                  Whether the command should be disabled (Default: true)
+#   Skills:                   List of disabled skills (Optional) (Default: null)
+#     - Name                  Aegis skill name
+#       Caster:               Type of unit associate
+#   Items:                    List of disabled items (Optional) (Default: null)
+#     - Name                  Aegis skill name
+#   Statuses:                 List of disabled statuses (Optional) (Default: null)
+#     - Name                  Aegis item name
+#   Jobs:                     List of restricted jobs from entering zone (Optional) (Default: null)
+#     - Name                  Job name
+#   Maps:                     List of maps to apply the zone to
+#     - Name                  Map name
+#   Mapflags                  List of mapflags (Optional) (Default: null)
+#     - Name                  Mapflag name
+#       Flag                  Value assigned to mapflag (Optional) (Default: true)
+###########################################################################
+
 Header:
   Type: MAP_ZONE_DB
   Version: 1
 
 Body:
-  - Zone: ZONE_NORMAL
-    SkillRestrictions:
-      - Targets:
-          BL_ALL: true
-        Skills:
-          BA_DISSONANCE: false
-          BD_ETERNALCHAOS: false
-          BD_ROKISWEIL: false
-          CG_HERMODE: false
-          DC_DONTFORGETME: false
-          DC_UGLYDANCE: false
-          KO_KYOUGAKU: false
-          SC_MANHOLE: false
-          SO_ARRULLO: false
-          WM_BEYOND_OF_WARCRY: false
-          WM_GLOOMYDAY: false
-          WM_LULLABY_DEEPSLEEP: false
-          WM_MELODYOFSINK: false
-          WM_SATURDAY_NIGHT_FEVER: false
-          WM_SIRCLEOFNATURE: false
-          WM_SOUND_OF_DESTRUCTION: false
+  - Zone: NORMAL
+    Skills:
+      - Name: BA_DISSONANCE
+      - Name: BD_ETERNALCHAOS
+      - Name: BD_ROKISWEIL
+      - Name: CG_HERMODE
+      - Name: DC_DONTFORGETME
+      - Name: DC_UGLYDANCE
+      - Name: EM_ACTIVITY_BURN
+      - Name: KO_KYOUGAKU
+      - Name: SC_MANHOLE
+      - Name: SO_ARRULLO
+      - Name: TR_NIPELHEIM_REQUIEM
+      - Name: TR_ROKI_CAPRICCIO
+      - Name: WM_BEYOND_OF_WARCRY
+      - Name: WM_GLOOMYDAY
+      - Name: WM_LULLABY_DEEPSLEEP
+      - Name: WM_MELODYOFSINK
+      - Name: WM_SATURDAY_NIGHT_FEVER
+      - Name: WM_SIRCLEOFNATURE
+      - Name: WM_SOUND_OF_DESTRUCTION
     Items:
-      Siege_Arrow_A: false
-      Siege_Arrow_S: false
-      Siege_Boots: false
-      Siege_Greave: false
-      Siege_Manteau: false
-      Siege_Muffler: false
-      Siege_Plate: false
-      Siege_Robe: false
-      Siege_Shoes: false
-      Siege_Suits: false
-      TE_Ring_Of_Defiance: false
-      TE_Ring_Of_Protection: false
-      TE_Ring_Of_Rage: false
-      TE_White_Potion: false
-      TE_White_Slim_Potion: false
-      TE_Woe_Axe: false
-      TE_Woe_Bone_Helm: false
-      TE_Woe_Book: false
-      TE_Woe_Boots: false
-      TE_Woe_Bow: false
-      TE_Woe_Buckler: false
-      TE_Woe_Cap: false
-      TE_Woe_Chain_Mail: false
-      TE_Woe_Coat: false
-      TE_Woe_Fist: false
-      TE_Woe_Gatling: false
-      TE_Woe_Grenade: false
-      TE_Woe_Guitar: false
-      TE_Woe_Huuma: false
-      TE_Woe_Katar: false
-      TE_Woe_Knife: false
-      TE_Woe_Lance: false
-      TE_Woe_Mace: false
-      TE_Woe_Mage_Coat: false
-      TE_Woe_Magic_Eyes: false
-      TE_Woe_Magic_Guard: false
-      TE_Woe_Magic_Manteau: false
-      TE_Woe_Magic_Sandal: false
-      TE_Woe_Manteau: false
-      TE_Woe_Muffler: false
-      TE_Woe_Pike: false
-      TE_Woe_Pistol: false
-      TE_Woe_Rifle: false
-      TE_Woe_Rope: false
-      TE_Woe_Shield: false
-      TE_Woe_Shoes: false
-      TE_Woe_Shotgun: false
-      TE_Woe_Staff: false
-      TE_Woe_Sword: false
-      TE_Woe_Two_Hand_Staff: false
-      TE_Woe_Two_Hand_Sword: false
-      TE_Woe_Two_Handed_Axe: false
-      Treasure_Box_Scroll: false
-      Velum_Arbalest: false
-      Velum_Arc_Wand: false
-      Velum_Bible: false
-      Velum_Buster: false
-      Velum_Claw: false
-      Velum_Claymore: false
-      Velum_CrossBow: false
-      Velum_Damascus: false
-      Velum_Encyclopedia: false
-      Velum_Flail: false
-      Velum_Glaive: false
-      Velum_Guillotine: false
-      Velum_Jamadhar: false
-      Velum_Katzbalger: false
-      Velum_Scare: false
-      Velum_Spear: false
-      Velum_Stunner: false
-      Woe_Blue_Potion: false
-      Woe_Violet_Potion: false
-      Woe_White_Potion: false
-  - Zone: ZONE_PVP
-    SkillRestrictions:
-      Targets:
-        BL_ALL: true
-      Skills:
-        CG_HERMODE: false
-        KO_KYOUGAKU: false
-        SC_DIMENSIONDOOR: false
+      - Name: Siege_Arrow_A
+      - Name: Siege_Arrow_S
+      - Name: Siege_Boots
+      - Name: Siege_Greave
+      - Name: Siege_Manteau
+      - Name: Siege_Muffler
+      - Name: Siege_Plate
+      - Name: Siege_Robe
+      - Name: Siege_Shoes
+      - Name: Siege_Suits
+      - Name: TE_Ring_Of_Defiance
+      - Name: TE_Ring_Of_Protection
+      - Name: TE_Ring_Of_Rage
+      - Name: TE_White_Potion
+      - Name: TE_White_Slim_Potion
+      - Name: TE_Woe_Axe
+      - Name: TE_Woe_Bone_Helm
+      - Name: TE_Woe_Book
+      - Name: TE_Woe_Boots
+      - Name: TE_Woe_Bow
+      - Name: TE_Woe_Buckler
+      - Name: TE_Woe_Cap
+      - Name: TE_Woe_Chain_Mail
+      - Name: TE_Woe_Coat
+      - Name: TE_Woe_Fist
+      - Name: TE_Woe_Gatling
+      - Name: TE_Woe_Grenade
+      - Name: TE_Woe_Guitar
+      - Name: TE_Woe_Huuma
+      - Name: TE_Woe_Katar
+      - Name: TE_Woe_Knife
+      - Name: TE_Woe_Lance
+      - Name: TE_Woe_Mace
+      - Name: TE_Woe_Mage_Coat
+      - Name: TE_Woe_Magic_Eyes
+      - Name: TE_Woe_Magic_Guard
+      - Name: TE_Woe_Magic_Manteau
+      - Name: TE_Woe_Magic_Sandal
+      - Name: TE_Woe_Manteau
+      - Name: TE_Woe_Muffler
+      - Name: TE_Woe_Pike
+      - Name: TE_Woe_Pistol
+      - Name: TE_Woe_Rifle
+      - Name: TE_Woe_Rope
+      - Name: TE_Woe_Shield
+      - Name: TE_Woe_Shoes
+      - Name: TE_Woe_Shotgun
+      - Name: TE_Woe_Staff
+      - Name: TE_Woe_Sword
+      - Name: TE_Woe_Two_Hand_Staff
+      - Name: TE_Woe_Two_Hand_Sword
+      - Name: TE_Woe_Two_Handed_Axe
+      - Name: Treasure_Box_Scroll
+      - Name: Velum_Arbalest
+      - Name: Velum_Arc_Wand
+      - Name: Velum_Bible
+      - Name: Velum_Buster
+      - Name: Velum_Claw
+      - Name: Velum_Claymore
+      - Name: Velum_CrossBow
+      - Name: Velum_Damascus
+      - Name: Velum_Encyclopedia
+      - Name: Velum_Flail
+      - Name: Velum_Glaive
+      - Name: Velum_Guillotine
+      - Name: Velum_Jamadhar
+      - Name: Velum_Katzbalger
+      - Name: Velum_Scare
+      - Name: Velum_Spear
+      - Name: Velum_Stunner
+      - Name: Woe_Blue_Potion
+      - Name: Woe_Violet_Potion
+      - Name: Woe_White_Potion
+  - Zone: PVP
+    Skills:
+      - Name: CG_HERMODE
+      - Name: KO_KYOUGAKU
+      - Name: SC_DIMENSIONDOOR
     Items:
-      Greed_Scroll: false
-      TE_Ring_Of_Defiance: false
-      TE_Ring_Of_Protection: false
-      TE_Ring_Of_Rage: false
-      TE_White_Potion: false
-      TE_White_Slim_Potion: false
-      TE_Woe_Axe: false
-      TE_Woe_Bone_Helm: false
-      TE_Woe_Book: false
-      TE_Woe_Boots: false
-      TE_Woe_Bow: false
-      TE_Woe_Buckler: false
-      TE_Woe_Cap: false
-      TE_Woe_Chain_Mail: false
-      TE_Woe_Coat: false
-      TE_Woe_Fist: false
-      TE_Woe_Gatling: false
-      TE_Woe_Grenade: false
-      TE_Woe_Guitar: false
-      TE_Woe_Huuma: false
-      TE_Woe_Katar: false
-      TE_Woe_Knife: false
-      TE_Woe_Lance: false
-      TE_Woe_Mace: false
-      TE_Woe_Mage_Coat: false
-      TE_Woe_Magic_Eyes: false
-      TE_Woe_Magic_Guard: false
-      TE_Woe_Magic_Manteau: false
-      TE_Woe_Magic_Sandal: false
-      TE_Woe_Manteau: false
-      TE_Woe_Muffler: false
-      TE_Woe_Pike: false
-      TE_Woe_Pistol: false
-      TE_Woe_Rifle: false
-      TE_Woe_Rope: false
-      TE_Woe_Shield: false
-      TE_Woe_Shoes: false
-      TE_Woe_Shotgun: false
-      TE_Woe_Staff: false
-      TE_Woe_Sword: false
-      TE_Woe_Two_Hand_Staff: false
-      TE_Woe_Two_Hand_Sword: false
-      TE_Woe_Two_Handed_Axe: false
-  - Zone: ZONE_GVG
-    SkillRestrictions:
-      Targets:
-        BL_ALL: true
-      Skills:
-        AL_TELEPORT: false
-        AL_WARP: false
-        CASH_ASSUMPTIO: false
-        CG_MOONLIT: false
-        CR_CULTIVATION: false
-        HP_ASSUMPTIO: false
-        HP_BASILICA: false
-        NJ_KIRIKAGE: false
-        RG_INTIMIDATE: false
-        SC_DIMENSIONDOOR: false
-        SL_KAIZEL: false
-        TF_BACKSLIDING: false
-        WE_CALLALLFAMILY: false
-        WE_CALLBABY: false
-        WE_CALLPARENT: false
-        WE_CALLPARTNER: false
-        WZ_ICEWALL: false
+      - Name: Greed_Scroll
+      - Name: TE_Ring_Of_Defiance
+      - Name: TE_Ring_Of_Protection
+      - Name: TE_Ring_Of_Rage
+      - Name: TE_White_Potion
+      - Name: TE_White_Slim_Potion
+      - Name: TE_Woe_Axe
+      - Name: TE_Woe_Bone_Helm
+      - Name: TE_Woe_Book
+      - Name: TE_Woe_Boots
+      - Name: TE_Woe_Bow
+      - Name: TE_Woe_Buckler
+      - Name: TE_Woe_Cap
+      - Name: TE_Woe_Chain_Mail
+      - Name: TE_Woe_Coat
+      - Name: TE_Woe_Fist
+      - Name: TE_Woe_Gatling
+      - Name: TE_Woe_Grenade
+      - Name: TE_Woe_Guitar
+      - Name: TE_Woe_Huuma
+      - Name: TE_Woe_Katar
+      - Name: TE_Woe_Knife
+      - Name: TE_Woe_Lance
+      - Name: TE_Woe_Mace
+      - Name: TE_Woe_Mage_Coat
+      - Name: TE_Woe_Magic_Eyes
+      - Name: TE_Woe_Magic_Guard
+      - Name: TE_Woe_Magic_Manteau
+      - Name: TE_Woe_Magic_Sandal
+      - Name: TE_Woe_Manteau
+      - Name: TE_Woe_Muffler
+      - Name: TE_Woe_Pike
+      - Name: TE_Woe_Pistol
+      - Name: TE_Woe_Rifle
+      - Name: TE_Woe_Rope
+      - Name: TE_Woe_Shield
+      - Name: TE_Woe_Shoes
+      - Name: TE_Woe_Shotgun
+      - Name: TE_Woe_Staff
+      - Name: TE_Woe_Sword
+      - Name: TE_Woe_Two_Hand_Staff
+      - Name: TE_Woe_Two_Hand_Sword
+      - Name: TE_Woe_Two_Handed_Axe
+  - Zone: GVG
+    Skills:
+      - Name: AL_TELEPORT
+      - Name: AL_WARP
+      - Name: CASH_ASSUMPTIO
+      - Name: CG_MOONLIT
+      - Name: CR_CULTIVATION
+      - Name: HP_ASSUMPTIO
+      - Name: HP_BASILICA
+      - Name: NJ_KIRIKAGE
+      - Name: RG_INTIMIDATE
+      - Name: SC_DIMENSIONDOOR
+      - Name: SL_KAIZEL
+      - Name: TF_BACKSLIDING
+      - Name: WE_CALLALLFAMILY
+      - Name: WE_CALLBABY
+      - Name: WE_CALLPARENT
+      - Name: WE_CALLPARTNER
+      - Name: WZ_ICEWALL
     Items:
-      Anodyne: false
-      Assumptio_5_Scroll: false
-      Greed_Scroll: false
-      Pty_Assumptio_Scroll: false
-      TE_Ring_Of_Defiance: false
-      TE_Ring_Of_Protection: false
-      TE_Ring_Of_Rage: false
-      TE_White_Potion: false
-      TE_White_Slim_Potion: false
-      TE_Woe_Axe: false
-      TE_Woe_Bone_Helm: false
-      TE_Woe_Book: false
-      TE_Woe_Boots: false
-      TE_Woe_Bow: false
-      TE_Woe_Buckler: false
-      TE_Woe_Cap: false
-      TE_Woe_Chain_Mail: false
-      TE_Woe_Coat: false
-      TE_Woe_Fist: false
-      TE_Woe_Gatling: false
-      TE_Woe_Grenade: false
-      TE_Woe_Guitar: false
-      TE_Woe_Huuma: false
-      TE_Woe_Katar: false
-      TE_Woe_Knife: false
-      TE_Woe_Lance: false
-      TE_Woe_Mace: false
-      TE_Woe_Mage_Coat: false
-      TE_Woe_Magic_Eyes: false
-      TE_Woe_Magic_Guard: false
-      TE_Woe_Magic_Manteau: false
-      TE_Woe_Magic_Sandal: false
-      TE_Woe_Manteau: false
-      TE_Woe_Muffler: false
-      TE_Woe_Pike: false
-      TE_Woe_Pistol: false
-      TE_Woe_Rifle: false
-      TE_Woe_Rope: false
-      TE_Woe_Shield: false
-      TE_Woe_Shoes: false
-      TE_Woe_Shotgun: false
-      TE_Woe_Staff: false
-      TE_Woe_Sword: false
-      TE_Woe_Two_Hand_Staff: false
-      TE_Woe_Two_Hand_Sword: false
-      TE_Woe_Two_Handed_Axe: false
-  - Zone: ZONE_BATTLEGROUNDS
-    SkillRestrictions:
-      Targets:
-        BL_ALL: true
-      Skills:
-        AL_TELEPORT: false
-        AL_WARP: false
-        CASH_ASSUMPTIO: false
-        CG_MOONLIT: false
-        CR_CULTIVATION: false
-        HP_ASSUMPTIO: false
-        HP_BASILICA: false
-        MO_BODYRELOCATION: false
-        NJ_KIRIKAGE: false
-        RG_INTIMIDATE: false
-        SC_DIMENSIONDOOR: false
-        SG_FEEL: false
-        SG_HATE: false
-        SG_MOON_ANGER: false
-        SG_MOON_BLESS: false
-        SG_MOON_COMFORT: false
-        SG_MOON_WARM: false
-        SG_STAR_ANGER: false
-        SG_STAR_BLESS: false
-        SG_STAR_COMFORT: false
-        SG_STAR_WARM: false
-        SG_SUN_ANGER: false
-        SG_SUN_BLESS: false
-        SG_SUN_COMFORT: false
-        SG_SUN_WARM: false
-        SL_KAIZEL: false
-        SU_LOPE: false
-        TF_BACKSLIDING: false
-        TK_HIGHJUMP: false
-        TK_RUN: false
-        WE_CALLALLFAMILY: false
-        WE_CALLBABY: false
-        WE_CALLPARENT: false
-        WE_CALLPARTNER: false
-        WZ_ICEWALL: false
+      - Name: Anodyne
+      - Name: Assumptio_5_Scroll
+      - Name: Greed_Scroll
+      - Name: Pty_Assumptio_Scroll
+      - Name: TE_Ring_Of_Defiance
+      - Name: TE_Ring_Of_Protection
+      - Name: TE_Ring_Of_Rage
+      - Name: TE_White_Potion
+      - Name: TE_White_Slim_Potion
+      - Name: TE_Woe_Axe
+      - Name: TE_Woe_Bone_Helm
+      - Name: TE_Woe_Book
+      - Name: TE_Woe_Boots
+      - Name: TE_Woe_Bow
+      - Name: TE_Woe_Buckler
+      - Name: TE_Woe_Cap
+      - Name: TE_Woe_Chain_Mail
+      - Name: TE_Woe_Coat
+      - Name: TE_Woe_Fist
+      - Name: TE_Woe_Gatling
+      - Name: TE_Woe_Grenade
+      - Name: TE_Woe_Guitar
+      - Name: TE_Woe_Huuma
+      - Name: TE_Woe_Katar
+      - Name: TE_Woe_Knife
+      - Name: TE_Woe_Lance
+      - Name: TE_Woe_Mace
+      - Name: TE_Woe_Mage_Coat
+      - Name: TE_Woe_Magic_Eyes
+      - Name: TE_Woe_Magic_Guard
+      - Name: TE_Woe_Magic_Manteau
+      - Name: TE_Woe_Magic_Sandal
+      - Name: TE_Woe_Manteau
+      - Name: TE_Woe_Muffler
+      - Name: TE_Woe_Pike
+      - Name: TE_Woe_Pistol
+      - Name: TE_Woe_Rifle
+      - Name: TE_Woe_Rope
+      - Name: TE_Woe_Shield
+      - Name: TE_Woe_Shoes
+      - Name: TE_Woe_Shotgun
+      - Name: TE_Woe_Staff
+      - Name: TE_Woe_Sword
+      - Name: TE_Woe_Two_Hand_Staff
+      - Name: TE_Woe_Two_Hand_Sword
+      - Name: TE_Woe_Two_Handed_Axe
+  - Zone: BATTLEGROUNDS
+    Skills:
+      - Name: AL_TELEPORT
+      - Name: AL_WARP
+      - Name: CASH_ASSUMPTIO
+      - Name: CG_MOONLIT
+      - Name: CR_CULTIVATION
+      - Name: HP_ASSUMPTIO
+      - Name: HP_BASILICA
+      - Name: MO_BODYRELOCATION
+      - Name: NJ_KIRIKAGE
+      - Name: RG_INTIMIDATE
+      - Name: SC_DIMENSIONDOOR
+      - Name: SG_FEEL
+      - Name: SG_HATE
+      - Name: SG_MOON_ANGER
+      - Name: SG_MOON_BLESS
+      - Name: SG_MOON_COMFORT
+      - Name: SG_MOON_WARM
+      - Name: SG_STAR_ANGER
+      - Name: SG_STAR_BLESS
+      - Name: SG_STAR_COMFORT
+      - Name: SG_STAR_WARM
+      - Name: SG_SUN_ANGER
+      - Name: SG_SUN_BLESS
+      - Name: SG_SUN_COMFORT
+      - Name: SG_SUN_WARM
+      - Name: SL_KAIZEL
+      - Name: SU_LOPE
+      - Name: TF_BACKSLIDING
+      - Name: TK_HIGHJUMP
+      - Name: TK_RUN
+      - Name: WE_CALLALLFAMILY
+      - Name: WE_CALLBABY
+      - Name: WE_CALLPARENT
+      - Name: WE_CALLPARTNER
+      - Name: WZ_ICEWALL
     Items:
-      Assumptio_5_Scroll: false
-      Pty_Assumptio_Scroll: false
-      TE_Ring_Of_Defiance: false
-      TE_Ring_Of_Protection: false
-      TE_Ring_Of_Rage: false
-      TE_White_Potion: false
-      TE_White_Slim_Potion: false
-      TE_Woe_Axe: false
-      TE_Woe_Bone_Helm: false
-      TE_Woe_Book: false
-      TE_Woe_Boots: false
-      TE_Woe_Bow: false
-      TE_Woe_Buckler: false
-      TE_Woe_Cap: false
-      TE_Woe_Chain_Mail: false
-      TE_Woe_Coat: false
-      TE_Woe_Fist: false
-      TE_Woe_Gatling: false
-      TE_Woe_Grenade: false
-      TE_Woe_Guitar: false
-      TE_Woe_Huuma: false
-      TE_Woe_Katar: false
-      TE_Woe_Knife: false
-      TE_Woe_Lance: false
-      TE_Woe_Mace: false
-      TE_Woe_Mage_Coat: false
-      TE_Woe_Magic_Eyes: false
-      TE_Woe_Magic_Guard: false
-      TE_Woe_Magic_Manteau: false
-      TE_Woe_Magic_Sandal: false
-      TE_Woe_Manteau: false
-      TE_Woe_Muffler: false
-      TE_Woe_Pike: false
-      TE_Woe_Pistol: false
-      TE_Woe_Rifle: false
-      TE_Woe_Rope: false
-      TE_Woe_Shield: false
-      TE_Woe_Shoes: false
-      TE_Woe_Shotgun: false
-      TE_Woe_Staff: false
-      TE_Woe_Sword: false
-      TE_Woe_Two_Hand_Staff: false
-      TE_Woe_Two_Hand_Sword: false
-      TE_Woe_Two_Handed_Axe: false
-  - Zone: ZONE_WOE_TE
-    SkillRestrictions:
-      Targets:
-        BL_ALL: true
-      Skills:
-        AC_MAKINGARROW: false
-        AL_TELEPORT: false
-        AL_WARP: false
-        CASH_ASSUMPTIO: false
-        CG_MARIONETTE: false
-        CG_MOONLIT: false
-        CR_CULTIVATION: false
-        HP_ASSUMPTIO: false
-        HP_BASILICA: false
-        LK_BERSERK: false
-        MC_VENDING: false
-        NJ_SHADOWJUMP: false
-        RG_INTIMIDATE: false
-        RG_STEALCOIN: false
-        SC_DIMENSIONDOOR: false
-        SM_ENDURE: false
-        ST_CHASEWALK: false
-        TF_BACKSLIDING: false
-        TK_HIGHJUMP: false
-        WE_CALLALLFAMILY: false
-        WE_CALLBABY: false
-        WE_CALLPARENT: false
-        WE_CALLPARTNER: false
-        WZ_ICEWALL: false
+      - Name: Assumptio_5_Scroll
+      - Name: Pty_Assumptio_Scroll
+      - Name: TE_Ring_Of_Defiance
+      - Name: TE_Ring_Of_Protection
+      - Name: TE_Ring_Of_Rage
+      - Name: TE_White_Potion
+      - Name: TE_White_Slim_Potion
+      - Name: TE_Woe_Axe
+      - Name: TE_Woe_Bone_Helm
+      - Name: TE_Woe_Book
+      - Name: TE_Woe_Boots
+      - Name: TE_Woe_Bow
+      - Name: TE_Woe_Buckler
+      - Name: TE_Woe_Cap
+      - Name: TE_Woe_Chain_Mail
+      - Name: TE_Woe_Coat
+      - Name: TE_Woe_Fist
+      - Name: TE_Woe_Gatling
+      - Name: TE_Woe_Grenade
+      - Name: TE_Woe_Guitar
+      - Name: TE_Woe_Huuma
+      - Name: TE_Woe_Katar
+      - Name: TE_Woe_Knife
+      - Name: TE_Woe_Lance
+      - Name: TE_Woe_Mace
+      - Name: TE_Woe_Mage_Coat
+      - Name: TE_Woe_Magic_Eyes
+      - Name: TE_Woe_Magic_Guard
+      - Name: TE_Woe_Magic_Manteau
+      - Name: TE_Woe_Magic_Sandal
+      - Name: TE_Woe_Manteau
+      - Name: TE_Woe_Muffler
+      - Name: TE_Woe_Pike
+      - Name: TE_Woe_Pistol
+      - Name: TE_Woe_Rifle
+      - Name: TE_Woe_Rope
+      - Name: TE_Woe_Shield
+      - Name: TE_Woe_Shoes
+      - Name: TE_Woe_Shotgun
+      - Name: TE_Woe_Staff
+      - Name: TE_Woe_Sword
+      - Name: TE_Woe_Two_Hand_Staff
+      - Name: TE_Woe_Two_Hand_Sword
+      - Name: TE_Woe_Two_Handed_Axe
+  - Zone: WOE_TE
+    Skills:
+      - Name: AC_MAKINGARROW
+      - Name: AL_TELEPORT
+      - Name: AL_WARP
+      - Name: CASH_ASSUMPTIO
+      - Name: CG_MARIONETTE
+      - Name: CG_MOONLIT
+      - Name: CR_CULTIVATION
+      - Name: HP_ASSUMPTIO
+      - Name: HP_BASILICA
+      - Name: LK_BERSERK
+      - Name: MC_VENDING
+      - Name: NJ_SHADOWJUMP
+      - Name: RG_INTIMIDATE
+      - Name: RG_STEALCOIN
+      - Name: SC_DIMENSIONDOOR
+      - Name: SM_ENDURE
+      - Name: ST_CHASEWALK
+      - Name: TF_BACKSLIDING
+      - Name: TK_HIGHJUMP
+      - Name: WE_CALLALLFAMILY
+      - Name: WE_CALLBABY
+      - Name: WE_CALLPARENT
+      - Name: WE_CALLPARTNER
+      - Name: WZ_ICEWALL
     Items:
-      Anodyne: false
-      Asprika: false
-      Assumptio_5_Scroll: false
-      Black_Thing: false
-      Blood_Butterfly_Card: false
-      Box_Of_Sunlight: false
-      Brynhild: false
-      Brysinggamen: false
-      Drocera_Herb_Stew: false
-      Enrich_Celermine_Juice: false
-      Enrich_White_PotionZ: false
-      Golden_Bug_Card: false
-      Gullraifnir: false
-      HP_Increase_PotionL: false
-      HP_Increase_PotionM: false
-      HP_Increase_PotionS: false
-      Krieger_Book1: false
-      Krieger_Book2: false
-      Krieger_Bow1: false
-      Krieger_Dagger1: false
-      Krieger_Gatling1: false
-      Krieger_Huuma_Shuriken1: false
-      Krieger_Instrument1: false
-      Krieger_Katar1: false
-      Krieger_Katar2: false
-      Krieger_Knuckle1: false
-      Krieger_Knuckle2: false
-      Krieger_Launcher1: false
-      Krieger_Muffler1: false
-      Krieger_Onehand_Axe1: false
-      Krieger_Onehand_Mace1: false
-      Krieger_Onehand_Spear1: false
-      Krieger_Onehand_Staff1: false
-      Krieger_Onehand_Staff2: false
-      Krieger_Onehand_Sword1: false
-      Krieger_Onehand_Sword2: false
-      Krieger_Onehand_Sword3: false
-      Krieger_Pistol1: false
-      Krieger_Rifle1: false
-      Krieger_Ring1: false
-      Krieger_Ring2: false
-      Krieger_Ring3: false
-      Krieger_Shoes1: false
-      Krieger_Shoes2: false
-      Krieger_Shoes3: false
-      Krieger_Shotgun1: false
-      Krieger_Suit1: false
-      Krieger_Suit2: false
-      Krieger_Suit3: false
-      Krieger_Twohand_Axe1: false
-      Krieger_Twohand_Spear1: false
-      Krieger_Twohand_Staff1: false
-      Krieger_Twohand_Sword1: false
-      Krieger_Whip1: false
-      Magingiorde: false
-      Maya_Puple_Card: false
-      Minor_Brisket: false
-      Mjolnir: false
-      Neuralizer: false
-      Orleans_Gown: false
-      Petti_Tail_Noodle: false
-      Phen_Card: false
-      Pty_Assumptio_Scroll: false
-      Runstone_Crush: false
-      Runstone_Millennium: false
-      Runstone_Storm: false
-      SP_Increase_PotionL: false
-      SP_Increase_PotionM: false
-      SP_Increase_PotionS: false
-      Savage_BBQ: false
-      Shield_Of_Chaos: false
-      Siege_Arrow_A: false
-      Siege_Arrow_S: false
-      Siege_Blue_Potion: false
-      Siege_Boots: false
-      Siege_Greave: false
-      Siege_Manteau: false
-      Siege_Muffler: false
-      Siege_Plate: false
-      Siege_Robe: false
-      Siege_Shoes: false
-      Siege_Suits: false
-      Siege_White_Potion: false
-      Siroma_Icetea: false
-      Sleipnir: false
-      Treasure_Box_Scroll: false
-      Uni_Catalog_Bz: false
-      Velum_Arbalest: false
-      Velum_Arc_Wand: false
-      Velum_Bible: false
-      Velum_Buster: false
-      Velum_Claw: false
-      Velum_Claymore: false
-      Velum_CrossBow: false
-      Velum_Damascus: false
-      Velum_Encyclopedia: false
-      Velum_Flail: false
-      Velum_Glaive: false
-      Velum_Guillotine: false
-      Velum_Jamadhar: false
-      Velum_Katzbalger: false
-      Velum_Scare: false
-      Velum_Spear: false
-      Velum_Stunner: false
-      Vending_Search_Scroll: false
-      Vending_Search_Scroll2: false
-      Vitata500: false
-      Woe_Blue_Potion: false
-      Woe_Violet_Potion: false
-      Woe_White_Potion: false
-      Wug_Blood_Cocktail: false
-    Status:
-      SC_ABUNDANCE: false
-      SC_ACCELERATION: false
-      SC_ADORAMUS: false
-      SC_AKAITSUKI: false
-      SC_ANALYZE: false
-      SC_ANGRIFFS_MODUS: false
-      SC_ANTI_M_BLAST: false
-      SC_AQUAPLAY: false
-      SC_AQUAPLAY_OPTION: false
-      SC_ARCLOUSEDASH: false
-      SC_ASH: false
-      SC_ASSUMPTIO: false
-      SC_BANANA_BOMB: false
-      SC_BANANA_BOMB_SITDOWN: false
-      SC_BANDING: false
-      SC_BANDING_DEFENCE: false
-      SC_BERSERK: false
-      SC_BEYONDOFWARCRY: false
-      SC_BITE: false
-      SC_BITESCAR: false
-      SC_BLAST: false
-      SC_BLAST_OPTION: false
-      SC_BLOODSUCKER: false
-      SC_BOOST500: false
-      SC_BURNING: false
-      SC_B_TRAP: false
-      SC_CAMOUFLAGE: false
-      SC_CATNIPPOWDER: false
-      SC_CBC: false
-      SC_CHILLY_AIR: false
-      SC_CHILLY_AIR_OPTION: false
-      SC_CIRCLE_OF_FIRE: false
-      SC_CIRCLE_OF_FIRE_OPTION: false
-      SC_CLOAKINGEXCEED: false
-      SC_COCKTAIL_WARG_BLOOD: false
-      SC_COOLER: false
-      SC_COOLER_OPTION: false
-      SC_CREATINGSTAR: false
-      SC_CRESCENTELBOW: false
-      SC_CRUSHSTRIKE: false
-      SC_CRYSTALIZE: false
-      SC_CURSEDCIRCLE_ATKER: false
-      SC_CURSEDCIRCLE_TARGET: false
-      SC_CURSED_SOIL: false
-      SC_CURSED_SOIL_OPTION: false
-      SC_C_MARKER: false
-      SC_DANCEWITHWUG: false
-      SC_DEATHBOUND: false
-      SC_DEATHHURT: false
-      SC_DEEPSLEEP: false
-      SC_DIMENSION: false
-      SC_DIMENSION1: false
-      SC_DIMENSION2: false
-      SC_DROCERA_HERB_STEAMED: false
-      SC_DUPLELIGHT: false
-      SC_EARTHDRIVE: false
-      SC_EARTH_INSIGNIA: false
-      SC_ECHOSONG: false
-      SC_ELECTRICSHOCKER: false
-      SC_ENCHANTBLADE: false
-      SC_ENDURE: false
-      SC_EPICLESIS: false
-      SC_EQC: false
-      SC_EXEEDBREAK: false
-      SC_EXPIATIO: false
-      SC_EXTRACT_SALAMINE_JUICE: false
-      SC_EXTRACT_WHITE_POTION_Z: false
-      SC_E_CHAIN: false
-      SC_FALLINGSTAR: false
-      SC_FEAR: false
-      SC_FEARBREEZE: false
-      SC_FIGHTINGSPIRIT: false
-      SC_FIRE_CLOAK: false
-      SC_FIRE_CLOAK_OPTION: false
-      SC_FIRE_INSIGNIA: false
-      SC_FLASHKICK: false
-      SC_FORCEOFVANGUARD: false
-      SC_FREEZE_SP: false
-      SC_FREEZING: false
-      SC_FRESHSHRIMP: false
-      SC_FULL_SWING_K: false
-      SC_GENSOU: false
-      SC_GIANTGROWTH: false
-      SC_GLOOMYDAY: false
-      SC_GLOOMYDAY_SK: false
-      SC_GN_CARTBOOST: false
-      SC_GOLDENE_FERSE: false
-      SC_GRANITIC_ARMOR: false
-      SC_GRAVITYCONTROL: false
-      SC_GT_CHANGE: false
-      SC_GT_ENERGYGAIN: false
-      SC_GT_REVITALIZE: false
-      SC_GUST: false
-      SC_GUST_OPTION: false
-      SC_HALLUCINATIONWALK: false
-      SC_HALLUCINATIONWALK_POSTDELAY: false
-      SC_HARMONIZE: false
-      SC_HEATER: false
-      SC_HEATER_OPTION: false
-      SC_HEAT_BARREL: false
-      SC_HOVERING: false
-      SC_H_MINE: false
-      SC_INFRAREDSCAN: false
-      SC_INSPIRATION: false
-      SC_IZAYOI: false
-      SC_JYUMONJIKIRI: false
-      SC_KAGEHUMI: false
-      SC_KAGEMUSYA: false
-      SC_KYOMU: false
-      SC_KYOUGAKU: false
-      SC_LAUDAAGNUS: false
-      SC_LAUDARAMUS: false
-      SC_LEECHESEND: false
-      SC_LERADSDEW: false
-      SC_LIFE_FORCE_F: false
-      SC_LIGHTNINGWALK: false
-      SC_LIGHTOFMOON: false
-      SC_LIGHTOFSTAR: false
-      SC_LIGHTOFSUN: false
-      SC_LIGHT_OF_REGENE: false
-      SC_LUNARSTANCE: false
-      SC_MAGICALBULLET: false
-      SC_MAGICMUSHROOM: false
-      SC_MAGMA_FLOW: false
-      SC_MAGNETICFIELD: false
-      SC_MANA_PLUS: false
-      SC_MANDRAGORA: false
-      SC_MARSHOFABYSS: false
-      SC_MAXSPELLBOOK: false
-      SC_MEIKYOUSISUI: false
-      SC_MELODYOFSINK: false
-      SC_MELON_BOMB: false
-      SC_MILLENNIUMSHIELD: false
-      SC_MINOR_BBQ: false
-      SC_MOONLITSERENADE: false
-      SC_MUSTLE_M: false
-      SC_MYSTERIOUS_POWDER: false
-      SC_NETHERWORLD: false
-      SC_NEUTRALBARRIER: false
-      SC_NEUTRALBARRIER_MASTER: false
-      SC_NEWMOON: false
-      SC_NOVAEXPLOSING: false
-      SC_OBLIVIONCURSE: false
-      SC_ORATIO: false
-      SC_OVERED_BOOST: false
-      SC_OVERHEAT: false
-      SC_OVERHEAT_LIMITPOINT: false
-      SC_PAIN_KILLER: false
-      SC_PARALYSE: false
-      SC_PARALYSIS: false
-      SC_PETROLOGY: false
-      SC_PETROLOGY_OPTION: false
-      SC_POISONINGWEAPON: false
-      SC_POWER_OF_GAIA: false
-      SC_PRESTIGE: false
-      SC_PROPERTYWALK: false
-      SC_PUTTI_TAILS_NOODLES: false
-      SC_PYREXIA: false
-      SC_PYROCLASTIC: false
-      SC_PYROTECHNIC: false
-      SC_PYROTECHNIC_OPTION: false
-      SC_P_ALTER: false
-      SC_QD_SHOT_READY: false
-      SC_RAISINGDRAGON: false
-      SC_READING_SB: false
-      SC_RECOGNIZEDSPELL: false
-      SC_REFLECTDAMAGE: false
-      SC_REFRESH: false
-      SC_RENOVATIO: false
-      SC_REUSE_REFRESH: false
-      SC_ROCK_CRUSHER: false
-      SC_ROCK_CRUSHER_ATK: false
-      SC_ROLLINGCUTTER: false
-      SC_RUSHWINDMILL: false
-      SC_SATURDAYNIGHTFEVER: false
-      SC_SAVAGE_STEAK: false
-      SC_SECRAMENT: false
-      SC_SHAPESHIFT: false
-      SC_SHIELDSPELL_ATK: false
-      SC_SHIELDSPELL_HP: false
-      SC_SHIELDSPELL_SP: false
-      SC_SHRIMP: false
-      SC_SIRCLEOFNATURE: false
-      SC_SIROMA_ICE_TEA: false
-      SC_SITDOWN_FORCE: false
-      SC_SMOKEPOWDER: false
-      SC_SOLID_SKIN: false
-      SC_SOLID_SKIN_OPTION: false
-      SC_SONGOFMANA: false
-      SC_SOULCOLLECT: false
-      SC_SOULCURSE: false
-      SC_SOULDIVISION: false
-      SC_SOULENERGY: false
-      SC_SOULFAIRY: false
-      SC_SOULFALCON: false
-      SC_SOULGOLEM: false
-      SC_SOULREAPER: false
-      SC_SOULSHADOW: false
-      SC_SOULUNITY: false
-      SC_SPELLBOOK1: false
-      SC_SPELLBOOK2: false
-      SC_SPELLBOOK3: false
-      SC_SPELLBOOK4: false
-      SC_SPELLBOOK5: false
-      SC_SPELLBOOK6: false
-      SC_SPELLFIST: false
-      SC_SPHERE_1: false
-      SC_SPHERE_2: false
-      SC_SPHERE_3: false
-      SC_SPHERE_4: false
-      SC_SPHERE_5: false
-      SC_SPRITEMABLE: false
-      SC_SP_SHA: false
-      SC_STARSTANCE: false
-      SC_STASIS: false
-      SC_STEALTHFIELD: false
-      SC_STEALTHFIELD_MASTER: false
-      SC_STOMACHACHE: false
-      SC_STONEHARDSKIN: false
-      SC_STONE_SHIELD: false
-      SC_STONE_SHIELD_OPTION: false
-      SC_STORMBLAST: false
-      SC_STRIKING: false
-      SC_STYLE_CHANGE: false
-      SC_SUHIDE: false
-      SC_SUNSTANCE: false
-      SC_SU_STOOP: false
-      SC_SV_ROOTTWIST: false
-      SC_SWINGDANCE: false
-      SC_SYMPHONYOFLOVER: false
-      SC_TEARGAS: false
-      SC_TEARGAS_SOB: false
-      SC_THORNSTRAP: false
-      SC_TIDAL_WEAPON: false
-      SC_TIDAL_WEAPON_OPTION: false
-      SC_TINDER_BREAKER: false
-      SC_TINDER_BREAKER2: false
-      SC_TOXIN: false
-      SC_TROPIC: false
-      SC_TROPIC_OPTION: false
-      SC_TUNAPARTY: false
-      SC_UNIVERSESTANCE: false
-      SC_UNLIMITEDHUMMINGVOICE: false
-      SC_UPHEAVAL: false
-      SC_UPHEAVAL_OPTION: false
-      SC_USE_SKILL_SP_SHA: false
-      SC_USE_SKILL_SP_SPA: false
-      SC_VACUUM_EXTREME: false
-      SC_VACUUM_EXTREME_POSTDELAY: false
-      SC_VENOMBLEED: false
-      SC_VENOMIMPRESS: false
-      SC_VITALITYACTIVATION: false
-      SC_VITATA_500: false
-      SC_VOICEOFSIREN: false
-      SC_WARMER: false
-      SC_WATER_BARRIER: false
-      SC_WATER_DROP: false
-      SC_WATER_DROP_OPTION: false
-      SC_WATER_INSIGNIA: false
-      SC_WATER_SCREEN: false
-      SC_WATER_SCREEN_OPTION: false
-      SC_WEAPONBLOCKING: false
-      SC_WHITEIMPRISON: false
-      SC_WILD_STORM: false
-      SC_WILD_STORM_OPTION: false
-      SC_WIND_CURTAIN: false
-      SC_WIND_CURTAIN_OPTION: false
-      SC_WIND_INSIGNIA: false
-      SC_WIND_STEP: false
-      SC_WIND_STEP_OPTION: false
-      SC_WUGDASH: false
-      SC_ZANGETSU: false
-      SC_ZENKAI: false
-      SC_ZEPHYR: false
-      SC__AUTOSHADOWSPELL: false
-      SC__BLOODYLUST: false
-      SC__BODYPAINT: false
-      SC__CHAOS: false
-      SC__DEADLYINFECT: false
-      SC__ENERVATION: false
-      SC__FEINTBOMB: false
-      SC__GROOMY: false
-      SC__IGNORANCE: false
-      SC__INVISIBILITY: false
-      SC__LAZINESS: false
-      SC__MANHOLE: false
-      SC__REPRODUCE: false
-      SC__SHADOWFORM: false
-      SC__STRIPACCESSORY: false
-      SC__UNLUCKY: false
-      SC__WEAKNESS: false
-    Job:
-      JOB_ARCH_BISHOP: false
-      JOB_ARCH_BISHOP_T: false
-      JOB_BABY_ARCH_BISHOP: false
-      JOB_BABY_GENETIC: false
-      JOB_BABY_GUILLOTINE_CROSS: false
-      JOB_BABY_KAGEROU: false
-      JOB_BABY_MECHANIC: false
-      JOB_BABY_MECHANIC2: false
-      JOB_BABY_MINSTREL: false
-      JOB_BABY_OBORO: false
-      JOB_BABY_RANGER: false
-      JOB_BABY_RANGER2: false
-      JOB_BABY_REBELLION: false
-      JOB_BABY_ROYAL_GUARD: false
-      JOB_BABY_ROYAL_GUARD2: false
-      JOB_BABY_RUNE_KNIGHT: false
-      JOB_BABY_RUNE_KNIGHT2: false
-      JOB_BABY_SHADOW_CHASER: false
-      JOB_BABY_SORCERER: false
-      JOB_BABY_SOUL_REAPER: false
-      JOB_BABY_STAR_EMPEROR: false
-      JOB_BABY_STAR_EMPEROR2: false
-      JOB_BABY_SUMMONER: false
-      JOB_BABY_SURA: false
-      JOB_BABY_WANDERER: false
-      JOB_BABY_WARLOCK: false
-      JOB_GENETIC: false
-      JOB_GENETIC_T: false
-      JOB_GUILLOTINE_CROSS: false
-      JOB_GUILLOTINE_CROSS_T: false
-      JOB_KAGEROU: false
-      JOB_MECHANIC: false
-      JOB_MECHANIC2: false
-      JOB_MECHANIC_T: false
-      JOB_MECHANIC_T2: false
-      JOB_MINSTREL: false
-      JOB_MINSTREL_T: false
-      JOB_OBORO: false
-      JOB_RANGER: false
-      JOB_RANGER2: false
-      JOB_RANGER_T: false
-      JOB_RANGER_T2: false
-      JOB_REBELLION: false
-      JOB_ROYAL_GUARD: false
-      JOB_ROYAL_GUARD2: false
-      JOB_ROYAL_GUARD_T: false
-      JOB_ROYAL_GUARD_T2: false
-      JOB_RUNE_KNIGHT: false
-      JOB_RUNE_KNIGHT2: false
-      JOB_RUNE_KNIGHT_T: false
-      JOB_RUNE_KNIGHT_T2: false
-      JOB_SHADOW_CHASER: false
-      JOB_SHADOW_CHASER_T: false
-      JOB_SORCERER: false
-      JOB_SORCERER_T: false
-      JOB_SOUL_REAPER: false
-      JOB_STAR_EMPEROR: false
-      JOB_STAR_EMPEROR2: false
-      JOB_SUMMONER: false
-      JOB_SUPER_BABY_E: false
-      JOB_SUPER_NOVICE_E: false
-      JOB_SURA: false
-      JOB_SURA_T: false
-      JOB_WANDERER: false
-      JOB_WANDERER_T: false
-      JOB_WARLOCK: false
-      JOB_WARLOCK_T: false
+      - Name: Anodyne
+      - Name: Asprika
+      - Name: Assumptio_5_Scroll
+      - Name: Black_Thing
+      - Name: Blood_Butterfly_Card
+      - Name: Box_Of_Sunlight
+      - Name: Brynhild
+      - Name: Brysinggamen
+      - Name: Drocera_Herb_Stew
+      - Name: Enrich_Celermine_Juice
+      - Name: Enrich_White_PotionZ
+      - Name: Golden_Bug_Card
+      - Name: Gullraifnir
+      - Name: HP_Increase_PotionL
+      - Name: HP_Increase_PotionM
+      - Name: HP_Increase_PotionS
+      - Name: Krieger_Book1
+      - Name: Krieger_Book2
+      - Name: Krieger_Bow1
+      - Name: Krieger_Dagger1
+      - Name: Krieger_Gatling1
+      - Name: Krieger_Huuma_Shuriken1
+      - Name: Krieger_Instrument1
+      - Name: Krieger_Katar1
+      - Name: Krieger_Katar2
+      - Name: Krieger_Knuckle1
+      - Name: Krieger_Knuckle2
+      - Name: Krieger_Launcher1
+      - Name: Krieger_Muffler1
+      - Name: Krieger_Onehand_Axe1
+      - Name: Krieger_Onehand_Mace1
+      - Name: Krieger_Onehand_Spear1
+      - Name: Krieger_Onehand_Staff1
+      - Name: Krieger_Onehand_Staff2
+      - Name: Krieger_Onehand_Sword1
+      - Name: Krieger_Onehand_Sword2
+      - Name: Krieger_Onehand_Sword3
+      - Name: Krieger_Pistol1
+      - Name: Krieger_Rifle1
+      - Name: Krieger_Ring1
+      - Name: Krieger_Ring2
+      - Name: Krieger_Ring3
+      - Name: Krieger_Shoes1
+      - Name: Krieger_Shoes2
+      - Name: Krieger_Shoes3
+      - Name: Krieger_Shotgun1
+      - Name: Krieger_Suit1
+      - Name: Krieger_Suit2
+      - Name: Krieger_Suit3
+      - Name: Krieger_Twohand_Axe1
+      - Name: Krieger_Twohand_Spear1
+      - Name: Krieger_Twohand_Staff1
+      - Name: Krieger_Twohand_Sword1
+      - Name: Krieger_Whip1
+      - Name: Magingiorde
+      - Name: Maya_Puple_Card
+      - Name: Minor_Brisket
+      - Name: Mjolnir
+      - Name: Neuralizer
+      - Name: Orleans_Gown
+      - Name: Petti_Tail_Noodle
+      - Name: Phen_Card
+      - Name: Pty_Assumptio_Scroll
+      - Name: Runstone_Crush
+      - Name: Runstone_Millennium
+      - Name: Runstone_Storm
+      - Name: SP_Increase_PotionL
+      - Name: SP_Increase_PotionM
+      - Name: SP_Increase_PotionS
+      - Name: Savage_BBQ
+      - Name: Shield_Of_Chaos
+      - Name: Siege_Arrow_A
+      - Name: Siege_Arrow_S
+      - Name: Siege_Blue_Potion
+      - Name: Siege_Boots
+      - Name: Siege_Greave
+      - Name: Siege_Manteau
+      - Name: Siege_Muffler
+      - Name: Siege_Plate
+      - Name: Siege_Robe
+      - Name: Siege_Shoes
+      - Name: Siege_Suits
+      - Name: Siege_White_Potion
+      - Name: Siroma_Icetea
+      - Name: Sleipnir
+      - Name: Treasure_Box_Scroll
+      - Name: Uni_Catalog_Bz
+      - Name: Velum_Arbalest
+      - Name: Velum_Arc_Wand
+      - Name: Velum_Bible
+      - Name: Velum_Buster
+      - Name: Velum_Claw
+      - Name: Velum_Claymore
+      - Name: Velum_CrossBow
+      - Name: Velum_Damascus
+      - Name: Velum_Encyclopedia
+      - Name: Velum_Flail
+      - Name: Velum_Glaive
+      - Name: Velum_Guillotine
+      - Name: Velum_Jamadhar
+      - Name: Velum_Katzbalger
+      - Name: Velum_Scare
+      - Name: Velum_Spear
+      - Name: Velum_Stunner
+      - Name: Vending_Search_Scroll
+      - Name: Vending_Search_Scroll2
+      - Name: Vitata500
+      - Name: Woe_Blue_Potion
+      - Name: Woe_Violet_Potion
+      - Name: Woe_White_Potion
+      - Name: Wug_Blood_Cocktail
+    Statuses:
+      - Name: SC_ABR_BATTLE_WARIOR
+      - Name: SC_ABR_DUAL_CANNON
+      - Name: SC_ABR_INFINITY
+      - Name: SC_ABR_MOTHER_NET
+      - Name: SC_ABUNDANCE
+      - Name: SC_ABYSSFORCEWEAPON
+      - Name: SC_ABYSS_DAGGER
+      - Name: SC_ABYSS_SLAYER
+      - Name: SC_ACCELERATION
+      - Name: SC_ADORAMUS
+      - Name: SC_AIN_RHAPSODY
+      - Name: SC_AKAITSUKI
+      - Name: SC_ANALYZE
+      - Name: SC_ANGRIFFS_MODUS
+      - Name: SC_ANTI_M_BLAST
+      - Name: SC_AQUAPLAY
+      - Name: SC_AQUAPLAY_OPTION
+      - Name: SC_ARCLOUSEDASH
+      - Name: SC_ASH
+      - Name: SC_ASSUMPTIO
+      - Name: SC_ATTACK_STANCE
+      - Name: SC_AXE_STOMP
+      - Name: SC_A_MACHINE
+      - Name: SC_A_TELUM
+      - Name: SC_A_VITA
+      - Name: SC_BANANA_BOMB
+      - Name: SC_BANANA_BOMB_SITDOWN
+      - Name: SC_BANDING
+      - Name: SC_BANDING_DEFENCE
+      - Name: SC_BENEDICTUM
+      - Name: SC_BERSERK
+      - Name: SC_BEYONDOFWARCRY
+      - Name: SC_BIONIC_CREEPER
+      - Name: SC_BIONIC_HELLTREE
+      - Name: SC_BIONIC_WOODENWARRIOR
+      - Name: SC_BIONIC_WOODEN_FAIRY
+      - Name: SC_BITE
+      - Name: SC_BITESCAR
+      - Name: SC_BLAST
+      - Name: SC_BLAST_OPTION
+      - Name: SC_BLOODSUCKER
+      - Name: SC_BOOST500
+      - Name: SC_BO_HELL_DUSTY
+      - Name: SC_BURNING
+      - Name: SC_B_TRAP
+      - Name: SC_CALAMITYGALE
+      - Name: SC_CAMOUFLAGE
+      - Name: SC_CATNIPPOWDER
+      - Name: SC_CBC
+      - Name: SC_CHARGINGPIERCE
+      - Name: SC_CHARGINGPIERCE_COUNT
+      - Name: SC_CHILLY_AIR
+      - Name: SC_CHILLY_AIR_OPTION
+      - Name: SC_CIRCLE_OF_FIRE
+      - Name: SC_CIRCLE_OF_FIRE_OPTION
+      - Name: SC_CLIMAX
+      - Name: SC_CLIMAX_BLOOM
+      - Name: SC_CLIMAX_CRYIMP
+      - Name: SC_CLIMAX_DES_HU
+      - Name: SC_CLIMAX_EARTH
+      - Name: SC_CLOAKINGEXCEED
+      - Name: SC_COCKTAIL_WARG_BLOOD
+      - Name: SC_COLD_FORCE
+      - Name: SC_COLD_FORCE_OPTION
+      - Name: SC_COMPETENTIA
+      - Name: SC_COOLER
+      - Name: SC_COOLER_OPTION
+      - Name: SC_CREATINGSTAR
+      - Name: SC_CRESCENTELBOW
+      - Name: SC_CRESCIVEBOLT
+      - Name: SC_CRUSHSTRIKE
+      - Name: SC_CRYSTALIZE
+      - Name: SC_CRYSTAL_ARMOR
+      - Name: SC_CRYSTAL_ARMOR_OPTION
+      - Name: SC_CURSEDCIRCLE_ATKER
+      - Name: SC_CURSEDCIRCLE_TARGET
+      - Name: SC_CURSED_SOIL
+      - Name: SC_CURSED_SOIL_OPTION
+      - Name: SC_C_MARKER
+      - Name: SC_DANCEWITHWUG
+      - Name: SC_DANCING_KNIFE
+      - Name: SC_DEADLY_DEFEASANCE
+      - Name: SC_DEATHBOUND
+      - Name: SC_DEATHHURT
+      - Name: SC_DEEPSLEEP
+      - Name: SC_DEEP_POISONING
+      - Name: SC_DEEP_POISONING_OPTION
+      - Name: SC_DIMENSION
+      - Name: SC_DIMENSION1
+      - Name: SC_DIMENSION2
+      - Name: SC_DRAGONIC_AURA
+      - Name: SC_DROCERA_HERB_STEAMED
+      - Name: SC_DUPLELIGHT
+      - Name: SC_D_MACHINE
+      - Name: SC_EARTHDRIVE
+      - Name: SC_EARTH_CARE
+      - Name: SC_EARTH_CARE_OPTION
+      - Name: SC_EARTH_INSIGNIA
+      - Name: SC_ECHOSONG
+      - Name: SC_ELECTRICSHOCKER
+      - Name: SC_ELEMENTAL_VEIL
+      - Name: SC_ENCHANTBLADE
+      - Name: SC_ENDURE
+      - Name: SC_EPICLESIS
+      - Name: SC_EQC
+      - Name: SC_EXEEDBREAK
+      - Name: SC_EXPIATIO
+      - Name: SC_EXTRACT_SALAMINE_JUICE
+      - Name: SC_EXTRACT_WHITE_POTION_Z
+      - Name: SC_EYES_OF_STORM
+      - Name: SC_EYES_OF_STORM_OPTION
+      - Name: SC_E_CHAIN
+      - Name: SC_E_SLASH_COUNT
+      - Name: SC_FALLINGSTAR
+      - Name: SC_FEAR
+      - Name: SC_FEARBREEZE
+      - Name: SC_FIGHTINGSPIRIT
+      - Name: SC_FIRE_CLOAK
+      - Name: SC_FIRE_CLOAK_OPTION
+      - Name: SC_FIRE_INSIGNIA
+      - Name: SC_FIRM_FAITH
+      - Name: SC_FIRST_BRAND
+      - Name: SC_FIRST_FAITH_POWER
+      - Name: SC_FLAMEARMOR
+      - Name: SC_FLAMEARMOR_OPTION
+      - Name: SC_FLAMETECHNIC
+      - Name: SC_FLAMETECHNIC_OPTION
+      - Name: SC_FLASHKICK
+      - Name: SC_FORCEOFVANGUARD
+      - Name: SC_FREEZE_SP
+      - Name: SC_FREEZING
+      - Name: SC_FRESHSHRIMP
+      - Name: SC_FULL_SWING_K
+      - Name: SC_GEF_NOCTURN
+      - Name: SC_GENSOU
+      - Name: SC_GIANTGROWTH
+      - Name: SC_GLOOMYDAY
+      - Name: SC_GLOOMYDAY_SK
+      - Name: SC_GN_CARTBOOST
+      - Name: SC_GOLDENE_FERSE
+      - Name: SC_GRACE_BREEZE
+      - Name: SC_GRACE_BREEZE_OPTION
+      - Name: SC_GRANITIC_ARMOR
+      - Name: SC_GRAVITYCONTROL
+      - Name: SC_GT_CHANGE
+      - Name: SC_GT_ENERGYGAIN
+      - Name: SC_GT_REVITALIZE
+      - Name: SC_GUARDIAN_S
+      - Name: SC_GUARD_STANCE
+      - Name: SC_GUST
+      - Name: SC_GUST_OPTION
+      - Name: SC_HALLUCINATIONWALK
+      - Name: SC_HALLUCINATIONWALK_POSTDELAY
+      - Name: SC_HANDICAPSTATE_CONFLAGRATION
+      - Name: SC_HANDICAPSTATE_CRYSTALLIZATION
+      - Name: SC_HANDICAPSTATE_DEADLYPOISON
+      - Name: SC_HANDICAPSTATE_DEEPBLIND
+      - Name: SC_HANDICAPSTATE_DEEPSILENCE
+      - Name: SC_HANDICAPSTATE_DEPRESSION
+      - Name: SC_HANDICAPSTATE_FROSTBITE
+      - Name: SC_HANDICAPSTATE_HOLYFLAME
+      - Name: SC_HANDICAPSTATE_LASSITUDE
+      - Name: SC_HANDICAPSTATE_LIGHTNINGSTRIKE
+      - Name: SC_HANDICAPSTATE_MISFORTUNE
+      - Name: SC_HANDICAPSTATE_SWOONING
+      - Name: SC_HARMONIZE
+      - Name: SC_HEATER
+      - Name: SC_HEATER_OPTION
+      - Name: SC_HEAT_BARREL
+      - Name: SC_HOLY_OIL
+      - Name: SC_HOLY_S
+      - Name: SC_HOVERING
+      - Name: SC_H_MINE
+      - Name: SC_INFRAREDSCAN
+      - Name: SC_INSPIRATION
+      - Name: SC_IZAYOI
+      - Name: SC_JAWAII_SERENADE
+      - Name: SC_JYUMONJIKIRI
+      - Name: SC_KAGEHUMI
+      - Name: SC_KAGEMUSYA
+      - Name: SC_KVASIR_SONATA
+      - Name: SC_KYOMU
+      - Name: SC_KYOUGAKU
+      - Name: SC_LAUDAAGNUS
+      - Name: SC_LAUDARAMUS
+      - Name: SC_LEECHESEND
+      - Name: SC_LERADSDEW
+      - Name: SC_LIFE_FORCE_F
+      - Name: SC_LIGHTNINGWALK
+      - Name: SC_LIGHTOFMOON
+      - Name: SC_LIGHTOFSTAR
+      - Name: SC_LIGHTOFSUN
+      - Name: SC_LIGHT_OF_REGENE
+      - Name: SC_LUNARSTANCE
+      - Name: SC_MAGICALBULLET
+      - Name: SC_MAGICMUSHROOM
+      - Name: SC_MAGMA_FLOW
+      - Name: SC_MAGNETICFIELD
+      - Name: SC_MANA_PLUS
+      - Name: SC_MANDRAGORA
+      - Name: SC_MARSHOFABYSS
+      - Name: SC_MASSIVE_F_BLASTER
+      - Name: SC_MAXSPELLBOOK
+      - Name: SC_MEDIALE
+      - Name: SC_MEIKYOUSISUI
+      - Name: SC_MELODYOFSINK
+      - Name: SC_MELON_BOMB
+      - Name: SC_MILLENNIUMSHIELD
+      - Name: SC_MINOR_BBQ
+      - Name: SC_MOONLITSERENADE
+      - Name: SC_MUSICAL_INTERLUDE
+      - Name: SC_MUSTLE_M
+      - Name: SC_MYSTERIOUS_POWDER
+      - Name: SC_MYSTIC_SYMPHONY
+      - Name: SC_NETHERWORLD
+      - Name: SC_NEUTRALBARRIER
+      - Name: SC_NEUTRALBARRIER_MASTER
+      - Name: SC_NEWMOON
+      - Name: SC_NOVAEXPLOSING
+      - Name: SC_OBLIVIONCURSE
+      - Name: SC_ORATIO
+      - Name: SC_OVERED_BOOST
+      - Name: SC_OVERHEAT
+      - Name: SC_OVERHEAT_LIMITPOINT
+      - Name: SC_PAIN_KILLER
+      - Name: SC_PARALYSE
+      - Name: SC_PARALYSIS
+      - Name: SC_PETROLOGY
+      - Name: SC_PETROLOGY_OPTION
+      - Name: SC_POISONINGWEAPON
+      - Name: SC_POISON_SHIELD
+      - Name: SC_POISON_SHIELD_OPTION
+      - Name: SC_POTENT_VENOM
+      - Name: SC_POWERFUL_FAITH
+      - Name: SC_POWER_OF_GAIA
+      - Name: SC_PRESTIGE
+      - Name: SC_PRE_ACIES
+      - Name: SC_PRON_MARCH
+      - Name: SC_PROPERTYWALK
+      - Name: SC_PROTECTSHADOWEQUIP
+      - Name: SC_PUTTI_TAILS_NOODLES
+      - Name: SC_PYREXIA
+      - Name: SC_PYROCLASTIC
+      - Name: SC_PYROTECHNIC
+      - Name: SC_PYROTECHNIC_OPTION
+      - Name: SC_P_ALTER
+      - Name: SC_QD_SHOT_READY
+      - Name: SC_RAISINGDRAGON
+      - Name: SC_READING_SB
+      - Name: SC_REBOUND_S
+      - Name: SC_RECOGNIZEDSPELL
+      - Name: SC_REFLECTDAMAGE
+      - Name: SC_REFRESH
+      - Name: SC_RELIGIO
+      - Name: SC_RENOVATIO
+      - Name: SC_RESEARCHREPORT
+      - Name: SC_REUSE_REFRESH
+      - Name: SC_ROCK_CRUSHER
+      - Name: SC_ROCK_CRUSHER_ATK
+      - Name: SC_ROLLINGCUTTER
+      - Name: SC_ROSEBLOSSOM
+      - Name: SC_RUSHWINDMILL
+      - Name: SC_SATURDAYNIGHTFEVER
+      - Name: SC_SAVAGE_STEAK
+      - Name: SC_SECOND_BRAND
+      - Name: SC_SECOND_JUDGE
+      - Name: SC_SECRAMENT
+      - Name: SC_SERVANTWEAPON
+      - Name: SC_SERVANT_SIGN
+      - Name: SC_SHADOW_EXCEED
+      - Name: SC_SHADOW_SCAR
+      - Name: SC_SHADOW_STRIP
+      - Name: SC_SHADOW_WEAPON
+      - Name: SC_SHAPESHIFT
+      - Name: SC_SHIELDSPELL_ATK
+      - Name: SC_SHIELDSPELL_HP
+      - Name: SC_SHIELDSPELL_SP
+      - Name: SC_SHIELD_POWER
+      - Name: SC_SHRIMP
+      - Name: SC_SINCERE_FAITH
+      - Name: SC_SIRCLEOFNATURE
+      - Name: SC_SIROMA_ICE_TEA
+      - Name: SC_SITDOWN_FORCE
+      - Name: SC_SMOKEPOWDER
+      - Name: SC_SOLID_SKIN
+      - Name: SC_SOLID_SKIN_OPTION
+      - Name: SC_SONGOFMANA
+      - Name: SC_SOULCOLLECT
+      - Name: SC_SOULCURSE
+      - Name: SC_SOULDIVISION
+      - Name: SC_SOULENERGY
+      - Name: SC_SOULFAIRY
+      - Name: SC_SOULFALCON
+      - Name: SC_SOULGOLEM
+      - Name: SC_SOULREAPER
+      - Name: SC_SOULSHADOW
+      - Name: SC_SOULUNITY
+      - Name: SC_SOUNDBLEND
+      - Name: SC_SPEAR_SCAR
+      - Name: SC_SPELLBOOK1
+      - Name: SC_SPELLBOOK2
+      - Name: SC_SPELLBOOK3
+      - Name: SC_SPELLBOOK4
+      - Name: SC_SPELLBOOK5
+      - Name: SC_SPELLBOOK6
+      - Name: SC_SPELLFIST
+      - Name: SC_SPELL_ENCHANTING
+      - Name: SC_SPHERE_1
+      - Name: SC_SPHERE_2
+      - Name: SC_SPHERE_3
+      - Name: SC_SPHERE_4
+      - Name: SC_SPHERE_5
+      - Name: SC_SPRITEMABLE
+      - Name: SC_SP_SHA
+      - Name: SC_STARSTANCE
+      - Name: SC_STASIS
+      - Name: SC_STEALTHFIELD
+      - Name: SC_STEALTHFIELD_MASTER
+      - Name: SC_STOMACHACHE
+      - Name: SC_STONEHARDSKIN
+      - Name: SC_STONE_SHIELD
+      - Name: SC_STONE_SHIELD_OPTION
+      - Name: SC_STORMBLAST
+      - Name: SC_STRIKING
+      - Name: SC_STRONG_PROTECTION
+      - Name: SC_STRONG_PROTECTION_OPTION
+      - Name: SC_STYLE_CHANGE
+      - Name: SC_SUHIDE
+      - Name: SC_SUMMON_ELEMENTAL_ARDOR
+      - Name: SC_SUMMON_ELEMENTAL_DILUVIO
+      - Name: SC_SUMMON_ELEMENTAL_PROCELLA
+      - Name: SC_SUMMON_ELEMENTAL_SERPENS
+      - Name: SC_SUMMON_ELEMENTAL_TERREMOTUS
+      - Name: SC_SUNSTANCE
+      - Name: SC_SU_STOOP
+      - Name: SC_SV_ROOTTWIST
+      - Name: SC_SWINGDANCE
+      - Name: SC_SYMPHONYOFLOVER
+      - Name: SC_TEARGAS
+      - Name: SC_TEARGAS_SOB
+      - Name: SC_THIRD_EXOR_FLAME
+      - Name: SC_THORNSTRAP
+      - Name: SC_TIDAL_WEAPON
+      - Name: SC_TIDAL_WEAPON_OPTION
+      - Name: SC_TINDER_BREAKER
+      - Name: SC_TINDER_BREAKER2
+      - Name: SC_TOXIN
+      - Name: SC_TROPIC
+      - Name: SC_TROPIC_OPTION
+      - Name: SC_TUNAPARTY
+      - Name: SC_ULTIMATE_S
+      - Name: SC_UNIVERSESTANCE
+      - Name: SC_UNLIMITEDHUMMINGVOICE
+      - Name: SC_UPHEAVAL
+      - Name: SC_UPHEAVAL_OPTION
+      - Name: SC_USE_SKILL_SP_SHA
+      - Name: SC_USE_SKILL_SP_SPA
+      - Name: SC_VACUUM_EXTREME
+      - Name: SC_VACUUM_EXTREME_POSTDELAY
+      - Name: SC_VENOMBLEED
+      - Name: SC_VENOMIMPRESS
+      - Name: SC_VIGOR
+      - Name: SC_VITALITYACTIVATION
+      - Name: SC_VITATA_500
+      - Name: SC_VOICEOFSIREN
+      - Name: SC_WARMER
+      - Name: SC_WATER_BARRIER
+      - Name: SC_WATER_DROP
+      - Name: SC_WATER_DROP_OPTION
+      - Name: SC_WATER_INSIGNIA
+      - Name: SC_WATER_SCREEN
+      - Name: SC_WATER_SCREEN_OPTION
+      - Name: SC_WEAPONBLOCKING
+      - Name: SC_WHITEIMPRISON
+      - Name: SC_WILD_STORM
+      - Name: SC_WILD_STORM_OPTION
+      - Name: SC_WINDSIGN
+      - Name: SC_WIND_CURTAIN
+      - Name: SC_WIND_CURTAIN_OPTION
+      - Name: SC_WIND_INSIGNIA
+      - Name: SC_WIND_STEP
+      - Name: SC_WIND_STEP_OPTION
+      - Name: SC_WUGDASH
+      - Name: SC_ZANGETSU
+      - Name: SC_ZENKAI
+      - Name: SC_ZEPHYR
+      - Name: SC__AUTOSHADOWSPELL
+      - Name: SC__BLOODYLUST
+      - Name: SC__BODYPAINT
+      - Name: SC__CHAOS
+      - Name: SC__DEADLYINFECT
+      - Name: SC__ENERVATION
+      - Name: SC__FEINTBOMB
+      - Name: SC__GROOMY
+      - Name: SC__IGNORANCE
+      - Name: SC__INVISIBILITY
+      - Name: SC__LAZINESS
+      - Name: SC__MANHOLE
+      - Name: SC__REPRODUCE
+      - Name: SC__SHADOWFORM
+      - Name: SC__STRIPACCESSORY
+      - Name: SC__UNLUCKY
+      - Name: SC__WEAKNESS
+    Jobs:
+      - Name: JOB_ABYSS_CHASER
+      - Name: JOB_ARCH_BISHOP
+      - Name: JOB_ARCH_BISHOP_T
+      - Name: JOB_ARCH_MAGE
+      - Name: JOB_BABY_ARCH_BISHOP
+      - Name: JOB_BABY_GENETIC
+      - Name: JOB_BABY_GUILLOTINE_CROSS
+      - Name: JOB_BABY_KAGEROU
+      - Name: JOB_BABY_MECHANIC
+      - Name: JOB_BABY_MECHANIC2
+      - Name: JOB_BABY_MINSTREL
+      - Name: JOB_BABY_OBORO
+      - Name: JOB_BABY_RANGER
+      - Name: JOB_BABY_RANGER2
+      - Name: JOB_BABY_REBELLION
+      - Name: JOB_BABY_ROYAL_GUARD
+      - Name: JOB_BABY_ROYAL_GUARD2
+      - Name: JOB_BABY_RUNE_KNIGHT
+      - Name: JOB_BABY_RUNE_KNIGHT2
+      - Name: JOB_BABY_SHADOW_CHASER
+      - Name: JOB_BABY_SORCERER
+      - Name: JOB_BABY_SOUL_REAPER
+      - Name: JOB_BABY_STAR_EMPEROR
+      - Name: JOB_BABY_STAR_EMPEROR2
+      - Name: JOB_BABY_SUMMONER
+      - Name: JOB_BABY_SURA
+      - Name: JOB_BABY_WANDERER
+      - Name: JOB_BABY_WARLOCK
+      - Name: JOB_BIOLO
+      - Name: JOB_CARDINAL
+      - Name: JOB_DRAGON_KNIGHT
+      - Name: JOB_DRAGON_KNIGHT2
+      - Name: JOB_ELEMENTAL_MASTER
+      - Name: JOB_GENETIC
+      - Name: JOB_GENETIC_T
+      - Name: JOB_GUILLOTINE_CROSS
+      - Name: JOB_GUILLOTINE_CROSS_T
+      - Name: JOB_HYPER_NOVICE
+      - Name: JOB_IMPERIAL_GUARD
+      - Name: JOB_IMPERIAL_GUARD2
+      - Name: JOB_INQUISITOR
+      - Name: JOB_KAGEROU
+      - Name: JOB_MECHANIC
+      - Name: JOB_MECHANIC2
+      - Name: JOB_MECHANIC_T
+      - Name: JOB_MECHANIC_T2
+      - Name: JOB_MEISTER
+      - Name: JOB_MEISTER2
+      - Name: JOB_MINSTREL
+      - Name: JOB_MINSTREL_T
+      - Name: JOB_NIGHT_WATCH
+      - Name: JOB_OBORO
+      - Name: JOB_RANGER
+      - Name: JOB_RANGER2
+      - Name: JOB_RANGER_T
+      - Name: JOB_RANGER_T2
+      - Name: JOB_REBELLION
+      - Name: JOB_ROYAL_GUARD
+      - Name: JOB_ROYAL_GUARD2
+      - Name: JOB_ROYAL_GUARD_T
+      - Name: JOB_ROYAL_GUARD_T2
+      - Name: JOB_RUNE_KNIGHT
+      - Name: JOB_RUNE_KNIGHT2
+      - Name: JOB_RUNE_KNIGHT_T
+      - Name: JOB_RUNE_KNIGHT_T2
+      - Name: JOB_SHADOW_CHASER
+      - Name: JOB_SHADOW_CHASER_T
+      - Name: JOB_SHADOW_CROSS
+      - Name: JOB_SHINKIRO
+      - Name: JOB_SHIRANUI
+      - Name: JOB_SKY_EMPEROR
+      - Name: JOB_SKY_EMPEROR2
+      - Name: JOB_SORCERER
+      - Name: JOB_SORCERER_T
+      - Name: JOB_SOUL_ASCETIC
+      - Name: JOB_SOUL_REAPER
+      - Name: JOB_SPIRIT_HANDLER
+      - Name: JOB_STAR_EMPEROR
+      - Name: JOB_STAR_EMPEROR2
+      - Name: JOB_SUMMONER
+      - Name: JOB_SUPER_BABY_E
+      - Name: JOB_SUPER_NOVICE_E
+      - Name: JOB_SURA
+      - Name: JOB_SURA_T
+      - Name: JOB_TROUBADOUR
+      - Name: JOB_TROUVERE
+      - Name: JOB_WANDERER
+      - Name: JOB_WANDERER_T
+      - Name: JOB_WARLOCK
+      - Name: JOB_WARLOCK_T
+      - Name: JOB_WINDHAWK
+      - Name: JOB_WINDHAWK2
   - Zone: ZONE_1
-    SkillRestrictions:
-      Targets:
-        BL_ALL: true
-      Skills:
-        AL_CURE: false
-        AL_TELEPORT: false
-        AL_WARP: false
-        AS_CLOAKING: false
-        CG_MOONLIT: false
-        GN_CARTBOOST: false
-        HP_BASILICA: false
-        LK_BERSERK: false
-        LK_CONCENTRATION: false
-        MO_BODYRELOCATION: false
-        RG_INTIMIDATE: false
-        SC_DIMENSIONDOOR: false
-        SM_ENDURE: false
-        ST_CHASEWALK: false
-        TF_HIDING: false
-        WS_CARTBOOST: false
-        WZ_ICEWALL: false
+    Skills:
+      - Name: AL_CURE
+      - Name: AL_TELEPORT
+      - Name: AL_WARP
+      - Name: AS_CLOAKING
+      - Name: CG_MOONLIT
+      - Name: GN_CARTBOOST
+      - Name: HP_BASILICA
+      - Name: LK_BERSERK
+      - Name: LK_CONCENTRATION
+      - Name: MO_BODYRELOCATION
+      - Name: RG_INTIMIDATE
+      - Name: SC_DIMENSIONDOOR
+      - Name: SM_ENDURE
+      - Name: ST_CHASEWALK
+      - Name: TF_HIDING
+      - Name: WS_CARTBOOST
+      - Name: WZ_ICEWALL
     Items:
-      Anodyne: false
-      Green_Potion: false
-      Panacea: false
-      TE_Ring_Of_Defiance: false
-      TE_Ring_Of_Protection: false
-      TE_Ring_Of_Rage: false
-      TE_White_Potion: false
-      TE_White_Slim_Potion: false
-      TE_Woe_Axe: false
-      TE_Woe_Bone_Helm: false
-      TE_Woe_Book: false
-      TE_Woe_Boots: false
-      TE_Woe_Bow: false
-      TE_Woe_Buckler: false
-      TE_Woe_Cap: false
-      TE_Woe_Chain_Mail: false
-      TE_Woe_Coat: false
-      TE_Woe_Fist: false
-      TE_Woe_Gatling: false
-      TE_Woe_Grenade: false
-      TE_Woe_Guitar: false
-      TE_Woe_Huuma: false
-      TE_Woe_Katar: false
-      TE_Woe_Knife: false
-      TE_Woe_Lance: false
-      TE_Woe_Mace: false
-      TE_Woe_Mage_Coat: false
-      TE_Woe_Magic_Eyes: false
-      TE_Woe_Magic_Guard: false
-      TE_Woe_Magic_Manteau: false
-      TE_Woe_Magic_Sandal: false
-      TE_Woe_Manteau: false
-      TE_Woe_Muffler: false
-      TE_Woe_Pike: false
-      TE_Woe_Pistol: false
-      TE_Woe_Rifle: false
-      TE_Woe_Rope: false
-      TE_Woe_Shield: false
-      TE_Woe_Shoes: false
-      TE_Woe_Shotgun: false
-      TE_Woe_Staff: false
-      TE_Woe_Sword: false
-      TE_Woe_Two_Hand_Staff: false
-      TE_Woe_Two_Hand_Sword: false
-      TE_Woe_Two_Handed_Axe: false
-      Wing_Of_Fly: false
+      - Name: Anodyne
+      - Name: Green_Potion
+      - Name: Panacea
+      - Name: TE_Ring_Of_Defiance
+      - Name: TE_Ring_Of_Protection
+      - Name: TE_Ring_Of_Rage
+      - Name: TE_White_Potion
+      - Name: TE_White_Slim_Potion
+      - Name: TE_Woe_Axe
+      - Name: TE_Woe_Bone_Helm
+      - Name: TE_Woe_Book
+      - Name: TE_Woe_Boots
+      - Name: TE_Woe_Bow
+      - Name: TE_Woe_Buckler
+      - Name: TE_Woe_Cap
+      - Name: TE_Woe_Chain_Mail
+      - Name: TE_Woe_Coat
+      - Name: TE_Woe_Fist
+      - Name: TE_Woe_Gatling
+      - Name: TE_Woe_Grenade
+      - Name: TE_Woe_Guitar
+      - Name: TE_Woe_Huuma
+      - Name: TE_Woe_Katar
+      - Name: TE_Woe_Knife
+      - Name: TE_Woe_Lance
+      - Name: TE_Woe_Mace
+      - Name: TE_Woe_Mage_Coat
+      - Name: TE_Woe_Magic_Eyes
+      - Name: TE_Woe_Magic_Guard
+      - Name: TE_Woe_Magic_Manteau
+      - Name: TE_Woe_Magic_Sandal
+      - Name: TE_Woe_Manteau
+      - Name: TE_Woe_Muffler
+      - Name: TE_Woe_Pike
+      - Name: TE_Woe_Pistol
+      - Name: TE_Woe_Rifle
+      - Name: TE_Woe_Rope
+      - Name: TE_Woe_Shield
+      - Name: TE_Woe_Shoes
+      - Name: TE_Woe_Shotgun
+      - Name: TE_Woe_Staff
+      - Name: TE_Woe_Sword
+      - Name: TE_Woe_Two_Hand_Staff
+      - Name: TE_Woe_Two_Hand_Sword
+      - Name: TE_Woe_Two_Handed_Axe
+      - Name: Wing_Of_Fly
   - Zone: ZONE_2
-    SkillRestrictions:
-      Targets:
-        BL_ALL: true
-      Skills:
-        SU_LOPE: false
-        TK_HIGHJUMP: false
-        TK_JUMPKICK: false
+    Skills:
+      - Name: SU_LOPE
+      - Name: TK_HIGHJUMP
+      - Name: TK_JUMPKICK
     Items:
-      Giant_Fly_Wing: false
-      TE_Ring_Of_Defiance: false
-      TE_Ring_Of_Protection: false
-      TE_Ring_Of_Rage: false
-      TE_White_Potion: false
-      TE_White_Slim_Potion: false
-      TE_Woe_Axe: false
-      TE_Woe_Bone_Helm: false
-      TE_Woe_Book: false
-      TE_Woe_Boots: false
-      TE_Woe_Bow: false
-      TE_Woe_Buckler: false
-      TE_Woe_Cap: false
-      TE_Woe_Chain_Mail: false
-      TE_Woe_Coat: false
-      TE_Woe_Fist: false
-      TE_Woe_Gatling: false
-      TE_Woe_Grenade: false
-      TE_Woe_Guitar: false
-      TE_Woe_Huuma: false
-      TE_Woe_Katar: false
-      TE_Woe_Knife: false
-      TE_Woe_Lance: false
-      TE_Woe_Mace: false
-      TE_Woe_Mage_Coat: false
-      TE_Woe_Magic_Eyes: false
-      TE_Woe_Magic_Guard: false
-      TE_Woe_Magic_Manteau: false
-      TE_Woe_Magic_Sandal: false
-      TE_Woe_Manteau: false
-      TE_Woe_Muffler: false
-      TE_Woe_Pike: false
-      TE_Woe_Pistol: false
-      TE_Woe_Rifle: false
-      TE_Woe_Rope: false
-      TE_Woe_Shield: false
-      TE_Woe_Shoes: false
-      TE_Woe_Shotgun: false
-      TE_Woe_Staff: false
-      TE_Woe_Sword: false
-      TE_Woe_Two_Hand_Staff: false
-      TE_Woe_Two_Hand_Sword: false
-      TE_Woe_Two_Handed_Axe: false
-      WOB_Local: false
-      WOB_Rachel: false
-      WOB_Rune: false
-      WOB_Schwaltz: false
-      Wing_Of_Butterfly: false
-      Wing_Of_Fly: false
+      - Name: Giant_Fly_Wing
+      - Name: TE_Ring_Of_Defiance
+      - Name: TE_Ring_Of_Protection
+      - Name: TE_Ring_Of_Rage
+      - Name: TE_White_Potion
+      - Name: TE_White_Slim_Potion
+      - Name: TE_Woe_Axe
+      - Name: TE_Woe_Bone_Helm
+      - Name: TE_Woe_Book
+      - Name: TE_Woe_Boots
+      - Name: TE_Woe_Bow
+      - Name: TE_Woe_Buckler
+      - Name: TE_Woe_Cap
+      - Name: TE_Woe_Chain_Mail
+      - Name: TE_Woe_Coat
+      - Name: TE_Woe_Fist
+      - Name: TE_Woe_Gatling
+      - Name: TE_Woe_Grenade
+      - Name: TE_Woe_Guitar
+      - Name: TE_Woe_Huuma
+      - Name: TE_Woe_Katar
+      - Name: TE_Woe_Knife
+      - Name: TE_Woe_Lance
+      - Name: TE_Woe_Mace
+      - Name: TE_Woe_Mage_Coat
+      - Name: TE_Woe_Magic_Eyes
+      - Name: TE_Woe_Magic_Guard
+      - Name: TE_Woe_Magic_Manteau
+      - Name: TE_Woe_Magic_Sandal
+      - Name: TE_Woe_Manteau
+      - Name: TE_Woe_Muffler
+      - Name: TE_Woe_Pike
+      - Name: TE_Woe_Pistol
+      - Name: TE_Woe_Rifle
+      - Name: TE_Woe_Rope
+      - Name: TE_Woe_Shield
+      - Name: TE_Woe_Shoes
+      - Name: TE_Woe_Shotgun
+      - Name: TE_Woe_Staff
+      - Name: TE_Woe_Sword
+      - Name: TE_Woe_Two_Hand_Staff
+      - Name: TE_Woe_Two_Hand_Sword
+      - Name: TE_Woe_Two_Handed_Axe
+      - Name: WOB_Local
+      - Name: WOB_Rachel
+      - Name: WOB_Rune
+      - Name: WOB_Schwaltz
+      - Name: Wing_Of_Butterfly
+      - Name: Wing_Of_Fly
   - Zone: ZONE_3
-    SkillRestrictions:
-      Targets:
-        BL_ALL: true
-      Skills:
-        AL_TELEPORT: false
-        RG_INTIMIDATE: false
-        SC_DIMENSIONDOOR: false
+    Skills:
+      - Name: AL_TELEPORT
+      - Name: RG_INTIMIDATE
+      - Name: SC_DIMENSIONDOOR
     Items:
-      TE_Ring_Of_Defiance: false
-      TE_Ring_Of_Protection: false
-      TE_Ring_Of_Rage: false
-      TE_White_Potion: false
-      TE_White_Slim_Potion: false
-      TE_Woe_Axe: false
-      TE_Woe_Bone_Helm: false
-      TE_Woe_Book: false
-      TE_Woe_Boots: false
-      TE_Woe_Bow: false
-      TE_Woe_Buckler: false
-      TE_Woe_Cap: false
-      TE_Woe_Chain_Mail: false
-      TE_Woe_Coat: false
-      TE_Woe_Fist: false
-      TE_Woe_Gatling: false
-      TE_Woe_Grenade: false
-      TE_Woe_Guitar: false
-      TE_Woe_Huuma: false
-      TE_Woe_Katar: false
-      TE_Woe_Knife: false
-      TE_Woe_Lance: false
-      TE_Woe_Mace: false
-      TE_Woe_Mage_Coat: false
-      TE_Woe_Magic_Eyes: false
-      TE_Woe_Magic_Guard: false
-      TE_Woe_Magic_Manteau: false
-      TE_Woe_Magic_Sandal: false
-      TE_Woe_Manteau: false
-      TE_Woe_Muffler: false
-      TE_Woe_Pike: false
-      TE_Woe_Pistol: false
-      TE_Woe_Rifle: false
-      TE_Woe_Rope: false
-      TE_Woe_Shield: false
-      TE_Woe_Shoes: false
-      TE_Woe_Shotgun: false
-      TE_Woe_Staff: false
-      TE_Woe_Sword: false
-      TE_Woe_Two_Hand_Staff: false
-      TE_Woe_Two_Hand_Sword: false
-      TE_Woe_Two_Handed_Axe: false
-      Wing_Of_Fly: false
+      - Name: TE_Ring_Of_Defiance
+      - Name: TE_Ring_Of_Protection
+      - Name: TE_Ring_Of_Rage
+      - Name: TE_White_Potion
+      - Name: TE_White_Slim_Potion
+      - Name: TE_Woe_Axe
+      - Name: TE_Woe_Bone_Helm
+      - Name: TE_Woe_Book
+      - Name: TE_Woe_Boots
+      - Name: TE_Woe_Bow
+      - Name: TE_Woe_Buckler
+      - Name: TE_Woe_Cap
+      - Name: TE_Woe_Chain_Mail
+      - Name: TE_Woe_Coat
+      - Name: TE_Woe_Fist
+      - Name: TE_Woe_Gatling
+      - Name: TE_Woe_Grenade
+      - Name: TE_Woe_Guitar
+      - Name: TE_Woe_Huuma
+      - Name: TE_Woe_Katar
+      - Name: TE_Woe_Knife
+      - Name: TE_Woe_Lance
+      - Name: TE_Woe_Mace
+      - Name: TE_Woe_Mage_Coat
+      - Name: TE_Woe_Magic_Eyes
+      - Name: TE_Woe_Magic_Guard
+      - Name: TE_Woe_Magic_Manteau
+      - Name: TE_Woe_Magic_Sandal
+      - Name: TE_Woe_Manteau
+      - Name: TE_Woe_Muffler
+      - Name: TE_Woe_Pike
+      - Name: TE_Woe_Pistol
+      - Name: TE_Woe_Rifle
+      - Name: TE_Woe_Rope
+      - Name: TE_Woe_Shield
+      - Name: TE_Woe_Shoes
+      - Name: TE_Woe_Shotgun
+      - Name: TE_Woe_Staff
+      - Name: TE_Woe_Sword
+      - Name: TE_Woe_Two_Hand_Staff
+      - Name: TE_Woe_Two_Hand_Sword
+      - Name: TE_Woe_Two_Handed_Axe
+      - Name: Wing_Of_Fly
   - Zone: ZONE_4
-    SkillRestrictions:
-      Targets:
-        BL_ALL: true
-      Skills:
-        SA_ABRACADABRA: false
-        SL_KAIZEL: false
-        SU_LOPE: false
-        TK_HIGHJUMP: false
+    Skills:
+      - Name: SA_ABRACADABRA
+      - Name: SL_KAIZEL
+      - Name: SU_LOPE
+      - Name: TK_HIGHJUMP
     Items:
-      TE_Ring_Of_Defiance: false
-      TE_Ring_Of_Protection: false
-      TE_Ring_Of_Rage: false
-      TE_White_Potion: false
-      TE_White_Slim_Potion: false
-      TE_Woe_Axe: false
-      TE_Woe_Bone_Helm: false
-      TE_Woe_Book: false
-      TE_Woe_Boots: false
-      TE_Woe_Bow: false
-      TE_Woe_Buckler: false
-      TE_Woe_Cap: false
-      TE_Woe_Chain_Mail: false
-      TE_Woe_Coat: false
-      TE_Woe_Fist: false
-      TE_Woe_Gatling: false
-      TE_Woe_Grenade: false
-      TE_Woe_Guitar: false
-      TE_Woe_Huuma: false
-      TE_Woe_Katar: false
-      TE_Woe_Knife: false
-      TE_Woe_Lance: false
-      TE_Woe_Mace: false
-      TE_Woe_Mage_Coat: false
-      TE_Woe_Magic_Eyes: false
-      TE_Woe_Magic_Guard: false
-      TE_Woe_Magic_Manteau: false
-      TE_Woe_Magic_Sandal: false
-      TE_Woe_Manteau: false
-      TE_Woe_Muffler: false
-      TE_Woe_Pike: false
-      TE_Woe_Pistol: false
-      TE_Woe_Rifle: false
-      TE_Woe_Rope: false
-      TE_Woe_Shield: false
-      TE_Woe_Shoes: false
-      TE_Woe_Shotgun: false
-      TE_Woe_Staff: false
-      TE_Woe_Sword: false
-      TE_Woe_Two_Hand_Staff: false
-      TE_Woe_Two_Hand_Sword: false
-      TE_Woe_Two_Handed_Axe: false
+      - Name: TE_Ring_Of_Defiance
+      - Name: TE_Ring_Of_Protection
+      - Name: TE_Ring_Of_Rage
+      - Name: TE_White_Potion
+      - Name: TE_White_Slim_Potion
+      - Name: TE_Woe_Axe
+      - Name: TE_Woe_Bone_Helm
+      - Name: TE_Woe_Book
+      - Name: TE_Woe_Boots
+      - Name: TE_Woe_Bow
+      - Name: TE_Woe_Buckler
+      - Name: TE_Woe_Cap
+      - Name: TE_Woe_Chain_Mail
+      - Name: TE_Woe_Coat
+      - Name: TE_Woe_Fist
+      - Name: TE_Woe_Gatling
+      - Name: TE_Woe_Grenade
+      - Name: TE_Woe_Guitar
+      - Name: TE_Woe_Huuma
+      - Name: TE_Woe_Katar
+      - Name: TE_Woe_Knife
+      - Name: TE_Woe_Lance
+      - Name: TE_Woe_Mace
+      - Name: TE_Woe_Mage_Coat
+      - Name: TE_Woe_Magic_Eyes
+      - Name: TE_Woe_Magic_Guard
+      - Name: TE_Woe_Magic_Manteau
+      - Name: TE_Woe_Magic_Sandal
+      - Name: TE_Woe_Manteau
+      - Name: TE_Woe_Muffler
+      - Name: TE_Woe_Pike
+      - Name: TE_Woe_Pistol
+      - Name: TE_Woe_Rifle
+      - Name: TE_Woe_Rope
+      - Name: TE_Woe_Shield
+      - Name: TE_Woe_Shoes
+      - Name: TE_Woe_Shotgun
+      - Name: TE_Woe_Staff
+      - Name: TE_Woe_Sword
+      - Name: TE_Woe_Two_Hand_Staff
+      - Name: TE_Woe_Two_Hand_Sword
+      - Name: TE_Woe_Two_Handed_Axe
   - Zone: ZONE_5
-    SkillRestrictions:
-      Targets:
-        BL_ALL: true
-      Skills:
-        AL_TELEPORT: false
-        CASH_ASSUMPTIO: false
-        HP_ASSUMPTIO: false
-        MG_SAFETYWALL: false
-        RG_INTIMIDATE: false
-        SC_DIMENSIONDOOR: false
-        SC_IGNORANCE: false
+    Skills:
+      - Name: AL_TELEPORT
+      - Name: CASH_ASSUMPTIO
+      - Name: HP_ASSUMPTIO
+      - Name: MG_SAFETYWALL
+      - Name: RG_INTIMIDATE
+      - Name: SC_DIMENSIONDOOR
+      - Name: SC_IGNORANCE
     Items:
-      TE_Ring_Of_Defiance: false
-      TE_Ring_Of_Protection: false
-      TE_Ring_Of_Rage: false
-      TE_White_Potion: false
-      TE_White_Slim_Potion: false
-      TE_Woe_Axe: false
-      TE_Woe_Bone_Helm: false
-      TE_Woe_Book: false
-      TE_Woe_Boots: false
-      TE_Woe_Bow: false
-      TE_Woe_Buckler: false
-      TE_Woe_Cap: false
-      TE_Woe_Chain_Mail: false
-      TE_Woe_Coat: false
-      TE_Woe_Fist: false
-      TE_Woe_Gatling: false
-      TE_Woe_Grenade: false
-      TE_Woe_Guitar: false
-      TE_Woe_Huuma: false
-      TE_Woe_Katar: false
-      TE_Woe_Knife: false
-      TE_Woe_Lance: false
-      TE_Woe_Mace: false
-      TE_Woe_Mage_Coat: false
-      TE_Woe_Magic_Eyes: false
-      TE_Woe_Magic_Guard: false
-      TE_Woe_Magic_Manteau: false
-      TE_Woe_Magic_Sandal: false
-      TE_Woe_Manteau: false
-      TE_Woe_Muffler: false
-      TE_Woe_Pike: false
-      TE_Woe_Pistol: false
-      TE_Woe_Rifle: false
-      TE_Woe_Rope: false
-      TE_Woe_Shield: false
-      TE_Woe_Shoes: false
-      TE_Woe_Shotgun: false
-      TE_Woe_Staff: false
-      TE_Woe_Sword: false
-      TE_Woe_Two_Hand_Staff: false
-      TE_Woe_Two_Hand_Sword: false
-      TE_Woe_Two_Handed_Axe: false
+      - Name: TE_Ring_Of_Defiance
+      - Name: TE_Ring_Of_Protection
+      - Name: TE_Ring_Of_Rage
+      - Name: TE_White_Potion
+      - Name: TE_White_Slim_Potion
+      - Name: TE_Woe_Axe
+      - Name: TE_Woe_Bone_Helm
+      - Name: TE_Woe_Book
+      - Name: TE_Woe_Boots
+      - Name: TE_Woe_Bow
+      - Name: TE_Woe_Buckler
+      - Name: TE_Woe_Cap
+      - Name: TE_Woe_Chain_Mail
+      - Name: TE_Woe_Coat
+      - Name: TE_Woe_Fist
+      - Name: TE_Woe_Gatling
+      - Name: TE_Woe_Grenade
+      - Name: TE_Woe_Guitar
+      - Name: TE_Woe_Huuma
+      - Name: TE_Woe_Katar
+      - Name: TE_Woe_Knife
+      - Name: TE_Woe_Lance
+      - Name: TE_Woe_Mace
+      - Name: TE_Woe_Mage_Coat
+      - Name: TE_Woe_Magic_Eyes
+      - Name: TE_Woe_Magic_Guard
+      - Name: TE_Woe_Magic_Manteau
+      - Name: TE_Woe_Magic_Sandal
+      - Name: TE_Woe_Manteau
+      - Name: TE_Woe_Muffler
+      - Name: TE_Woe_Pike
+      - Name: TE_Woe_Pistol
+      - Name: TE_Woe_Rifle
+      - Name: TE_Woe_Rope
+      - Name: TE_Woe_Shield
+      - Name: TE_Woe_Shoes
+      - Name: TE_Woe_Shotgun
+      - Name: TE_Woe_Staff
+      - Name: TE_Woe_Sword
+      - Name: TE_Woe_Two_Hand_Staff
+      - Name: TE_Woe_Two_Hand_Sword
+      - Name: TE_Woe_Two_Handed_Axe
   - Zone: ZONE_6
-    SkillRestrictions:
-      Targets:
-        BL_ALL: true
-      Skills:
-        AL_TELEPORT: false
-        NPC_EXPULSION: false
-        PF_SPIDERWEB: false
-        RG_INTIMIDATE: false
-        SC_DIMENSIONDOOR: false
-        SC_IGNORANCE: false
-        WZ_ICEWALL: false
+    Skills:
+      - Name: AL_TELEPORT
+      - Name: NPC_EXPULSION
+      - Name: PF_SPIDERWEB
+      - Name: RG_INTIMIDATE
+      - Name: SC_DIMENSIONDOOR
+      - Name: SC_IGNORANCE
+      - Name: WZ_ICEWALL
     Items:
-      TE_Ring_Of_Defiance: false
-      TE_Ring_Of_Protection: false
-      TE_Ring_Of_Rage: false
-      TE_White_Potion: false
-      TE_White_Slim_Potion: false
-      TE_Woe_Axe: false
-      TE_Woe_Bone_Helm: false
-      TE_Woe_Book: false
-      TE_Woe_Boots: false
-      TE_Woe_Bow: false
-      TE_Woe_Buckler: false
-      TE_Woe_Cap: false
-      TE_Woe_Chain_Mail: false
-      TE_Woe_Coat: false
-      TE_Woe_Fist: false
-      TE_Woe_Gatling: false
-      TE_Woe_Grenade: false
-      TE_Woe_Guitar: false
-      TE_Woe_Huuma: false
-      TE_Woe_Katar: false
-      TE_Woe_Knife: false
-      TE_Woe_Lance: false
-      TE_Woe_Mace: false
-      TE_Woe_Mage_Coat: false
-      TE_Woe_Magic_Eyes: false
-      TE_Woe_Magic_Guard: false
-      TE_Woe_Magic_Manteau: false
-      TE_Woe_Magic_Sandal: false
-      TE_Woe_Manteau: false
-      TE_Woe_Muffler: false
-      TE_Woe_Pike: false
-      TE_Woe_Pistol: false
-      TE_Woe_Rifle: false
-      TE_Woe_Rope: false
-      TE_Woe_Shield: false
-      TE_Woe_Shoes: false
-      TE_Woe_Shotgun: false
-      TE_Woe_Staff: false
-      TE_Woe_Sword: false
-      TE_Woe_Two_Hand_Staff: false
-      TE_Woe_Two_Hand_Sword: false
-      TE_Woe_Two_Handed_Axe: false
+      - Name: TE_Ring_Of_Defiance
+      - Name: TE_Ring_Of_Protection
+      - Name: TE_Ring_Of_Rage
+      - Name: TE_White_Potion
+      - Name: TE_White_Slim_Potion
+      - Name: TE_Woe_Axe
+      - Name: TE_Woe_Bone_Helm
+      - Name: TE_Woe_Book
+      - Name: TE_Woe_Boots
+      - Name: TE_Woe_Bow
+      - Name: TE_Woe_Buckler
+      - Name: TE_Woe_Cap
+      - Name: TE_Woe_Chain_Mail
+      - Name: TE_Woe_Coat
+      - Name: TE_Woe_Fist
+      - Name: TE_Woe_Gatling
+      - Name: TE_Woe_Grenade
+      - Name: TE_Woe_Guitar
+      - Name: TE_Woe_Huuma
+      - Name: TE_Woe_Katar
+      - Name: TE_Woe_Knife
+      - Name: TE_Woe_Lance
+      - Name: TE_Woe_Mace
+      - Name: TE_Woe_Mage_Coat
+      - Name: TE_Woe_Magic_Eyes
+      - Name: TE_Woe_Magic_Guard
+      - Name: TE_Woe_Magic_Manteau
+      - Name: TE_Woe_Magic_Sandal
+      - Name: TE_Woe_Manteau
+      - Name: TE_Woe_Muffler
+      - Name: TE_Woe_Pike
+      - Name: TE_Woe_Pistol
+      - Name: TE_Woe_Rifle
+      - Name: TE_Woe_Rope
+      - Name: TE_Woe_Shield
+      - Name: TE_Woe_Shoes
+      - Name: TE_Woe_Shotgun
+      - Name: TE_Woe_Staff
+      - Name: TE_Woe_Sword
+      - Name: TE_Woe_Two_Hand_Staff
+      - Name: TE_Woe_Two_Hand_Sword
+      - Name: TE_Woe_Two_Handed_Axe
   - Zone: ZONE_7
-
-    Inherit:
-      ZONE_WOETE_ITEMS:
-         Items: true
-
-    SkillRestrictions:
-      Targets:
-        BL_ALL: true
-      Skills:
-        AM_CANNIBALIZE: false
-        AM_SPHEREMINE: false
-        BS_GREED: false
-        CR_CULTIVATION: false
-        GN_SLINGITEM: false
-        GN_WALLOFTHORN: false
-        WM_POEMOFNETHERWORLD: false
+    Skills:
+      - Name: AM_CANNIBALIZE
+      - Name: AM_SPHEREMINE
+      - Name: BS_GREED
+      - Name: CR_CULTIVATION
+      - Name: GN_SLINGITEM
+      - Name: GN_WALLOFTHORN
+      - Name: WM_POEMOFNETHERWORLD
     Items:
-      Greed_Scroll: false
-
-  - Zone: ZONE_WOETE_ITEMS
+      - Name: Greed_Scroll
+      - Name: TE_Ring_Of_Defiance
+      - Name: TE_Ring_Of_Protection
+      - Name: TE_Ring_Of_Rage
+      - Name: TE_White_Potion
+      - Name: TE_White_Slim_Potion
+      - Name: TE_Woe_Axe
+      - Name: TE_Woe_Bone_Helm
+      - Name: TE_Woe_Book
+      - Name: TE_Woe_Boots
+      - Name: TE_Woe_Bow
+      - Name: TE_Woe_Buckler
+      - Name: TE_Woe_Cap
+      - Name: TE_Woe_Chain_Mail
+      - Name: TE_Woe_Coat
+      - Name: TE_Woe_Fist
+      - Name: TE_Woe_Gatling
+      - Name: TE_Woe_Grenade
+      - Name: TE_Woe_Guitar
+      - Name: TE_Woe_Huuma
+      - Name: TE_Woe_Katar
+      - Name: TE_Woe_Knife
+      - Name: TE_Woe_Lance
+      - Name: TE_Woe_Mace
+      - Name: TE_Woe_Mage_Coat
+      - Name: TE_Woe_Magic_Eyes
+      - Name: TE_Woe_Magic_Guard
+      - Name: TE_Woe_Magic_Manteau
+      - Name: TE_Woe_Magic_Sandal
+      - Name: TE_Woe_Manteau
+      - Name: TE_Woe_Muffler
+      - Name: TE_Woe_Pike
+      - Name: TE_Woe_Pistol
+      - Name: TE_Woe_Rifle
+      - Name: TE_Woe_Rope
+      - Name: TE_Woe_Shield
+      - Name: TE_Woe_Shoes
+      - Name: TE_Woe_Shotgun
+      - Name: TE_Woe_Staff
+      - Name: TE_Woe_Sword
+      - Name: TE_Woe_Two_Hand_Staff
+      - Name: TE_Woe_Two_Hand_Sword
+      - Name: TE_Woe_Two_Handed_Axe
+  - Zone: ZONE_8
+    Skills:
+      - Name: WE_CALLALLFAMILY
+      - Name: WE_CALLBABY
+      - Name: WE_CALLPARENT
+      - Name: WE_CALLPARTNER
     Items:
-      TE_Ring_Of_Defiance: false
-      TE_Ring_Of_Protection: false
-      TE_Ring_Of_Rage: false
-      TE_White_Potion: false
-      TE_White_Slim_Potion: false
-      TE_Woe_Axe: false
-      TE_Woe_Bone_Helm: false
-      TE_Woe_Book: false
-      TE_Woe_Boots: false
-      TE_Woe_Bow: false
-      TE_Woe_Buckler: false
-      TE_Woe_Cap: false
-      TE_Woe_Chain_Mail: false
-      TE_Woe_Coat: false
-      TE_Woe_Fist: false
-      TE_Woe_Gatling: false
-      TE_Woe_Grenade: false
-      TE_Woe_Guitar: false
-      TE_Woe_Huuma: false
-      TE_Woe_Katar: false
-      TE_Woe_Knife: false
-      TE_Woe_Lance: false
-      TE_Woe_Mace: false
-      TE_Woe_Mage_Coat: false
-      TE_Woe_Magic_Eyes: false
-      TE_Woe_Magic_Guard: false
-      TE_Woe_Magic_Manteau: false
-      TE_Woe_Magic_Sandal: false
-      TE_Woe_Manteau: false
-      TE_Woe_Muffler: false
-      TE_Woe_Pike: false
-      TE_Woe_Pistol: false
-      TE_Woe_Rifle: false
-      TE_Woe_Rope: false
-      TE_Woe_Shield: false
-      TE_Woe_Shoes: false
-      TE_Woe_Shotgun: false
-      TE_Woe_Staff: false
-      TE_Woe_Sword: false
-      TE_Woe_Two_Hand_Staff: false
-      TE_Woe_Two_Hand_Sword: false
-      TE_Woe_Two_Handed_Axe: false
+      - Name: TE_Ring_Of_Defiance
+      - Name: TE_Ring_Of_Protection
+      - Name: TE_Ring_Of_Rage
+      - Name: TE_White_Potion
+      - Name: TE_White_Slim_Potion
+      - Name: TE_Woe_Axe
+      - Name: TE_Woe_Bone_Helm
+      - Name: TE_Woe_Book
+      - Name: TE_Woe_Boots
+      - Name: TE_Woe_Bow
+      - Name: TE_Woe_Buckler
+      - Name: TE_Woe_Cap
+      - Name: TE_Woe_Chain_Mail
+      - Name: TE_Woe_Coat
+      - Name: TE_Woe_Fist
+      - Name: TE_Woe_Gatling
+      - Name: TE_Woe_Grenade
+      - Name: TE_Woe_Guitar
+      - Name: TE_Woe_Huuma
+      - Name: TE_Woe_Katar
+      - Name: TE_Woe_Knife
+      - Name: TE_Woe_Lance
+      - Name: TE_Woe_Mace
+      - Name: TE_Woe_Mage_Coat
+      - Name: TE_Woe_Magic_Eyes
+      - Name: TE_Woe_Magic_Guard
+      - Name: TE_Woe_Magic_Manteau
+      - Name: TE_Woe_Magic_Sandal
+      - Name: TE_Woe_Manteau
+      - Name: TE_Woe_Muffler
+      - Name: TE_Woe_Pike
+      - Name: TE_Woe_Pistol
+      - Name: TE_Woe_Rifle
+      - Name: TE_Woe_Rope
+      - Name: TE_Woe_Shield
+      - Name: TE_Woe_Shoes
+      - Name: TE_Woe_Shotgun
+      - Name: TE_Woe_Staff
+      - Name: TE_Woe_Sword
+      - Name: TE_Woe_Two_Hand_Staff
+      - Name: TE_Woe_Two_Hand_Sword
+      - Name: TE_Woe_Two_Handed_Axe
+    Jobs:
+      - Name: JOB_ABYSS_CHASER
+      - Name: JOB_ARCH_BISHOP
+      - Name: JOB_ARCH_BISHOP_T
+      - Name: JOB_ARCH_MAGE
+      - Name: JOB_BABY_ARCH_BISHOP
+      - Name: JOB_BABY_GENETIC
+      - Name: JOB_BABY_GUILLOTINE_CROSS
+      - Name: JOB_BABY_KAGEROU
+      - Name: JOB_BABY_MECHANIC
+      - Name: JOB_BABY_MECHANIC2
+      - Name: JOB_BABY_MINSTREL
+      - Name: JOB_BABY_OBORO
+      - Name: JOB_BABY_RANGER
+      - Name: JOB_BABY_RANGER2
+      - Name: JOB_BABY_REBELLION
+      - Name: JOB_BABY_ROYAL_GUARD
+      - Name: JOB_BABY_ROYAL_GUARD2
+      - Name: JOB_BABY_RUNE_KNIGHT
+      - Name: JOB_BABY_RUNE_KNIGHT2
+      - Name: JOB_BABY_SHADOW_CHASER
+      - Name: JOB_BABY_SORCERER
+      - Name: JOB_BABY_SOUL_REAPER
+      - Name: JOB_BABY_STAR_EMPEROR
+      - Name: JOB_BABY_STAR_EMPEROR2
+      - Name: JOB_BABY_SUMMONER
+      - Name: JOB_BABY_SURA
+      - Name: JOB_BABY_WANDERER
+      - Name: JOB_BABY_WARLOCK
+      - Name: JOB_BIOLO
+      - Name: JOB_CARDINAL
+      - Name: JOB_DRAGON_KNIGHT
+      - Name: JOB_DRAGON_KNIGHT2
+      - Name: JOB_ELEMENTAL_MASTER
+      - Name: JOB_GENETIC
+      - Name: JOB_GENETIC_T
+      - Name: JOB_GUILLOTINE_CROSS
+      - Name: JOB_GUILLOTINE_CROSS_T
+      - Name: JOB_HYPER_NOVICE
+      - Name: JOB_IMPERIAL_GUARD
+      - Name: JOB_IMPERIAL_GUARD2
+      - Name: JOB_INQUISITOR
+      - Name: JOB_KAGEROU
+      - Name: JOB_MECHANIC
+      - Name: JOB_MECHANIC2
+      - Name: JOB_MECHANIC_T
+      - Name: JOB_MECHANIC_T2
+      - Name: JOB_MEISTER
+      - Name: JOB_MEISTER2
+      - Name: JOB_MINSTREL
+      - Name: JOB_MINSTREL_T
+      - Name: JOB_NIGHT_WATCH
+      - Name: JOB_OBORO
+      - Name: JOB_RANGER
+      - Name: JOB_RANGER2
+      - Name: JOB_RANGER_T
+      - Name: JOB_RANGER_T2
+      - Name: JOB_REBELLION
+      - Name: JOB_ROYAL_GUARD
+      - Name: JOB_ROYAL_GUARD2
+      - Name: JOB_ROYAL_GUARD_T
+      - Name: JOB_ROYAL_GUARD_T2
+      - Name: JOB_RUNE_KNIGHT
+      - Name: JOB_RUNE_KNIGHT2
+      - Name: JOB_RUNE_KNIGHT_T
+      - Name: JOB_RUNE_KNIGHT_T2
+      - Name: JOB_SHADOW_CHASER
+      - Name: JOB_SHADOW_CHASER_T
+      - Name: JOB_SHADOW_CROSS
+      - Name: JOB_SHINKIRO
+      - Name: JOB_SHIRANUI
+      - Name: JOB_SKY_EMPEROR
+      - Name: JOB_SKY_EMPEROR2
+      - Name: JOB_SORCERER
+      - Name: JOB_SORCERER_T
+      - Name: JOB_SOUL_ASCETIC
+      - Name: JOB_SOUL_REAPER
+      - Name: JOB_SPIRIT_HANDLER
+      - Name: JOB_STAR_EMPEROR
+      - Name: JOB_STAR_EMPEROR2
+      - Name: JOB_SUMMONER
+      - Name: JOB_SUPER_BABY_E
+      - Name: JOB_SUPER_NOVICE_E
+      - Name: JOB_SURA
+      - Name: JOB_SURA_T
+      - Name: JOB_TROUBADOUR
+      - Name: JOB_TROUVERE
+      - Name: JOB_WANDERER
+      - Name: JOB_WANDERER_T
+      - Name: JOB_WARLOCK
+      - Name: JOB_WARLOCK_T
+      - Name: JOB_WINDHAWK
+      - Name: JOB_WINDHAWK2
+  - Zone: ZONE_9
+    Skills:
+      - Name: AL_TELEPORT
+      - Name: NPC_EMOTION
+      - Name: NPC_EMOTION_ON
+      - Name: NPC_EXPULSION
+      - Name: PF_SPIDERWEB
+      - Name: RG_INTIMIDATE
+      - Name: SC_DIMENSIONDOOR
+      - Name: SC_FATALMENACE
+      - Name: SC_IGNORANCE
+      - Name: WZ_ICEWALL
+    Items:
+      - Name: TE_Ring_Of_Defiance
+      - Name: TE_Ring_Of_Protection
+      - Name: TE_Ring_Of_Rage
+      - Name: TE_White_Potion
+      - Name: TE_White_Slim_Potion
+      - Name: TE_Woe_Axe
+      - Name: TE_Woe_Bone_Helm
+      - Name: TE_Woe_Book
+      - Name: TE_Woe_Boots
+      - Name: TE_Woe_Bow
+      - Name: TE_Woe_Buckler
+      - Name: TE_Woe_Cap
+      - Name: TE_Woe_Chain_Mail
+      - Name: TE_Woe_Coat
+      - Name: TE_Woe_Fist
+      - Name: TE_Woe_Gatling
+      - Name: TE_Woe_Grenade
+      - Name: TE_Woe_Guitar
+      - Name: TE_Woe_Huuma
+      - Name: TE_Woe_Katar
+      - Name: TE_Woe_Knife
+      - Name: TE_Woe_Lance
+      - Name: TE_Woe_Mace
+      - Name: TE_Woe_Mage_Coat
+      - Name: TE_Woe_Magic_Eyes
+      - Name: TE_Woe_Magic_Guard
+      - Name: TE_Woe_Magic_Manteau
+      - Name: TE_Woe_Magic_Sandal
+      - Name: TE_Woe_Manteau
+      - Name: TE_Woe_Muffler
+      - Name: TE_Woe_Pike
+      - Name: TE_Woe_Pistol
+      - Name: TE_Woe_Rifle
+      - Name: TE_Woe_Rope
+      - Name: TE_Woe_Shield
+      - Name: TE_Woe_Shoes
+      - Name: TE_Woe_Shotgun
+      - Name: TE_Woe_Staff
+      - Name: TE_Woe_Sword
+      - Name: TE_Woe_Two_Hand_Staff
+      - Name: TE_Woe_Two_Hand_Sword
+      - Name: TE_Woe_Two_Handed_Axe

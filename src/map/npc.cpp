@@ -4416,6 +4416,19 @@ const char* npc_parse_mapflag(char* w1, char* w2, char* w3, char* w4, const char
 			}
 			break;
 
+		case MF_MAPZONE:
+			if (state) {
+				union u_mapflag_args args = {};
+
+				if (sscanf(w4, "%30", &args.flag_name) == 1)
+					map_setmapflag_sub(m, MF_MAPZONE, true, &args);
+				else // Could not be read, no value defined; don't remove as other restrictions may be set on the map
+					ShowWarning("npc_parse_mapflag: Zone value not set for the mapzone mapflag! Skipped flag from %s (file '%s', line '%d').\n", map_mapid2mapname(m), filepath, strline(buffer,start-buffer));
+			} else
+				map_setmapflag(m, MF_MAPZONE, false);
+			break;
+
+
 		// All others do not need special treatment
 		default:
 			map_setmapflag(m, mapflag, state);

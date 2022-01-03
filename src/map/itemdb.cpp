@@ -1552,6 +1552,22 @@ struct item_data* itemdb_search(t_itemid nameid) {
 	return id.get();
 }
 
+/** Checks if item is usable or not
+* @param id Item data
+* @return True if item is usable, false otherwise
+*/
+bool itemdb_is_usable2(item_data *id) {
+	nullpo_ret(id);
+	switch (id->type) {
+		case IT_HEALING:
+		case IT_DELAYCONSUME:
+		case IT_CASH:
+			return true;
+		default:
+			return false;
+	}
+}
+
 /** Checks if item is equip type or not
 * @param id Item data
 * @return True if item is equip, false otherwise
@@ -2500,15 +2516,14 @@ static int itemdb_read_sqldb(void) {
  * @param m: Map ID
  * @return true: can't be used; false: can be used
  */
-bool itemdb_isNoEquip(int nameid, uint16 m) {
-	struct map_data *mapdata = map_getmapdata(m);
+bool itemdb_isNoEquip(int nameid, map_session_data *sd) {
+	map_data *mapdata = map_getmapdata(sd->bl.m);
 
-	if (!mapdata)
+	if (mapdata == nullptr)
 		return true;
-
-	if (mapdata->zone.isItemDisabled(nameid))
-		return true;
-	return false;
+	if (!mapdata->zone.isItemDisabled(nameid) || mapdata->zone.gmlevel <= pc_get_group_level(sd))
+		return false;
+	return true;
 }
 
 const std::string RandomOptionDatabase::getDefaultLocation() {

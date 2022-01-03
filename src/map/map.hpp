@@ -654,6 +654,7 @@ enum e_mapflag : int16 {
 	MF_MISC_DAMAGE_RATE,
 	MF_LONG_DAMAGE_RATE,
 	MF_SHORT_DAMAGE_RATE,
+	MF_MAPZONE,
 	MF_MAX
 };
 
@@ -701,6 +702,7 @@ union u_mapflag_args {
 	struct s_skill_damage skill_damage;
 	struct s_skill_duration skill_duration;
 	int flag_val;
+	char* flag_name;
 };
 
 // used by map_setcell()
@@ -774,19 +776,15 @@ struct iwall_data {
 };
 
 struct s_map_zone_data {
-	std::unordered_map<std::string, uint16> disabled_commands;
+	uint16 gmlevel;
+	std::vector<std::string> disabled_commands;
 	std::unordered_map<uint16, uint16> disabled_skills;
-	std::vector<int32> disabled_items;
+	std::vector<t_itemid> disabled_items;
 	std::vector<sc_type> disabled_statuses;
 	std::vector<int32> restricted_jobs;
 
-	bool isCommandDisabled(std::string name, int16 group_lv) {
-		uint16 *group = util::umap_find(this->disabled_commands, name);
-
-		if (group && *group < group_lv)
-			return true;
-		else
-			return false;
+	bool isCommandDisabled(std::string name) {
+		return util::vector_exists(this->disabled_commands, name);
 	}
 
 	bool isSkillDisabled(uint16 skill_id, uint16 type) {
@@ -799,24 +797,15 @@ struct s_map_zone_data {
 	}
 
 	bool isItemDisabled(int32 nameid) {
-		if (util::vector_find(this->disabled_items, nameid))
-			return true;
-		else
-			return false;
+		return util::vector_exists(this->disabled_items, nameid);
 	}
 
 	bool isStatusDisabled(sc_type sc) {
-		if (util::vector_find(this->disabled_statuses, sc))
-			return true;
-		else
-			return false;
+		return util::vector_exists(this->disabled_statuses, sc);
 	}
 
 	bool isJobRestricted(int32 job_id) {
-		if (util::vector_find(this->restricted_jobs, job_id))
-			return true;
-		else
-			return false;
+		return util::vector_exists(this->restricted_jobs, job_id);
 	}
 };
 
@@ -865,26 +854,28 @@ struct map_data {
 };
 
 struct s_map_zone_db {
-	uint16 id;
+	std::string zone_name;
+	uint16 gmlevel;
 
-	std::unordered_map<std::string, uint16> disabled_commands;
+	std::vector<std::string> disabled_commands;
 	std::unordered_map<uint16, uint16> disabled_skills;
 	std::vector<t_itemid> disabled_items;
 	std::vector<sc_type> disabled_statuses;
 	std::vector<int32> restricted_jobs;
 	std::vector<int16> maps;
-	std::unordered_map<int16, std::string> mapflags;
+	std::unordered_map<e_mapflag, std::string> mapflags;
 };
 
-class MapZoneDatabase : public TypesafeYamlDatabase<uint16, s_map_zone_db> {
+
+class MapZoneDatabase : public TypesafeYamlDatabase<std::string, s_map_zone_db> {
 public:
 	MapZoneDatabase() : TypesafeYamlDatabase("MAP_ZONE_DB", 1) {
 
 	}
 
 	const std::string getDefaultLocation();
-	uint64 parseBodyNode(const YAML::Node& node);
-	void reload();
+	uint64 parseBodyNode(const YAML::Node &node);
+	void loadingFinished();
 };
 
 extern MapZoneDatabase map_zone_db;

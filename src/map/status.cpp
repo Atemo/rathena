@@ -3101,12 +3101,19 @@ bool status_check_skilluse(struct block_list *src, struct block_list *target, ui
 		if (target && status_isdead(target))
 			return false;
 	} else {
-		struct map_data *mapdata = map_getmapdata(src->m);
+		map_data *mapdata = map_getmapdata(src->m);
 
 		if (mapdata && mapdata->zone.isSkillDisabled(skill_id, src->type)) {
-			if (src->type == BL_PC)
-				clif_msg((TBL_PC *)src, SKILL_CANT_USE_AREA); // This skill cannot be used within this area
-			return false;
+			if (src->type != BL_PC)
+				return false;
+			else {
+				map_session_data *sd = (TBL_PC *)src;
+				if (mapdata->zone.gmlevel > pc_get_group_level(sd)) {
+					clif_msg((TBL_PC *)src, SKILL_CANT_USE_AREA); // This skill cannot be used within this area
+					return false;
+				}
+				// Fall through
+			}
 		}
 	}
 
@@ -4893,7 +4900,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 
 		// Items may be equipped, their effects however are nullified.
 		if (opt&SCO_FIRST && sd->inventory_data[index]->equip_script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT)
-			|| !itemdb_isNoEquip(sd->inventory_data[index]->nameid,sd->bl.m))) { // Execute equip-script on login
+			|| !itemdb_isNoEquip(sd->inventory_data[index]->nameid, sd))) { // Execute equip-script on login
 			run_script(sd->inventory_data[index]->equip_script,0,sd->bl.id,0);
 			if (!calculating)
 				return 1;
@@ -4951,7 +4958,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 			}
 
 			wa->range += sd->inventory_data[index]->range;
-			if(sd->inventory_data[index]->script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(sd->inventory_data[index]->nameid,sd->bl.m))) {
+			if(sd->inventory_data[index]->script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(sd->inventory_data[index]->nameid, sd))) {
 				if (wd == &sd->left_weapon) {
 					sd->state.lr_flag = 1;
 					run_script(sd->inventory_data[index]->script,0,sd->bl.id,0);
@@ -4985,7 +4992,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 #endif
 			}
 
-			if(sd->inventory_data[index]->script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(sd->inventory_data[index]->nameid,sd->bl.m))) {
+			if(sd->inventory_data[index]->script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(sd->inventory_data[index]->nameid, sd))) {
 				if( i == EQI_HAND_L ) // Shield
 					sd->state.lr_flag = 3;
 				run_script(sd->inventory_data[index]->script,0,sd->bl.id,0);
@@ -4995,7 +5002,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 					return 1;
 			}
 		} else if( sd->inventory_data[index]->type == IT_SHADOWGEAR ) { // Shadow System
-			if (sd->inventory_data[index]->script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(sd->inventory_data[index]->nameid,sd->bl.m))) {
+			if (sd->inventory_data[index]->script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(sd->inventory_data[index]->nameid, sd))) {
 				run_script(sd->inventory_data[index]->script,0,sd->bl.id,0);
 				if( !calculating )
 					return 1;
@@ -5035,7 +5042,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 				item_data *id = itemdb_exists(item_combo->nameid[j]);
 
 				// Don't run the script if at least one of combo's pair has restriction
-				if (id && !pc_has_permission(sd, PC_PERM_USE_ALL_EQUIPMENT) && itemdb_isNoEquip(id->nameid, sd->bl.m)) {
+				if (id && !pc_has_permission(sd, PC_PERM_USE_ALL_EQUIPMENT) && itemdb_isNoEquip(id->nameid, sd)) {
 					no_run = true;
 					break;
 				}
@@ -5085,14 +5092,14 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 				data = itemdb_exists(c);
 				if(!data)
 					continue;
-				if (opt&SCO_FIRST && data->equip_script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(data->nameid,sd->bl.m))) {// Execute equip-script on login
+				if (opt&SCO_FIRST && data->equip_script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(data->nameid, sd))) {// Execute equip-script on login
 					run_script(data->equip_script,0,sd->bl.id,0);
 					if (!calculating)
 						return 1;
 				}
 				if(!data->script)
 					continue;
-				if(!pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) && itemdb_isNoEquip(data->nameid,sd->bl.m)) // Card restriction checks.
+				if(!pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) && itemdb_isNoEquip(data->nameid, sd)) // Card restriction checks.
 					continue;
 				if(i == EQI_HAND_L && sd->inventory.u.items_inventory[index].equip == EQP_HAND_L) { // Left hand status.
 					sd->state.lr_flag = 1;
@@ -5132,7 +5139,7 @@ int status_calc_pc_sub(struct map_session_data* sd, enum e_status_calc_opt opt)
 
 				if (!data || !data->script)
 					continue;
-				if (!pc_has_permission(sd, PC_PERM_USE_ALL_EQUIPMENT) && itemdb_isNoEquip(sd->inventory_data[index]->nameid, sd->bl.m))
+				if (pc_has_permission(sd, PC_PERM_USE_ALL_EQUIPMENT) && itemdb_isNoEquip(sd->inventory_data[index]->nameid, sd))
 					continue;
 				if (i == EQI_HAND_L && sd->inventory.u.items_inventory[index].equip == EQP_HAND_L) { // Left hand status.
 					sd->state.lr_flag = 1;
@@ -10753,9 +10760,10 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 	if( bl->type != BL_NPC && status_isdead(bl) && ( type != SC_NOCHAT && type != SC_JAILED ) ) // SC_NOCHAT and SC_JAILED should work even on dead characters
 		return 0;
 
-	struct map_data *mapdata = map_getmapdata(bl->m);
+	map_data *mapdata = map_getmapdata(bl->m);
+	sd = BL_CAST(BL_PC, bl);
 
-	if (mapdata && mapdata->zone.isStatusDisabled(type))
+	if (mapdata && mapdata->zone.isStatusDisabled(type) && (!sd || sd && mapdata->zone.gmlevel > pc_get_group_level(sd)))
 		return 0;
 
 	if (sc->data[SC_GRAVITYCONTROL])
@@ -10850,7 +10858,6 @@ int status_change_start(struct block_list* src, struct block_list* bl,enum sc_ty
 
 	int tick = (int)duration;
 
-	sd = BL_CAST(BL_PC, bl);
 	vd = status_get_viewdata(bl);
 
 	undead_flag = battle_check_undead(status->race,status->def_ele);
@@ -17479,21 +17486,8 @@ void status_change_clear_onChangeMap(struct block_list *bl)
 	}
 }
 
-/**
- * Read sizefix database for attack calculations
- * @param fields: Fields passed from sv_readdb
- * @param columns: Columns passed from sv_readdb function call
- * @param current: Current row being read into atkmods array
- * @return True
- */
-static bool status_readdb_sizefix(char* fields[], int columns, int current)
-{
-	unsigned int i;
-
-	for(i = 0; i < MAX_WEAPON_TYPE; i++)
-		atkmods[current][i] = atoi(fields[i]);
-
-	return true;
+const std::string AttributeDatabase::getDefaultLocation() {
+	return std::string(db_path) + "/attr_fix.yml";
 }
 
 /**

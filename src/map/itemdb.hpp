@@ -1128,10 +1128,12 @@ bool itemdb_ishatched_egg(struct item* item);
 
 bool itemdb_isequip2(struct item_data *id);
 #define itemdb_isequip(nameid) itemdb_isequip2(itemdb_search(nameid))
+bool itemdb_is_usable2(struct item_data *id);
+#define itemdb_is_usable(nameid) itemdb_is_usable2(itemdb_search(nameid))
 char itemdb_isidentified(t_itemid nameid);
 bool itemdb_isstackable2(struct item_data *id);
 #define itemdb_isstackable(nameid) itemdb_isstackable2(itemdb_search(nameid))
-bool itemdb_isNoEquip(int nameid, uint16 m);
+bool itemdb_isNoEquip(int nameid, map_session_data *sd);
 
 s_item_combo *itemdb_combo_exists(uint32 combo_id);
 

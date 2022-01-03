@@ -547,7 +547,14 @@ int do_init( int argc, char** argv ){
 
 	zone_txt_data(path_db_mode, path_db);
 	if (!process("MAP_ZONE_DB", 1, { path_db_mode }, "item_noequip", [](const std::string &path, const std::string &name_ext) -> bool {
-		return map_zone_to_yaml();
+		return map_zone_yaml();
+	}, "map_zone")) {
+		return 0;
+	}
+
+	zone_txt_data(path_db_import, path_db_import);
+	if (!process("MAP_ZONE_DB", 1, { path_db_import }, "item_noequip", [](const std::string &path, const std::string &name_ext) -> bool {
+		return map_zone_yaml();
 	}, "map_zone")) {
 		return 0;
 	}
@@ -4810,8 +4817,8 @@ static bool pc_readdb_skilltree_yaml(void) {
 	return true;
 }
 
-// map_zone.yml function
-//----------------------
+// map_zone_db.yml function
+//-------------------------
 static bool skill_parse_row_nocastdb(char* split[], int columns, int current) {
 	uint16 skill_id = atoi(split[0]);
 	std::string *skill_name = util::umap_find(aegis_skillnames, skill_id);
@@ -4830,8 +4837,6 @@ static bool skill_parse_row_nocastdb(char* split[], int columns, int current) {
 	return true;
 }
 
-// map_zone.yml function
-//----------------------
 static bool pc_readdb_job_noenter_map(char *str[], int columns, int current) {
 	int class_ = -1;
 	char *job_name;
@@ -4859,25 +4864,9 @@ static bool pc_readdb_job_noenter_map(char *str[], int columns, int current) {
 	else
 		job_noenter_map.insert({ job_name, zone });
 
-	// s_job_noenter_map_csv2yaml entry = {};
-
-	// entry.zone = zone;
-	// entry.group_lv = atoi(str[2]);
-
-	// if (job_noenter_map.count(job_name) > 0)
-		// job_noenter_map[job_name].push_back(entry);
-	// else {
-		// std::vector<s_job_noenter_map_csv2yaml> data = {};
-		// data.push_back(entry);
-
-		// job_noenter_map.insert({ job_name, data });
-	// }
-
 	return true;
 }
 
-// map_zone.yml function
-//----------------------
 static bool itemdb_read_noequip(char* str[], int columns, int current) {
 	t_itemid nameid = strtoul(str[0], nullptr, 10);
 	std::string* item_name = util::umap_find(aegis_itemnames, nameid);
@@ -4896,8 +4885,6 @@ static bool itemdb_read_noequip(char* str[], int columns, int current) {
 	return true;
 }
 
-// map_zone.yml function
-//----------------------
 static bool status_readdb_status_disabled(char* str[], int columns, int current) {
 	int type = SC_NONE;
 	char *status_name;
@@ -4938,41 +4925,27 @@ static bool zone_exists(uint32 flag, std::map<std::string, uint16> data_db) {
 	return false;
 }
 
-// return the max zone flag (bitmask) between max_flag and the flags in the data
-static uint32 get_max_flag(uint32 max_flag, std::map<std::string, uint16> data_db) {
+static uint32 get_max_flag(uint32 max_zone, std::map<std::string, uint16> data_db) {
     auto max = std::max_element(data_db.begin(),data_db.end(),[] (const auto &a, const auto &b)->bool{ return a.second < b.second; } );
-	return (max->second > max_flag ? max->second : max_flag);
+	uint32 max_flag = max->second;
+	uint32 zone = 1;
+	while (max_flag >>= 1) {
+		zone++;
+	}
+	return (zone > max_zone ? zone : max_zone);
 }
 
-// static void zone_node(std::string node_name, uint32 flag, std::unordered_map<std::string, uint16> data_db) {
-	// body << YAML::Key << node_name;
-	// body << YAML::BeginMap;
-	// for (const auto &it : data_db) {
-		// if (it.second & flag)
-			// body << YAML::Key << it.first << YAML::Value << "false";
-	// }
-	// body << YAML::EndMap;
-// }
-
-static bool map_zone_to_yaml(void) {
+static bool map_zone_yaml(void) {
 	uint32 flag = 1;
-	uint32 max_flag = 0;
 	uint32 max_zone = 0;
 
-	// get the max zone flag (bitmask) from max_flag and the flag's data
-	max_flag = get_max_flag(max_flag, skill_nocast_db);
-	max_flag = get_max_flag(max_flag, itemdb_noequip);
-	max_flag = get_max_flag(max_flag, status_disabled);
-	max_flag = get_max_flag(max_flag, job_noenter_map);
-	
-	// get the max zone number from max_flag
-	while (max_flag >>= 1) {
-		max_zone++;
-	}
+	// max zone
+	max_zone = get_max_flag(max_zone, skill_nocast_db);
+	max_zone = get_max_flag(max_zone, itemdb_noequip);
+	max_zone = get_max_flag(max_zone, status_disabled);
+	max_zone = get_max_flag(max_zone, job_noenter_map);
 
 	for (uint16 i = 1; i <= max_zone; i++) {
-		// flag = static_cast<uint32>(pow(i, 2));
-
 		body << YAML::BeginMap;
 		if (um_zone_name.count(flag) > 0)
 			body << YAML::Key << "Zone" << YAML::Value << um_zone_name[flag];
@@ -4981,66 +4954,56 @@ static bool map_zone_to_yaml(void) {
 			body << YAML::Key << "Zone" << YAML::Value << "ZONE_" + std::to_string(zone_number);
 		}
 
-		// if (zone_exists(flag, skill_nocast_db))
-			// zone_node("Skills", flag, skill_nocast_db);
-
-		// if (zone_exists(flag, itemdb_noequip))
-			// zone_node("Items", flag, itemdb_noequip);
-
-		// if (zone_exists(flag, status_disabled))
-			// zone_node("Status", flag, status_disabled);
-
-		// if (zone_exists(flag, job_noenter_map))
-			// zone_node("Job", flag, job_noenter_map);
-		
-		body << YAML::Key << "SkillRestrictions";
-		body << YAML::BeginMap;
-
-		body << YAML::Key << "Targets";
-		body << YAML::BeginMap;
-		body << YAML::Key << "BL_ALL" << YAML::Value << "true";
-		body << YAML::EndMap;
-
 		if (zone_exists(flag, skill_nocast_db)) {
 			body << YAML::Key << "Skills";
-			body << YAML::BeginMap;
-
+			body << YAML::BeginSeq;
 			for (const auto &it : skill_nocast_db) {
-				if (it.second & flag)
-					body << YAML::Key << it.first << YAML::Value << "false";
+				if (it.second & flag) {
+					body << YAML::BeginMap;
+					body << YAML::Key << "Name" << YAML::Value << it.first;
+					body << YAML::EndMap;
+				}
 			}
-			body << YAML::EndMap;
+			body << YAML::EndSeq;
 		}
-		body << YAML::EndMap;	// SkillRestrictions
 
 		if (zone_exists(flag, itemdb_noequip)) {
 			body << YAML::Key << "Items";
-			body << YAML::BeginMap;
+			body << YAML::BeginSeq;
 			for (const auto &it : itemdb_noequip) {
-				if (it.second & flag)
-					body << YAML::Key << it.first << YAML::Value << "false";
+				if (it.second & flag) {
+					body << YAML::BeginMap;
+					body << YAML::Key << "Name" << YAML::Value << it.first;
+					body << YAML::EndMap;
+				}
 			}
-			body << YAML::EndMap;
+			body << YAML::EndSeq;
 		}
 
 		if (zone_exists(flag, status_disabled)) {
-			body << YAML::Key << "Status";
-			body << YAML::BeginMap;
+			body << YAML::Key << "Statuses";
+			body << YAML::BeginSeq;
 			for (const auto &it : status_disabled) {
-				if (it.second & flag)
-					body << YAML::Key << it.first << YAML::Value << "false";
+				if (it.second & flag) {
+					body << YAML::BeginMap;
+					body << YAML::Key << "Name" << YAML::Value << it.first;
+					body << YAML::EndMap;
+				}
 			}
-			body << YAML::EndMap;
+			body << YAML::EndSeq;
 		}
 
 		if (zone_exists(flag, job_noenter_map)) {
-			body << YAML::Key << "Job";
-			body << YAML::BeginMap;
+			body << YAML::Key << "Jobs";
+			body << YAML::BeginSeq;
 			for (const auto &it : job_noenter_map) {
-				if (it.second & flag)
-					body << YAML::Key << it.first << YAML::Value << "false";
+				if (it.second & flag) {
+					body << YAML::BeginMap;
+					body << YAML::Key << "Name" << YAML::Value << it.first;
+					body << YAML::EndMap;
+				}
 			}
-			body << YAML::EndMap;
+			body << YAML::EndSeq;
 		}
 
 		body << YAML::EndMap;

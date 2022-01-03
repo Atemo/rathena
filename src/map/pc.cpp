@@ -1513,7 +1513,7 @@ uint8 pc_isequip(struct map_session_data *sd,int n)
 		return ITEM_EQUIP_ACK_FAIL;
 
 	//fail to equip if item is restricted
-	if (!battle_config.allow_equip_restricted_item && itemdb_isNoEquip(item->nameid, sd->bl.m))
+	if (!battle_config.allow_equip_restricted_item && itemdb_isNoEquip(item->nameid, sd))
 		return ITEM_EQUIP_ACK_FAIL;
 
 	if (item->equip&EQP_AMMO) {
@@ -5816,7 +5816,7 @@ int pc_useitem(struct map_session_data *sd,int n)
 		return 0;
 
 	/* on restricted maps the item is consumed but the effect is not used */
-	if (!pc_has_permission(sd,PC_PERM_ITEM_UNCONDITIONAL) && itemdb_isNoEquip(id->nameid,sd->bl.m)) {
+	if (!pc_has_permission(sd,PC_PERM_ITEM_UNCONDITIONAL) && itemdb_isNoEquip(id->nameid, sd)) {
 		clif_msg(sd,ITEM_CANT_USE_AREA); // This item cannot be used within this area
 		if( battle_config.allow_consume_restricted_item && id->flag.delay_consume > 0 ) { //need confirmation for delayed consumption items
 			clif_useitemack(sd,n,item.amount-1,true);
@@ -11508,7 +11508,7 @@ bool pc_equipitem(struct map_session_data *sd,short n,int req_pos,bool equipswit
 	//OnEquip script [Skotlex]
 	if (id) {
 		//only run the script if item isn't restricted
-		if (id->equip_script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(id->nameid,sd->bl.m)))
+		if (id->equip_script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || itemdb_isNoEquip(id->nameid, sd)))
 			run_script(id->equip_script,0,sd->bl.id,fake_nd->bl.id);
 		if(itemdb_isspecial(sd->inventory.u.items_inventory[n].card[0]))
 			; //No cards
@@ -11518,7 +11518,7 @@ bool pc_equipitem(struct map_session_data *sd,short n,int req_pos,bool equipswit
 				if (!sd->inventory.u.items_inventory[n].card[i])
 					continue;
 				if ( ( data = itemdb_exists(sd->inventory.u.items_inventory[n].card[i]) ) != NULL ) {
-					if (data->equip_script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(data->nameid,sd->bl.m)))
+					if (data->equip_script && (pc_has_permission(sd,PC_PERM_USE_ALL_EQUIPMENT) || !itemdb_isNoEquip(data->nameid, sd)))
 						run_script(data->equip_script,0,sd->bl.id,fake_nd->bl.id);
 				}
 			}
@@ -11881,7 +11881,7 @@ void pc_checkitem(struct map_session_data *sd) {
 			continue;
 		}
 
-		if( !pc_has_permission(sd, PC_PERM_USE_ALL_EQUIPMENT) && !battle_config.allow_equip_restricted_item && itemdb_isNoEquip(sd->inventory_data[i]->nameid, sd->bl.m) ) {
+		if( !pc_has_permission(sd, PC_PERM_USE_ALL_EQUIPMENT) && !battle_config.allow_equip_restricted_item && itemdb_isNoEquip(sd->inventory_data[i]->nameid, sd) ) {
 			pc_unequipitem(sd, i, 2);
 			calc_flag = 1;
 			continue;
@@ -11896,7 +11896,7 @@ void pc_checkitem(struct map_session_data *sd) {
 		if( !it->equipSwitch )
 			continue;
 		if( it->equipSwitch&~pc_equippoint(sd,i) ||
-			( !pc_has_permission(sd, PC_PERM_USE_ALL_EQUIPMENT) && !battle_config.allow_equip_restricted_item && itemdb_isNoEquip(sd->inventory_data[i]->nameid, sd->bl.m) ) ){
+			( !pc_has_permission(sd, PC_PERM_USE_ALL_EQUIPMENT) && !battle_config.allow_equip_restricted_item && itemdb_isNoEquip(sd->inventory_data[i]->nameid, sd) ) ){
 			
 			for( int j = 0; j < EQI_MAX; j++ ){
 				if( sd->equip_switch_index[j] == i ){
@@ -13492,8 +13492,6 @@ void JobDatabase::loadingFinished() {
 	}
 }
 
-}
-
 const std::string PlayerStatPointDatabase::getDefaultLocation() {
 	return std::string(db_path) + "/statpoint.yml";
 }
@@ -14576,9 +14574,7 @@ bool pc_job_can_entermap(enum e_job jobid, int m, int group_lv) {
 
 	struct map_data* mapdata = map_getmapdata(m);
 
-	// todo group lv
-
-	if (mapdata && mapdata->zone.isJobRestricted(jobid))
+	if (mapdata && mapdata->zone.isJobRestricted(jobid) && mapdata->zone.gmlevel > group_lv)
 		return false;
 
 	return true;

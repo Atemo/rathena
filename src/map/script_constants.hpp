@@ -535,6 +535,7 @@
 	export_constant(MF_MISC_DAMAGE_RATE);
 	export_constant(MF_LONG_DAMAGE_RATE);
 	export_constant(MF_SHORT_DAMAGE_RATE);
+	export_constant(MF_MAPZONE);
 
 	/* setcell types */
 	export_constant(CELL_WALKABLE);
