@@ -2066,6 +2066,36 @@ enum e_iteminfo : uint8 {
 	ITEMINFO_SUBTYPE,
 };
 
+/* e_copyitem script command */
+enum e_copyitem : uint8 {
+	CI_ID = 1,
+	CI_IDENTIFY,
+	CI_REFINE,
+	CI_ATTRIBUTE,
+	CI_CARD1,
+	CI_CARD2,
+	CI_CARD3,
+	CI_CARD4,
+	CI_EXPIRE,
+	CI_BOUND,
+	CI_GRADE,
+	CI_OPTIONID1,
+	CI_OPTIONID2,
+	CI_OPTIONID3,
+	CI_OPTIONID4,
+	CI_OPTIONID5,
+	CI_OPTIONVALUE1,
+	CI_OPTIONVALUE2,
+	CI_OPTIONVALUE3,
+	CI_OPTIONVALUE4,
+	CI_OPTIONVALUE5,
+	CI_OPTIONPARAM1,
+	CI_OPTIONPARAM2,
+	CI_OPTIONPARAM3,
+	CI_OPTIONPARAM4,
+	CI_OPTIONPARAM5,
+};
+
 class ConstantDatabase : public YamlDatabase {
 public:
 	ConstantDatabase() : YamlDatabase("CONSTANT_DB", 1) {

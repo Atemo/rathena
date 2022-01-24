@@ -9014,6 +9014,42 @@ BUILDIN_FUNC(getequipid)
 	return SCRIPT_CMD_SUCCESS;
 }
 
+/**
+ * getequipidx({<equipment slot>,<char_id>})
+ **/
+BUILDIN_FUNC(getequipidx) {
+	struct map_session_data* sd;
+
+	if (!script_charid2sd(3, sd)) {
+		script_pushint(st, -1);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	int i, num;
+
+	if (script_hasdata(st, 2))
+		num = script_getnum(st, 2);
+	else
+		num = EQI_COMPOUND_ON;
+
+	if (num == EQI_COMPOUND_ON)
+		i = current_equip_item_index;
+	else if (equip_index_check(num)) // get inventory position of item
+		i = pc_checkequip(sd, equip_bitmask[num]);
+	else {
+		ShowError( "buildin_getequipidx: Unknown equip position '%d'\n", num );
+		script_pushint(st,-1);
+		return SCRIPT_CMD_FAILURE;
+	}
+	
+	if (i >= 0 && i < MAX_INVENTORY && sd->inventory_data[i])
+		script_pushint(st, i);
+	else
+		script_pushint(st, -1);
+
+	return SCRIPT_CMD_SUCCESS;
+}
+
 /*==========================================
  * getequipuniqueid(<equipment slot>{,<char_id>})
  *------------------------------------------*/
@@ -25686,6 +25722,159 @@ BUILDIN_FUNC( openstylist ){
 #endif
 }
 
+BUILDIN_FUNC(copyitem)
+{
+	struct map_session_data* sd;
+
+	if (!script_rid2sd(sd)) {
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	int last = script_lastdata(st);
+	if (last % 2) {
+		ShowWarning("buildin_copyitem: Invalid number of argument.\n");
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	int idx = script_getnum(st, 2);
+	if (idx < 0 || idx >= MAX_INVENTORY) {
+		ShowWarning("buildin_copyitem: Index %d is out of the range 0-%d.\n", idx, MAX_INVENTORY - 1);
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	if (sd->inventory_data[idx] == nullptr) {
+		ShowWarning("buildin_copyitem: No item can be deleted from index %d of player %s (AID: %u, CID: %u).\n", idx, sd->status.name, sd->status.account_id, sd->status.char_id);
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+	if (sd->inventory_data[idx]->type != IT_ARMOR && sd->inventory_data[idx]->type != IT_WEAPON && sd->inventory_data[idx]->type != IT_SHADOWGEAR) {
+		ShowError("buildin_copyitem: Invalid type for item %u. The item must be equippable.\n", sd->inventory_data[idx]->nameid);
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	struct item item_tmp;
+	memcpy(&item_tmp, &sd->inventory.u.items_inventory[idx], sizeof(struct item));
+
+	for (int i = 3; i <= last; i += 2) {
+		switch( script_getnum(st, i) ) {
+		case CI_ID: {
+			std::shared_ptr<item_data> id;
+
+			if (script_isstring(st, i+1))
+				id = item_db.searchname( script_getstr(st, i+1) );
+			else
+				id = item_db.find( script_getnum(st, i+1) );
+
+			if (id == nullptr) {
+				ShowError("buildin_copyitem: Nonexistant item '%s'.\n", script_getstr(st, i+1));
+				st->state = END;
+				return SCRIPT_CMD_FAILURE;
+			}
+			if (id->type != IT_ARMOR && id->type != IT_WEAPON && id->type != IT_SHADOWGEAR) {
+				ShowError("buildin_copyitem: Invalid type for item '%s'. The item must be equippable.\n", script_getstr(st, i+1));
+				st->state = END;
+				return SCRIPT_CMD_FAILURE;
+			}
+			item_tmp.nameid = id->nameid;
+			break;
+		}
+		case CI_IDENTIFY:
+			item_tmp.identify = script_getnum(st, i+1) > 0;
+			break;
+		case CI_REFINE:
+			item_tmp.refine = cap_value( script_getnum(st, i+1), 0, MAX_REFINE );
+			break;
+		case CI_ATTRIBUTE:
+			item_tmp.attribute = script_getnum(st, i+1) > 0;
+			break;
+		case CI_CARD1:
+			item_tmp.card[0] = script_getnum(st, i+1);
+			break;
+		case CI_CARD2:
+			item_tmp.card[1] = script_getnum(st, i+1);
+			break;
+		case CI_CARD3:
+			item_tmp.card[2] = script_getnum(st, i+1);
+			break;
+		case CI_CARD4:
+			item_tmp.card[3] = script_getnum(st, i+1);
+			break;
+		case CI_EXPIRE:
+			item_tmp.expire_time = (unsigned int)(time(NULL) + script_getnum(st, i+1));
+			break;
+		case CI_BOUND: {
+			int bound = script_getnum(st, i+1);
+			if (bound < BOUND_NONE || bound >= BOUND_MAX)
+				item_tmp.bound = BOUND_NONE;
+			else
+				item_tmp.bound = static_cast<bound_type>( bound );
+			break;
+		}
+		case CI_GRADE:
+			item_tmp.enchantgrade = cap_value( script_getnum(st, i+1), 0, 3 );
+			break;
+		case CI_OPTIONID1:
+			item_tmp.option[0].id = script_getnum(st, i+1);
+			break;
+		case CI_OPTIONID2:
+			item_tmp.option[1].id = script_getnum(st, i+1);
+			break;
+		case CI_OPTIONID3:
+			item_tmp.option[2].id = script_getnum(st, i+1);
+			break;
+		case CI_OPTIONID4:
+			item_tmp.option[3].id = script_getnum(st, i+1);
+			break;
+		case CI_OPTIONID5:
+			item_tmp.option[4].id = script_getnum(st, i+1);
+			break;
+		case CI_OPTIONVALUE1:
+			item_tmp.option[0].value = script_getnum(st, i+1);
+			break;
+		case CI_OPTIONVALUE2:
+			item_tmp.option[1].value = script_getnum(st, i+1);
+			break;
+		case CI_OPTIONVALUE3:
+			item_tmp.option[2].value = script_getnum(st, i+1);
+			break;
+		case CI_OPTIONVALUE4:
+			item_tmp.option[3].value = script_getnum(st, i+1);
+			break;
+		case CI_OPTIONVALUE5:
+			item_tmp.option[4].value = script_getnum(st, i+1);
+			break;
+		case CI_OPTIONPARAM1:
+			item_tmp.option[0].param = script_getnum(st, i+1);
+			break;
+		case CI_OPTIONPARAM2:
+			item_tmp.option[1].param = script_getnum(st, i+1);
+			break;
+		case CI_OPTIONPARAM3:
+			item_tmp.option[2].param = script_getnum(st, i+1);
+			break;
+		case CI_OPTIONPARAM4:
+			item_tmp.option[3].param = script_getnum(st, i+1);
+			break;
+		case CI_OPTIONPARAM5:
+			item_tmp.option[4].param = script_getnum(st, i+1);
+			break;
+		}
+	}
+
+	uint8 flag;
+
+	pc_delitem(sd,idx,1,0,2,LOG_TYPE_SCRIPT);
+	if((flag=pc_additem(sd,&item_tmp,1,LOG_TYPE_SCRIPT))){	//chk if can be spawn in inventory otherwise put on floor
+		clif_additem(sd,0,0,flag);
+		map_addflooritem(&item_tmp,1,sd->bl.m,sd->bl.x,sd->bl.y,0,0,0,0,0);
+	}
+	return SCRIPT_CMD_SUCCESS;
+}
+
 #include "../custom/script.inc"
 
 // declarations that were supposed to be exported from npc_chat.cpp
@@ -25820,6 +26009,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(strcharinfo,"i?"),
 	BUILDIN_DEF(strnpcinfo,"i"),
 	BUILDIN_DEF(getequipid,"??"),
+	BUILDIN_DEF(getequipidx,"??"),
 	BUILDIN_DEF(getequipuniqueid,"i?"),
 	BUILDIN_DEF(getequipname,"i?"),
 	BUILDIN_DEF(getbrokenid,"i?"), // [Valaris]
@@ -26392,6 +26582,8 @@ struct script_function buildin_func[] = {
 
 	BUILDIN_DEF(setinstancevar,"rvi"),
 	BUILDIN_DEF(openstylist, "?"),
+
+	BUILDIN_DEF(copyitem, "i*"),
 #include "../custom/script_def.inc"
 
 	{NULL,NULL,NULL},

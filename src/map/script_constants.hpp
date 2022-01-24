@@ -8536,6 +8536,34 @@
 	export_constant(ITEMINFO_AEGISNAME);
 	export_constant(ITEMINFO_SUBTYPE);
 
+	/* e_copyitem script command */
+	export_constant(CI_ID);
+	export_constant(CI_IDENTIFY);
+	export_constant(CI_REFINE);
+	export_constant(CI_ATTRIBUTE);
+	export_constant(CI_CARD1);
+	export_constant(CI_CARD2);
+	export_constant(CI_CARD3);
+	export_constant(CI_CARD4);
+	export_constant(CI_EXPIRE);
+	export_constant(CI_BOUND);
+	export_constant(CI_GRADE);
+	export_constant(CI_OPTIONID1);
+	export_constant(CI_OPTIONID2);
+	export_constant(CI_OPTIONID3);
+	export_constant(CI_OPTIONID4);
+	export_constant(CI_OPTIONID5);
+	export_constant(CI_OPTIONVALUE1);
+	export_constant(CI_OPTIONVALUE2);
+	export_constant(CI_OPTIONVALUE3);
+	export_constant(CI_OPTIONVALUE4);
+	export_constant(CI_OPTIONVALUE5);
+	export_constant(CI_OPTIONPARAM1);
+	export_constant(CI_OPTIONPARAM2);
+	export_constant(CI_OPTIONPARAM3);
+	export_constant(CI_OPTIONPARAM4);
+	export_constant(CI_OPTIONPARAM5);
+
 	/* refine types */
 	export_constant(REFINE_TYPE_ARMOR);
 	export_constant(REFINE_TYPE_WEAPON);

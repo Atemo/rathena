@@ -2695,6 +2695,14 @@ See 'getequipid' for a full list of valid equipment slots.
 
 ---------------------------------------
 
+*getequipidx(<equipment slot>{,<char_id>})
+
+This function returns the inventory index of the item equipped in the equipment slot
+specified on the invoking character. If nothing is equipped there, it returns -1.
+See 'getequipid' for a full list of valid equipment slots.
+
+---------------------------------------
+
 *getequipname(<equipment slot>{,<char_id>})
 
 Returns the jname of the item equipped in the specified equipment slot on the
@@ -5068,7 +5076,7 @@ This command will remove an item at the given inventory index.
 
 If <amount> is not specified, this will remove all of the items at the specified index.
 
-The only way to get the inventory index is by using 'getinventorylist()'. After deleting
+One way to get the inventory index is by using 'getinventorylist()'. After deleting
 an item at the given index, that index can remain empty until the player relogs, requiring
 'getinventorylist()' to be called again. If an item is deleted with an invalid index, the
 script will terminate with an error.
@@ -5558,6 +5566,57 @@ These commands toggle the ability to use atcommand while interacting with an NPC
 
 The default setting, 'atcommand_disable_npc', is defined in 'conf/battle/gm.conf'.
 
+---------------------------------------
+
+*copyitem(<inventory index>{,<type>,<value>,...};
+
+This function gives a copy of the existing item in the specified <inventory index>.
+The original item must be equipable (weapon, armor or shadow armor type) and when
+the command succeeds the original item is automatically deleted.
+The copy keep all the characteristics of the original item.
+
+The characteristics of the new item can be modified by the dual parameters <type> and <value>.
+
+Valid types are:
+	CI_ID					- item ID (aegis item name accepted)
+	CI_IDENTIFY				- if the item is identified (1) or not (0)
+	CI_REFINE				- refine count
+	CI_ATTRIBUTE			- if the item is broken (1) or not (0)
+	CI_CARD1				- card slot 1
+	CI_CARD2				- card slot 2
+	CI_CARD3				- card slot 3
+	CI_CARD4				- card slot 4
+	CI_EXPIRE				- expire time (Unix time stamp). 0 means never expires.
+	CI_BOUND				- bound type of the items (see BOUND_* constants)
+	CI_GRADE				- enchantgrade of the items
+	CI_OPTIONID1			- random option ID 1
+	CI_OPTIONID2			- random option ID 2
+	CI_OPTIONID3			- random option ID 3
+	CI_OPTIONID4			- random option ID 4
+	CI_OPTIONID5			- random option ID 5
+	CI_OPTIONVALUE1			- random option value 1
+	CI_OPTIONVALUE2			- random option value 2
+	CI_OPTIONVALUE3			- random option value 3
+	CI_OPTIONVALUE4			- random option value 4
+	CI_OPTIONVALUE5			- random option value 5
+	CI_OPTIONPARAM1			- random option param 1
+	CI_OPTIONPARAM2			- random option param 2
+	CI_OPTIONPARAM3			- random option param 3
+	CI_OPTIONPARAM4			- random option param 4
+	CI_OPTIONPARAM5			- random option param 5
+
+Example:
+	// When succeeding the item equipped in right hand is deleted.
+
+	// The command gives an item with all the characteristics of the original item except the ID and the refinement.
+	.@index = getequipidx( EQI_HAND_R );
+	copyitem( .@index, CI_ID, "Sword_", CI_REFINE, 5 );
+
+	// The command gives an item with all the characteristics of the original item except the card in slot 1.
+	.@index = getequipidx( EQI_HAND_R );
+	copyitem( .@index, CI_CARD1, 4100 );
+	end;
+	
 ---------------------------------------
 //
 4,1.- End of item-related commands
