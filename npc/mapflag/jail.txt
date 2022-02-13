@@ -46,3 +46,6 @@ sec_pri	mapflag	pvp_nightmaredrop	random,equip,300
 
 // Hide Monster HP bar ===================
 sec_pri	mapflag	hidemobhpbar
+
+// Disable the player's equipments item script to prevent the error message when the item is not defined in item_noequip.txt
+sec_pri	mapflag	noitemscript

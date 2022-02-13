@@ -446,3 +446,9 @@ Disable renewal drop rate penalty due to level difference on a map.
 Disable renewal experience penalty due to level difference on a map.
 
 ---------------------------------------
+
+*noitemscript
+
+Disables the player's equipments item script on a map.
+
+---------------------------------------

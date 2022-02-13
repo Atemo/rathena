@@ -2532,7 +2532,8 @@ bool itemdb_isNoEquip(struct item_data *id, uint16 m) {
 	
 	struct map_data *mapdata = map_getmapdata(m);
 
-	if ((id->flag.no_equip&1 && !mapdata_flag_vs2(mapdata)) || // Normal
+	if (mapdata->flag[MF_NOITEMSCRIPT] || // all flags
+		(id->flag.no_equip&1 && !mapdata_flag_vs2(mapdata)) || // Normal
 		(id->flag.no_equip&2 && mapdata->flag[MF_PVP]) || // PVP
 		(id->flag.no_equip&4 && mapdata_flag_gvg2_no_te(mapdata)) || // GVG
 		(id->flag.no_equip&8 && mapdata->flag[MF_BATTLEGROUND]) || // Battleground
