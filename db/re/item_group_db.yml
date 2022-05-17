@@ -47,7 +47,8 @@ Header:
   Version: 2
 
 Body:
-  - Group: 2013_RWC_SCROLL
+  - Id: 1
+    Group: 2013_RWC_SCROLL
     SubGroups:
       - SubGroup: 0
         List:
@@ -62,7 +63,8 @@ Body:
           - Item: Guarantee_Armor_9Up
           - Item: C_Wings_Of_Victory
           - Item: Succu_Pet_Coupon
-  - Group: ACCESORY
+  - Id: 2
+    Group: ACCESORY
     SubGroups:
       - SubGroup: 1
         List:
@@ -150,7 +152,8 @@ Body:
             Rate: 1
           - Item: Iron_Wrist
             Rate: 1
-  - Group: ACIDBOMB_10_BOX
+  - Id: 3
+    Group: ACIDBOMB_10_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -160,7 +163,8 @@ Body:
           - Item: Acid_Bottle
             Amount: 10
             UniqueId: true
-  - Group: ACOLYTE_CARD_BOX
+  - Id: 4
+    Group: ACOLYTE_CARD_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -174,7 +178,8 @@ Body:
             UniqueId: true
           - Item: Cookie_Card
             UniqueId: true
-  - Group: ADVANCED_WEAPONS_BOX
+  - Id: 5
+    Group: ADVANCED_WEAPONS_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -542,7 +547,8 @@ Body:
             Rate: 1
           - Item: Creeper_Bow
             Rate: 1
-  - Group: ADVENTURER_RETURNS_SUPPORT_BOX
+  - Id: 6
+    Group: ADVENTURER_RETURNS_SUPPORT_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -562,7 +568,8 @@ Body:
             Rate: 1
           - Item: Increase_Agility_Scroll_Box_10
             Rate: 1
-  - Group: ADV_SIEGE_SUPPLY_BOX
+  - Id: 7
+    Group: ADV_SIEGE_SUPPLY_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -572,7 +579,8 @@ Body:
           - Item: Siege_Blue_Potion
             Amount: 20
             UniqueId: true
-  - Group: AGRADE_POCKET
+  - Id: 8
+    Group: AGRADE_POCKET
     SubGroups:
       - SubGroup: 0
         List:
@@ -593,7 +601,8 @@ Body:
             Rate: 800
           - Item: Cgrade_Coin
             Rate: 200
-  - Group: AGUST_LUCKY_SCROLL
+  - Id: 9
+    Group: AGUST_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -665,14 +674,16 @@ Body:
           - Item: STR_Biscuit_Stick
             Rate: 1130
             Amount: 20
-  - Group: ALL_IN_ONE_RING_BOX
+  - Id: 10
+    Group: ALL_IN_ONE_RING_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: All_In_One_Ring
             Duration: 65535
             UniqueId: true
-  - Group: AMORA_LUCKY_SCROLL
+  - Id: 11
+    Group: AMORA_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -738,7 +749,8 @@ Body:
           - Item: Incant_Samurai_Card
             Rate: 1
             Announced: true
-  - Group: ANGEL_SCROLL
+  - Id: 12
+    Group: ANGEL_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -772,7 +784,8 @@ Body:
           - Item: Archangeling_Card
             Rate: 20
             UniqueId: true
-  - Group: ANIMAL_SCROLL
+  - Id: 13
+    Group: ANIMAL_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -832,14 +845,16 @@ Body:
             Rate: 185
             Amount: 5
             UniqueId: true
-  - Group: APPLE_OF_ARCHER_BOX
+  - Id: 14
+    Group: APPLE_OF_ARCHER_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Apple_Of_Archer_C
             Duration: 10080
             UniqueId: true
-  - Group: AQUARIUS_DIADEM_SCROLL
+  - Id: 15
+    Group: AQUARIUS_DIADEM_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -887,7 +902,8 @@ Body:
             Rate: 175
             Amount: 5
             UniqueId: true
-  - Group: AQUARIUS_DI_SCROLL_BOX
+  - Id: 16
+    Group: AQUARIUS_DI_SCROLL_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -895,7 +911,8 @@ Body:
             Amount: 10
             UniqueId: true
             Stacked: false
-  - Group: ARCHER_CARD_BOX
+  - Id: 17
+    Group: ARCHER_CARD_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -909,7 +926,8 @@ Body:
             UniqueId: true
           - Item: Alligator_Card
             UniqueId: true
-  - Group: ARIES_SCROLL
+  - Id: 18
+    Group: ARIES_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -946,7 +964,8 @@ Body:
           - Item: Zeny_Scroll
             Rate: 2300
             Amount: 10
-  - Group: ARIES_SCROLL_BOX
+  - Id: 19
+    Group: ARIES_SCROLL_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -954,7 +973,8 @@ Body:
             Amount: 10
             UniqueId: true
             Stacked: false
-  - Group: ASGARD_SCROLL
+  - Id: 20
+    Group: ASGARD_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -998,21 +1018,24 @@ Body:
           - Item: Lucky_Cookie02
             Rate: 150
             Amount: 30
-  - Group: ASPERSIO_5_SCROLL_BOX
+  - Id: 21
+    Group: ASPERSIO_5_SCROLL_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Aspersio_5_Scroll
             Amount: 10
             UniqueId: true
-  - Group: ASURA_BOX
+  - Id: 22
+    Group: ASURA_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Asura_C
             Duration: 10080
             UniqueId: true
-  - Group: A_GRADE_COIN_BAG
+  - Id: 23
+    Group: A_GRADE_COIN_BAG
     SubGroups:
       - SubGroup: 1
         List:
@@ -1022,7 +1045,8 @@ Body:
             Rate: 2
           - Item: Cgrade_Coin
             Rate: 1
-  - Group: BACSOJIN_SCROLL
+  - Id: 24
+    Group: BACSOJIN_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -1070,7 +1094,8 @@ Body:
             Rate: 150
             Amount: 5
             UniqueId: true
-  - Group: BAD_STUDENT_GIFT_BOX
+  - Id: 25
+    Group: BAD_STUDENT_GIFT_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -1080,14 +1105,16 @@ Body:
           - Item: Songpyun_Box50
           - Item: Insurance
             Amount: 5
-  - Group: BALISTAR_BOX
+  - Id: 26
+    Group: BALISTAR_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Balistar_C
             Duration: 10080
             UniqueId: true
-  - Group: BASIC_SIEGE_SUPPLY_BOX
+  - Id: 27
+    Group: BASIC_SIEGE_SUPPLY_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -1097,14 +1124,16 @@ Body:
           - Item: Siege_Blue_Potion
             Amount: 10
             UniqueId: true
-  - Group: BEHOLDER_RING_BOX
+  - Id: 28
+    Group: BEHOLDER_RING_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Beholder_Ring
             Duration: 10080
             UniqueId: true
-  - Group: BGRADE_POCKET
+  - Id: 29
+    Group: BGRADE_POCKET
     SubGroups:
       - SubGroup: 0
         List:
@@ -1125,21 +1154,24 @@ Body:
             Rate: 800
           - Item: Dgrade_Coin
             Rate: 200
-  - Group: BGUM_BOX_IN_MOUTH2
+  - Id: 30
+    Group: BGUM_BOX_IN_MOUTH2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Bubble_Gum_In_Mouth
             Duration: 120
             UniqueId: true
-  - Group: BGUM_BOX_IN_MOUTH4
+  - Id: 31
+    Group: BGUM_BOX_IN_MOUTH4
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Bubble_Gum_In_Mouth
             Duration: 240
             UniqueId: true
-  - Group: BI_HWANG_SCROLL
+  - Id: 32
+    Group: BI_HWANG_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -1193,7 +1225,8 @@ Body:
           - Item: Thanatos_Card
             Rate: 1
             Announced: true
-  - Group: BLESSING_LUCKY_SCROLL
+  - Id: 33
+    Group: BLESSING_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -1262,7 +1295,8 @@ Body:
           - Item: Incant_Samurai_Card
             Rate: 1
             Announced: true
-  - Group: BLESSING_MIDGARD_SCROLL
+  - Id: 34
+    Group: BLESSING_MIDGARD_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -1330,7 +1364,8 @@ Body:
           - Item: Randgris_Card
             Rate: 1
             Announced: true
-  - Group: BLESSING_SCARLET_SCROLL
+  - Id: 35
+    Group: BLESSING_SCARLET_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -1402,7 +1437,8 @@ Body:
           - Item: B_Seyren_Card
             Rate: 1
             Announced: true
-  - Group: BLEUBOX
+  - Id: 36
+    Group: BLEUBOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -1428,14 +1464,16 @@ Body:
             Rate: 1
           - Item: Holy_Scroll_1_5
             Rate: 1
-  - Group: BLOODY_RING_BOX
+  - Id: 37
+    Group: BLOODY_RING_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Bloody_Ring
             Duration: 10080
             UniqueId: true
-  - Group: BLUEBOX
+  - Id: 38
+    Group: BLUEBOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -3503,7 +3541,8 @@ Body:
             Rate: 1
           - Item: Huuma_Calm_Mind
             Rate: 1
-  - Group: BLUE_SCROLL
+  - Id: 39
+    Group: BLUE_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -3556,14 +3595,16 @@ Body:
           - Item: Black_Devil_Mask_
             Rate: 2
             Announced: true
-  - Group: BOARDING_HALTER_BOX
+  - Id: 40
+    Group: BOARDING_HALTER_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Boarding_Halter
             Duration: 10080
             UniqueId: true
-  - Group: BOITATA_SCROLL
+  - Id: 41
+    Group: BOITATA_SCROLL
     SubGroups:
       - SubGroup: 0
         List:
@@ -3632,7 +3673,8 @@ Body:
           - Item: Petti_Noodle_To_Throw
             Rate: 1800
             Amount: 10
-  - Group: BOMB
+  - Id: 42
+    Group: BOMB
     SubGroups:
       - SubGroup: 1
         List:
@@ -3652,7 +3694,8 @@ Body:
             Rate: 1
           - Item: Very_Hard_Lump
             Rate: 1
-  - Group: BOX
+  - Id: 43
+    Group: BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -3662,7 +3705,8 @@ Body:
             Rate: 1
           - Item: Gift_Box
             Rate: 1
-  - Group: BREWING_BOX
+  - Id: 44
+    Group: BREWING_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -3675,26 +3719,30 @@ Body:
           - Item: Luk_Dish10_
             Amount: 10
             UniqueId: true
-  - Group: BRINDLE_EEL_BOX1
+  - Id: 45
+    Group: BRINDLE_EEL_BOX1
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Brindle_Eel
             Duration: 60
-  - Group: BRINDLE_EEL_BOX2
+  - Id: 46
+    Group: BRINDLE_EEL_BOX2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Brindle_Eel
             Duration: 10080
-  - Group: BROOCH_BOX
+  - Id: 47
+    Group: BROOCH_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Brooch_C
             Duration: 10080
             UniqueId: true
-  - Group: BR_ACOLPACKAGE
+  - Id: 48
+    Group: BR_ACOLPACKAGE
     SubGroups:
       - SubGroup: 0
         List:
@@ -3715,7 +3763,8 @@ Body:
             UniqueId: true
           - Item: Biretta_
             UniqueId: true
-  - Group: BR_ARCHERPACKAGE
+  - Id: 49
+    Group: BR_ARCHERPACKAGE
     SubGroups:
       - SubGroup: 0
         List:
@@ -3736,7 +3785,8 @@ Body:
             UniqueId: true
           - Item: Apple_Of_Archer
             UniqueId: true
-  - Group: BR_INDEPENDENCE_SCROLL
+  - Id: 50
+    Group: BR_INDEPENDENCE_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -3795,7 +3845,8 @@ Body:
           - Item: Carmen_Miranda's_Hat
             Rate: 30
             UniqueId: true
-  - Group: BR_MAGEPACKAGE
+  - Id: 51
+    Group: BR_MAGEPACKAGE
     SubGroups:
       - SubGroup: 0
         List:
@@ -3816,7 +3867,8 @@ Body:
             UniqueId: true
           - Item: Wizardry_Hat
             UniqueId: true
-  - Group: BR_MERPACKAGE
+  - Id: 52
+    Group: BR_MERPACKAGE
     SubGroups:
       - SubGroup: 0
         List:
@@ -3837,7 +3889,8 @@ Body:
             UniqueId: true
           - Item: Bankruptcy_Of_Heart
             UniqueId: true
-  - Group: BR_SWORDPACKAGE
+  - Id: 53
+    Group: BR_SWORDPACKAGE
     SubGroups:
       - SubGroup: 0
         List:
@@ -3860,7 +3913,8 @@ Body:
             UniqueId: true
           - Item: Iron_Cane
             UniqueId: true
-  - Group: BR_THIEFPACKAGE
+  - Id: 54
+    Group: BR_THIEFPACKAGE
     SubGroups:
       - SubGroup: 0
         List:
@@ -3881,7 +3935,8 @@ Body:
             UniqueId: true
           - Item: Ghost_Bandana
             UniqueId: true
-  - Group: BUDDAH_SCROLL
+  - Id: 55
+    Group: BUDDAH_SCROLL
     SubGroups:
       - SubGroup: 0
         List:
@@ -3934,14 +3989,16 @@ Body:
           - Item: Unbreak_Weap_Box
             Rate: 50
             Announced: true
-  - Group: BUNNY_BAND_BOX
+  - Id: 56
+    Group: BUNNY_BAND_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Bunny_Band_C
             Duration: 10080
             UniqueId: true
-  - Group: CANDY
+  - Id: 57
+    Group: CANDY
     SubGroups:
       - SubGroup: 1
         List:
@@ -3949,7 +4006,8 @@ Body:
             Rate: 1
           - Item: Candy_Striper
             Rate: 1
-  - Group: CANDY_HOLDER
+  - Id: 58
+    Group: CANDY_HOLDER
     SubGroups:
       - SubGroup: 1
         List:
@@ -3979,7 +4037,8 @@ Body:
             Rate: 5
           - Item: Pumpkin_Pie
             Rate: 5
-  - Group: CAPRICON_DI_SCROLL
+  - Id: 59
+    Group: CAPRICON_DI_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -4027,7 +4086,8 @@ Body:
           - Item: Small_Life_Potion_Box30
             Rate: 10
             UniqueId: true
-  - Group: CAPRICON_DI_SCROLL_BOX
+  - Id: 60
+    Group: CAPRICON_DI_SCROLL_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -4035,7 +4095,8 @@ Body:
             Amount: 10
             UniqueId: true
             Stacked: false
-  - Group: CAPRI_CROWN_SCROLL
+  - Id: 61
+    Group: CAPRI_CROWN_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -4084,7 +4145,8 @@ Body:
           - Item: Wind_Walk_10_Scroll_Box
             Rate: 60
             UniqueId: true
-  - Group: CAPRI_CROWN_SCROLL_BOX
+  - Id: 62
+    Group: CAPRI_CROWN_SCROLL_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -4092,13 +4154,15 @@ Body:
             Amount: 10
             UniqueId: true
             Stacked: false
-  - Group: CARACAS_RING_BOX
+  - Id: 63
+    Group: CARACAS_RING_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Caracas_Ring
             Duration: 4500
-  - Group: CARDALBUM
+  - Id: 64
+    Group: CARDALBUM
     SubGroups:
       - SubGroup: 1
         List:
@@ -5002,7 +5066,8 @@ Body:
             Rate: 1
           - Item: Owl_Marquees_Card
             Rate: 1
-  - Group: CARDALBUM_ACC
+  - Id: 65
+    Group: CARDALBUM_ACC
     SubGroups:
       - SubGroup: 1
         List:
@@ -5150,7 +5215,8 @@ Body:
             Rate: 1
           - Item: Hell_Poodle_Card
             Rate: 1
-  - Group: CARDALBUM_ARMOR
+  - Id: 66
+    Group: CARDALBUM_ARMOR
     SubGroups:
       - SubGroup: 1
         List:
@@ -5300,7 +5366,8 @@ Body:
             Rate: 1
           - Item: Banshee_Master_Card
             Rate: 1
-  - Group: CARDALBUM_GARMENT
+  - Id: 67
+    Group: CARDALBUM_GARMENT
     SubGroups:
       - SubGroup: 1
         List:
@@ -5380,7 +5447,8 @@ Body:
             Rate: 32
           - Item: Magmaring_Card
             Rate: 33
-  - Group: CARDALBUM_HELM
+  - Id: 68
+    Group: CARDALBUM_HELM
     SubGroups:
       - SubGroup: 1
         List:
@@ -5464,7 +5532,8 @@ Body:
             Rate: 1
           - Item: Banshee_Card
             Rate: 1
-  - Group: CARDALBUM_SHIELD
+  - Id: 69
+    Group: CARDALBUM_SHIELD
     SubGroups:
       - SubGroup: 1
         List:
@@ -5552,7 +5621,8 @@ Body:
             Rate: 1
           - Item: Dark_Shadow_Card
             Rate: 1
-  - Group: CARDALBUM_SHOES
+  - Id: 70
+    Group: CARDALBUM_SHOES
     SubGroups:
       - SubGroup: 1
         List:
@@ -5618,7 +5688,8 @@ Body:
             Rate: 1
           - Item: Zombie_Slaughter_Card
             Rate: 1
-  - Group: CARDALBUM_WEAPON
+  - Id: 71
+    Group: CARDALBUM_WEAPON
     SubGroups:
       - SubGroup: 1
         List:
@@ -5832,7 +5903,8 @@ Body:
             Rate: 1
           - Item: Hilsrion_Card
             Rate: 1
-  - Group: CASH_FOOD
+  - Id: 72
+    Group: CASH_FOOD
     SubGroups:
       - SubGroup: 1
         List:
@@ -5848,7 +5920,8 @@ Body:
             Rate: 1
           - Item: Vit_Dish10_
             Rate: 1
-  - Group: CGRADE_POCKET
+  - Id: 73
+    Group: CGRADE_POCKET
     SubGroups:
       - SubGroup: 0
         List:
@@ -5867,7 +5940,8 @@ Body:
             Rate: 800
           - Item: Dgrade_Coin
             Rate: 200
-  - Group: CHALLENGE_KIT
+  - Id: 74
+    Group: CHALLENGE_KIT
     SubGroups:
       - SubGroup: 0
         List:
@@ -5877,14 +5951,16 @@ Body:
           - Item: Inc_Agi_10_Scroll
             Amount: 20
             UniqueId: true
-  - Group: CHEMICAL_RING_BOX
+  - Id: 75
+    Group: CHEMICAL_RING_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Chemical_Ring
             Duration: 10080
             UniqueId: true
-  - Group: CHERISH_BOX
+  - Id: 76
+    Group: CHERISH_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -5894,7 +5970,8 @@ Body:
             Rate: 4
           - Item: Vacation_Hat_
             Rate: 5
-  - Group: CHERISH_BOX_ORI
+  - Id: 77
+    Group: CHERISH_BOX_ORI
     SubGroups:
       - SubGroup: 1
         List:
@@ -5908,7 +5985,8 @@ Body:
             Rate: 2
           - Item: Loki_Mask
             Rate: 2
-  - Group: CHRISTMAS_BOX
+  - Id: 78
+    Group: CHRISTMAS_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -5946,7 +6024,8 @@ Body:
             Rate: 5
           - Item: Wool_Scarf
             Rate: 5
-  - Group: CHRONOSIAN_LUCKY_SCROLL
+  - Id: 79
+    Group: CHRONOSIAN_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -6011,27 +6090,31 @@ Body:
           - Item: Tao_Gunka_Card
             Rate: 1
             Announced: true
-  - Group: CLAMOROUS_RING_BOX
+  - Id: 80
+    Group: CLAMOROUS_RING_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Clamorous_Ring
             Duration: 10080
             UniqueId: true
-  - Group: COMBAT_KNIFE_BOX
+  - Id: 81
+    Group: COMBAT_KNIFE_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Combat_Knife_C
             Duration: 10080
             UniqueId: true
-  - Group: COMIN_ACTOR_BOX
+  - Id: 82
+    Group: COMIN_ACTOR_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Charlie_Beard
           - Item: Charlie_Hat
-  - Group: COOKIEBAG
+  - Id: 83
+    Group: COOKIEBAG
     SubGroups:
       - SubGroup: 1
         List:
@@ -6067,19 +6150,22 @@ Body:
             Rate: 1
           - Item: Rainbow_Cake
             Rate: 1
-  - Group: COOL_FB_HAT_BOX
+  - Id: 84
+    Group: COOL_FB_HAT_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Cool_FB_Hat
             Duration: 60
-  - Group: COOL_HAT_BOX2
+  - Id: 85
+    Group: COOL_HAT_BOX2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Cool_FB_Hat
             Duration: 3600
-  - Group: COSTAMA_EGG18
+  - Id: 86
+    Group: COSTAMA_EGG18
     SubGroups:
       - SubGroup: 1
         List:
@@ -6103,7 +6189,8 @@ Body:
             Rate: 160
           - Item: C_Elder_Crown
             Rate: 170
-  - Group: COSTAMA_EGG19
+  - Id: 87
+    Group: COSTAMA_EGG19
     SubGroups:
       - SubGroup: 1
         List:
@@ -6130,7 +6217,8 @@ Body:
           - Item: C_Subject_Aura
             Rate: 10
             Announced: true
-  - Group: COSTAMA_EGG23
+  - Id: 88
+    Group: COSTAMA_EGG23
     SubGroups:
       - SubGroup: 1
         List:
@@ -6154,7 +6242,8 @@ Body:
             Rate: 160
           - Item: C_White_Feather
             Rate: 170
-  - Group: COSTAMA_EGG24
+  - Id: 89
+    Group: COSTAMA_EGG24
     SubGroups:
       - SubGroup: 1
         List:
@@ -6178,7 +6267,8 @@ Body:
             Rate: 160
           - Item: C_Jolly_Roger
             Rate: 170
-  - Group: COSTAMA_EGG28
+  - Id: 90
+    Group: COSTAMA_EGG28
     SubGroups:
       - SubGroup: 1
         List:
@@ -6202,7 +6292,8 @@ Body:
             Rate: 160
           - Item: C_Puppy_Hat
             Rate: 170
-  - Group: COSTAMA_EGG29
+  - Id: 91
+    Group: COSTAMA_EGG29
     SubGroups:
       - SubGroup: 1
         List:
@@ -6226,14 +6317,16 @@ Body:
             Rate: 244
           - Item: C_Rideword_Hat
             Rate: 10
-  - Group: COUNTER_DAGGER_BOX
+  - Id: 92
+    Group: COUNTER_DAGGER_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Counter_Dagger_C
             Duration: 10080
             UniqueId: true
-  - Group: COUPLE_EVENT_BASKET
+  - Id: 93
+    Group: COUPLE_EVENT_BASKET
     SubGroups:
       - SubGroup: 1
         List:
@@ -6252,7 +6345,8 @@ Body:
           - Item: Fire_Cracker_Xmas
             Rate: 1
             Amount: 10
-  - Group: CP_ARMOR_SCROLL_BOX
+  - Id: 94
+    Group: CP_ARMOR_SCROLL_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -6260,7 +6354,8 @@ Body:
             UniqueId: true
           - Item: Coating_Bottle
             UniqueId: true
-  - Group: CP_HELM_SCROLL_BOX
+  - Id: 95
+    Group: CP_HELM_SCROLL_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -6268,7 +6363,8 @@ Body:
             UniqueId: true
           - Item: Coating_Bottle
             UniqueId: true
-  - Group: CP_SHIELD_SCROLL_BOX
+  - Id: 96
+    Group: CP_SHIELD_SCROLL_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -6276,7 +6372,8 @@ Body:
             UniqueId: true
           - Item: Coating_Bottle
             UniqueId: true
-  - Group: CP_WEAPON_SCROLL_BOX
+  - Id: 97
+    Group: CP_WEAPON_SCROLL_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -6284,14 +6381,16 @@ Body:
             UniqueId: true
           - Item: Coating_Bottle
             UniqueId: true
-  - Group: CRITICAL_RING_BOX
+  - Id: 98
+    Group: CRITICAL_RING_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Critical_Ring_C
             Duration: 10080
             UniqueId: true
-  - Group: CRUMPLED_PAPER
+  - Id: 99
+    Group: CRUMPLED_PAPER
     SubGroups:
       - SubGroup: 1
         List:
@@ -6319,7 +6418,8 @@ Body:
             Rate: 83
           - Item: Calender_December
             Rate: 83
-  - Group: CYBORG_LUCKY_SCROLL
+  - Id: 100
+    Group: CYBORG_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -6389,21 +6489,24 @@ Body:
           - Item: Incant_Samurai_Card
             Rate: 1
             Announced: true
-  - Group: C_WING_OF_FLY_3DAY_BOX
+  - Id: 101
+    Group: C_WING_OF_FLY_3DAY_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: C_Wing_Of_Fly
             Duration: 4320
             UniqueId: true
-  - Group: DECUSSATE_RING_BOX
+  - Id: 102
+    Group: DECUSSATE_RING_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Decussate_Ring
             Duration: 10080
             UniqueId: true
-  - Group: DEVIL_SCROLL
+  - Id: 103
+    Group: DEVIL_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -6438,7 +6541,8 @@ Body:
           - Item: Diabolic_Box
             Rate: 150
             UniqueId: true
-  - Group: DEVIRUCHI_SET_BOX
+  - Id: 104
+    Group: DEVIRUCHI_SET_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -6448,7 +6552,8 @@ Body:
             UniqueId: true
           - Item: Gray_Deviruchi_Cap
             UniqueId: true
-  - Group: DGRADE_POCKET
+  - Id: 105
+    Group: DGRADE_POCKET
     SubGroups:
       - SubGroup: 0
         List:
@@ -6468,28 +6573,32 @@ Body:
             Rate: 800
           - Item: Dgrade_Coin
             Rate: 200
-  - Group: DIARY_OF_GREAT_SAGE_BOX
+  - Id: 106
+    Group: DIARY_OF_GREAT_SAGE_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Diary_Of_Great_Sage_C
             Duration: 10080
             UniqueId: true
-  - Group: DRAGOON_RING_BOX
+  - Id: 107
+    Group: DRAGOON_RING_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Dragoon_Ring
             Duration: 10080
             UniqueId: true
-  - Group: EARRING_BOX
+  - Id: 108
+    Group: EARRING_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Earring_C
             Duration: 10080
             UniqueId: true
-  - Group: EARTH_TYPE_SCROLL
+  - Id: 109
+    Group: EARTH_TYPE_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -6550,7 +6659,8 @@ Body:
           - Item: Diabolic_Scroll
             Rate: 1600
             Amount: 5
-  - Group: EASTER_SCROLL
+  - Id: 110
+    Group: EASTER_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -6582,7 +6692,8 @@ Body:
             Rate: 1
           - Item: Bongun_Hat_
             Rate: 1
-  - Group: EGGBOY
+  - Id: 111
+    Group: EGGBOY
     SubGroups:
       - SubGroup: 1
         List:
@@ -6600,7 +6711,8 @@ Body:
             Rate: 5
           - Item: Inccubus_Horn
             Rate: 2
-  - Group: EGGGIRL
+  - Id: 112
+    Group: EGGGIRL
     SubGroups:
       - SubGroup: 1
         List:
@@ -6618,7 +6730,8 @@ Body:
             Rate: 5
           - Item: Horn_Of_Succubus
             Rate: 2
-  - Group: EGRADE_POCKET
+  - Id: 113
+    Group: EGRADE_POCKET
     SubGroups:
       - SubGroup: 0
         List:
@@ -6637,7 +6750,8 @@ Body:
             Rate: 800
           - Item: Egrade_Coin
             Rate: 200
-  - Group: ELEMENT
+  - Id: 114
+    Group: ELEMENT
     SubGroups:
       - SubGroup: 1
         List:
@@ -6649,7 +6763,8 @@ Body:
             Rate: 1
           - Item: Lime_Green_Pts
             Rate: 1
-  - Group: ELITE_SIEGE_SUPPLY_BOX
+  - Id: 115
+    Group: ELITE_SIEGE_SUPPLY_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -6659,14 +6774,16 @@ Body:
           - Item: Siege_Blue_Potion
             Amount: 50
             UniqueId: true
-  - Group: ELVEN_EARS_BOX
+  - Id: 116
+    Group: ELVEN_EARS_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Elven_Ears_C
             Duration: 10080
             UniqueId: true
-  - Group: ENCHANT_STONE_BOX
+  - Id: 117
+    Group: ENCHANT_STONE_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -6690,7 +6807,8 @@ Body:
             Rate: 1000
           - Item: FLEEStone_Bottom
             Rate: 1000
-  - Group: ENCHANT_STONE_BOX10
+  - Id: 118
+    Group: ENCHANT_STONE_BOX10
     SubGroups:
       - SubGroup: 1
         List:
@@ -6772,7 +6890,8 @@ Body:
             Rate: 391
           - Item: EXPStone_Top
             Rate: 391
-  - Group: ENCHANT_STONE_BOX11
+  - Id: 119
+    Group: ENCHANT_STONE_BOX11
     SubGroups:
       - SubGroup: 1
         List:
@@ -6854,7 +6973,8 @@ Body:
             Rate: 38
           - Item: EXPStone_Top
             Rate: 38
-  - Group: ENCHANT_STONE_BOX12
+  - Id: 120
+    Group: ENCHANT_STONE_BOX12
     SubGroups:
       - SubGroup: 1
         List:
@@ -6938,7 +7058,8 @@ Body:
             Rate: 38
           - Item: Critical_Stone_Bottom
             Rate: 38
-  - Group: ENCHANT_STONE_BOX13
+  - Id: 121
+    Group: ENCHANT_STONE_BOX13
     SubGroups:
       - SubGroup: 1
         List:
@@ -7022,7 +7143,8 @@ Body:
             Rate: 37
           - Item: SorcererStone_Bottom
             Rate: 37
-  - Group: ENCHANT_STONE_BOX14
+  - Id: 122
+    Group: ENCHANT_STONE_BOX14
     SubGroups:
       - SubGroup: 1
         List:
@@ -7106,7 +7228,8 @@ Body:
             Rate: 37
           - Item: WarlockStone_Bottom
             Rate: 37
-  - Group: ENCHANT_STONE_BOX15
+  - Id: 123
+    Group: ENCHANT_STONE_BOX15
     SubGroups:
       - SubGroup: 1
         List:
@@ -7190,7 +7313,8 @@ Body:
             Rate: 37
           - Item: WanderMinstrelStone_Bottom
             Rate: 37
-  - Group: ENCHANT_STONE_BOX16
+  - Id: 124
+    Group: ENCHANT_STONE_BOX16
     SubGroups:
       - SubGroup: 1
         List:
@@ -7274,7 +7398,8 @@ Body:
             Rate: 37
           - Item: AssacrossStone_Bottom
             Rate: 37
-  - Group: ENCHANT_STONE_BOX17
+  - Id: 125
+    Group: ENCHANT_STONE_BOX17
     SubGroups:
       - SubGroup: 1
         List:
@@ -7358,7 +7483,8 @@ Body:
             Rate: 37
           - Item: ShadowchaserStone_Top2
             Rate: 37
-  - Group: ENCHANT_STONE_BOX18
+  - Id: 126
+    Group: ENCHANT_STONE_BOX18
     SubGroups:
       - SubGroup: 1
         List:
@@ -7462,7 +7588,8 @@ Body:
             Rate: 27
           - Item: MATKStone_Bottom
             Rate: 27
-  - Group: ENCHANT_STONE_BOX19
+  - Id: 127
+    Group: ENCHANT_STONE_BOX19
     SubGroups:
       - SubGroup: 1
         List:
@@ -7546,7 +7673,8 @@ Body:
             Rate: 37
           - Item: HighpriestStone_II_Bottom
             Rate: 37
-  - Group: ENCHANT_STONE_BOX2
+  - Id: 128
+    Group: ENCHANT_STONE_BOX2
     SubGroups:
       - SubGroup: 1
         List:
@@ -7582,7 +7710,8 @@ Body:
             Rate: 1120
           - Item: HPStone_Middle
             Rate: 1120
-  - Group: ENCHANT_STONE_BOX20
+  - Id: 129
+    Group: ENCHANT_STONE_BOX20
     SubGroups:
       - SubGroup: 1
         List:
@@ -7666,7 +7795,8 @@ Body:
             Rate: 37
           - Item: GuillotineCrossStone_Bottom2
             Rate: 37
-  - Group: ENCHANT_STONE_BOX21
+  - Id: 130
+    Group: ENCHANT_STONE_BOX21
     SubGroups:
       - SubGroup: 1
         List:
@@ -7750,7 +7880,8 @@ Body:
             Rate: 37
           - Item: Critical_Stone_Bottom
             Rate: 37
-  - Group: ENCHANT_STONE_BOX3
+  - Id: 131
+    Group: ENCHANT_STONE_BOX3
     SubGroups:
       - SubGroup: 1
         List:
@@ -7792,7 +7923,8 @@ Body:
             Rate: 600
           - Item: SmallStone_Top
             Rate: 600
-  - Group: ENCHANT_STONE_BOX4
+  - Id: 132
+    Group: ENCHANT_STONE_BOX4
     SubGroups:
       - SubGroup: 1
         List:
@@ -7836,7 +7968,8 @@ Body:
             Rate: 500
           - Item: ASPDStone_Robe
             Rate: 500
-  - Group: ENCHANT_STONE_BOX5
+  - Id: 133
+    Group: ENCHANT_STONE_BOX5
     SubGroups:
       - SubGroup: 1
         List:
@@ -7898,7 +8031,8 @@ Body:
             Rate: 420
           - Item: SmallStone_Top
             Rate: 420
-  - Group: ENCHANT_STONE_BOX6
+  - Id: 134
+    Group: ENCHANT_STONE_BOX6
     SubGroups:
       - SubGroup: 1
         List:
@@ -7964,7 +8098,8 @@ Body:
             Rate: 413
           - Item: SmallStone_Top
             Rate: 413
-  - Group: ENCHANT_STONE_BOX7
+  - Id: 135
+    Group: ENCHANT_STONE_BOX7
     SubGroups:
       - SubGroup: 1
         List:
@@ -8030,7 +8165,8 @@ Body:
             Rate: 424
           - Item: EXPStone_Bottom
             Rate: 424
-  - Group: ENCHANT_STONE_BOX8
+  - Id: 136
+    Group: ENCHANT_STONE_BOX8
     SubGroups:
       - SubGroup: 1
         List:
@@ -8114,7 +8250,8 @@ Body:
             Rate: 372
           - Item: HealStone_Bottom
             Rate: 372
-  - Group: ENCHANT_STONE_BOX9
+  - Id: 137
+    Group: ENCHANT_STONE_BOX9
     SubGroups:
       - SubGroup: 1
         List:
@@ -8194,7 +8331,8 @@ Body:
             Rate: 397
           - Item: EXPStone_Middle
             Rate: 397
-  - Group: ENERGETIC_PISCES_BOX
+  - Id: 138
+    Group: ENERGETIC_PISCES_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -8202,7 +8340,8 @@ Body:
             Amount: 10
             UniqueId: true
             Stacked: false
-  - Group: ENERGETIC_PISCES_SCROLL
+  - Id: 139
+    Group: ENERGETIC_PISCES_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -8250,7 +8389,8 @@ Body:
           - Item: Ramen_Hat_Box
             Rate: 100
             UniqueId: true
-  - Group: EPIC_HEROES_LUCKY_EGG
+  - Id: 140
+    Group: EPIC_HEROES_LUCKY_EGG
     SubGroups:
       - SubGroup: 1
         List:
@@ -8320,7 +8460,8 @@ Body:
           - Item: Thanatos_Card
             Rate: 1
             Announced: true
-  - Group: ERZULIE_LUCKY_SCROLL
+  - Id: 141
+    Group: ERZULIE_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -8384,7 +8525,8 @@ Body:
           - Item: Drake_Card
             Rate: 1
             Announced: true
-  - Group: EVENT_ALMIGHTY_BOX
+  - Id: 142
+    Group: EVENT_ALMIGHTY_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -8393,7 +8535,8 @@ Body:
             Amount: 10
           - Item: Sealed_Kiel-D-01_Scroll
             Rate: 1
-  - Group: EVENT_ALMIGHTY_BOX_100
+  - Id: 143
+    Group: EVENT_ALMIGHTY_BOX_100
     SubGroups:
       - SubGroup: 1
         List:
@@ -8403,7 +8546,8 @@ Body:
           - Item: Sealed_Kiel-D-01_Scroll
             Rate: 1
             Amount: 11
-  - Group: EVIL_INCARNATION
+  - Id: 144
+    Group: EVIL_INCARNATION
     SubGroups:
       - SubGroup: 1
         List:
@@ -8451,14 +8595,16 @@ Body:
           - Item: Miracle_Medicine
             Rate: 1
             UniqueId: true
-  - Group: EXCALIBUR_BOX
+  - Id: 145
+    Group: EXCALIBUR_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Excalibur_C
             Duration: 10080
             UniqueId: true
-  - Group: EX_DEF_POTION_BOX
+  - Id: 146
+    Group: EX_DEF_POTION_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -8467,7 +8613,8 @@ Body:
             UniqueId: true
           - Item: RWC_Scroll_2012
             UniqueId: true
-  - Group: FINDINGORE
+  - Id: 147
+    Group: FINDINGORE
     SubGroups:
       - SubGroup: 1
         List:
@@ -8511,14 +8658,16 @@ Body:
             Rate: 95
           - Item: Emveretarcon
             Rate: 55
-  - Group: FIRE_BRAND_BOX
+  - Id: 148
+    Group: FIRE_BRAND_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Fire_Brand_C
             Duration: 10080
             UniqueId: true
-  - Group: FIRE_TYPE_SCROLL
+  - Id: 149
+    Group: FIRE_TYPE_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -8574,7 +8723,8 @@ Body:
           - Item: Sealed_Tao_Card
             Rate: 1
             Announced: true
-  - Group: FIRSTAID
+  - Id: 150
+    Group: FIRSTAID
     SubGroups:
       - SubGroup: 1
         List:
@@ -8614,7 +8764,8 @@ Body:
             Rate: 5
           - Item: Water_Of_Darkness
             Rate: 5
-  - Group: FISH
+  - Id: 151
+    Group: FISH
     SubGroups:
       - SubGroup: 1
         List:
@@ -8622,14 +8773,16 @@ Body:
             Rate: 1
           - Item: Shusi
             Rate: 1
-  - Group: FISHER_RING_BOX
+  - Id: 152
+    Group: FISHER_RING_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Fisher_Ring
             Duration: 10080
             UniqueId: true
-  - Group: FLAMEL_CARD
+  - Id: 153
+    Group: FLAMEL_CARD
     SubGroups:
       - SubGroup: 1
         List:
@@ -8639,7 +8792,8 @@ Body:
             Rate: 1
           - Item: White_Slim_Potion
             Rate: 1
-  - Group: FLAME_LIGHT
+  - Id: 154
+    Group: FLAME_LIGHT
     SubGroups:
       - SubGroup: 1
         List:
@@ -8682,7 +8836,8 @@ Body:
           - Item: MVP_Basketball
             Rate: 3
             Announced: true
-  - Group: FLOWER_BLOSSOM_SCROLL
+  - Id: 155
+    Group: FLOWER_BLOSSOM_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -8706,7 +8861,8 @@ Body:
             Rate: 160
           - Item: C_Samambaia
             Rate: 170
-  - Group: FOOD
+  - Id: 156
+    Group: FOOD
     SubGroups:
       - SubGroup: 1
         List:
@@ -8754,7 +8910,8 @@ Body:
             Rate: 100
           - Item: Apple
             Rate: 600
-  - Group: FOODBAG
+  - Id: 157
+    Group: FOODBAG
     SubGroups:
       - SubGroup: 1
         List:
@@ -8846,7 +9003,8 @@ Body:
             Rate: 1
           - Item: Rice_Cake_Soup
             Rate: 1
-  - Group: FORTUNE_COOKIE1
+  - Id: 158
+    Group: FORTUNE_COOKIE1
     SubGroups:
       - SubGroup: 1
         List:
@@ -8870,19 +9028,22 @@ Body:
             Rate: 100
           - Item: Bless_Word_Paper10
             Rate: 100
-  - Group: FORTUNE_COOKIE2
+  - Id: 159
+    Group: FORTUNE_COOKIE2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Guidebook_Exchange
             Announced: true
-  - Group: FORTUNE_COOKIE3
+  - Id: 160
+    Group: FORTUNE_COOKIE3
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Free_Cash_Coupon
             Announced: true
-  - Group: FRUIT
+  - Id: 161
+    Group: FRUIT
     SubGroups:
       - SubGroup: 1
         List:
@@ -8896,7 +9057,8 @@ Body:
             Rate: 1
           - Item: Sweet_Potato
             Rate: 1
-  - Group: FRUIT_BASKET
+  - Id: 162
+    Group: FRUIT_BASKET
     SubGroups:
       - SubGroup: 1
         List:
@@ -8932,35 +9094,40 @@ Body:
             Rate: 5
           - Item: Mora_Berry
             Rate: 4
-  - Group: F_CLOVER_BOX_MOUTH
+  - Id: 163
+    Group: F_CLOVER_BOX_MOUTH
     SubGroups:
       - SubGroup: 0
         List:
           - Item: 4Leaf_Clover_In_Mouth
             Duration: 60
             UniqueId: true
-  - Group: F_CLOVER_BOX_MOUTH2
+  - Id: 164
+    Group: F_CLOVER_BOX_MOUTH2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: 4Leaf_Clover_In_Mouth
             Duration: 120
             UniqueId: true
-  - Group: F_CLOVER_BOX_MOUTH4
+  - Id: 165
+    Group: F_CLOVER_BOX_MOUTH4
     SubGroups:
       - SubGroup: 0
         List:
           - Item: 4Leaf_Clover_In_Mouth
             Duration: 240
             UniqueId: true
-  - Group: F_UMBALA_SPIRIT_BOX2
+  - Id: 166
+    Group: F_UMBALA_SPIRIT_BOX2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Umbala_Spirit
             Duration: 10080
             UniqueId: true
-  - Group: GANYMEDE_LUCKY_SCROLL
+  - Id: 167
+    Group: GANYMEDE_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -9024,7 +9191,8 @@ Body:
           - Item: Berzebub_Card
             Rate: 1
             Announced: true
-  - Group: GARNET_LUCKY_SCROLL
+  - Id: 168
+    Group: GARNET_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -9088,7 +9256,8 @@ Body:
           - Item: Tao_Gunka_Card
             Rate: 1
             Announced: true
-  - Group: GARUDA_SCROLL
+  - Id: 169
+    Group: GARUDA_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -9152,7 +9321,8 @@ Body:
           - Item: Berzebub_Card
             Rate: 1
             Announced: true
-  - Group: GEMI_CROWN_SCROLL
+  - Id: 170
+    Group: GEMI_CROWN_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -9185,7 +9355,8 @@ Body:
             Rate: 1800
           - Item: MVP_Hunt_Box
             Rate: 2000
-  - Group: GEMI_CROWN_SCROLL_BOX
+  - Id: 171
+    Group: GEMI_CROWN_SCROLL_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -9193,7 +9364,8 @@ Body:
             Amount: 10
             UniqueId: true
             Stacked: false
-  - Group: GEMI_DIADEM_SCROLL
+  - Id: 172
+    Group: GEMI_DIADEM_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -9226,7 +9398,8 @@ Body:
             Rate: 1800
           - Item: Wrapped_Mask
             Rate: 2004
-  - Group: GEMI_DIADEM_SCROLL_BOX
+  - Id: 173
+    Group: GEMI_DIADEM_SCROLL_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -9234,7 +9407,8 @@ Body:
             Amount: 10
             UniqueId: true
             Stacked: false
-  - Group: GEMSTONE
+  - Id: 174
+    Group: GEMSTONE
     SubGroups:
       - SubGroup: 1
         List:
@@ -9244,7 +9418,8 @@ Body:
             Rate: 1
           - Item: Blue_Gemstone
             Rate: 1
-  - Group: GIFTBOX
+  - Id: 175
+    Group: GIFTBOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -9388,7 +9563,8 @@ Body:
             Rate: 1
           - Item: Red_Socks_With_Holes
             Rate: 1
-  - Group: GIFTBOXCHINA
+  - Id: 176
+    Group: GIFTBOXCHINA
     SubGroups:
       - SubGroup: 1
         List:
@@ -9920,7 +10096,8 @@ Body:
             Rate: 1
           - Item: Egg_Shell
             Rate: 2
-  - Group: GIFTBOX_1
+  - Id: 177
+    Group: GIFTBOX_1
     SubGroups:
       - SubGroup: 1
         List:
@@ -10064,7 +10241,8 @@ Body:
             Rate: 1
           - Item: Red_Socks_With_Holes
             Rate: 1
-  - Group: GIFTBOX_2
+  - Id: 178
+    Group: GIFTBOX_2
     SubGroups:
       - SubGroup: 1
         List:
@@ -10208,7 +10386,8 @@ Body:
             Rate: 1
           - Item: Red_Socks_With_Holes
             Rate: 1
-  - Group: GIFTBOX_3
+  - Id: 179
+    Group: GIFTBOX_3
     SubGroups:
       - SubGroup: 1
         List:
@@ -10352,7 +10531,8 @@ Body:
             Rate: 1
           - Item: Red_Socks_With_Holes
             Rate: 1
-  - Group: GIFTBOX_4
+  - Id: 180
+    Group: GIFTBOX_4
     SubGroups:
       - SubGroup: 1
         List:
@@ -10496,7 +10676,8 @@ Body:
             Rate: 1
           - Item: Red_Socks_With_Holes
             Rate: 1
-  - Group: GIFT_BUFF_SET
+  - Id: 181
+    Group: GIFT_BUFF_SET
     SubGroups:
       - SubGroup: 0
         List:
@@ -10518,7 +10699,8 @@ Body:
             Amount: 2
           - Item: Luk_Dish10
             Amount: 2
-  - Group: GIFT_BUNDLE
+  - Id: 182
+    Group: GIFT_BUNDLE
     SubGroups:
       - SubGroup: 0
         List:
@@ -10528,20 +10710,23 @@ Body:
             Amount: 30
           - Item: GM_Handwriting
             Amount: 30
-  - Group: GLORY_FB_HAT_BOX
+  - Id: 183
+    Group: GLORY_FB_HAT_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Glory_FB_Hat
             Duration: 1440
-  - Group: GLOVE_BOX
+  - Id: 184
+    Group: GLOVE_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Glove_C
             Duration: 10080
             UniqueId: true
-  - Group: GM_WARP_BOX
+  - Id: 185
+    Group: GM_WARP_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -10566,7 +10751,8 @@ Body:
           - Item: WOB_Local
             Rate: 130
             Amount: 3
-  - Group: GOD_MATERIAL_BOX
+  - Id: 186
+    Group: GOD_MATERIAL_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -10610,7 +10796,8 @@ Body:
             Rate: 5
           - Item: Air_Stream
             Rate: 5
-  - Group: GOOD_STUDENT_GIFT_BOX
+  - Id: 187
+    Group: GOOD_STUDENT_GIFT_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -10620,7 +10807,8 @@ Body:
           - Item: Songpyun_Box50
           - Item: Insurance
             Amount: 5
-  - Group: GREENBOX
+  - Id: 188
+    Group: GREENBOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -10646,19 +10834,22 @@ Body:
             Rate: 100
           - Item: Luk_Dish10
             Rate: 100
-  - Group: HAIRTAIL_BOX1
+  - Id: 189
+    Group: HAIRTAIL_BOX1
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Hairtail
             Duration: 60
-  - Group: HAIRTAIL_BOX2
+  - Id: 190
+    Group: HAIRTAIL_BOX2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Hairtail
             Duration: 10080
-  - Group: HALLOWEEN_G_BOX
+  - Id: 191
+    Group: HALLOWEEN_G_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -10704,14 +10895,16 @@ Body:
             Rate: 1
           - Item: Old_Violet_Box
             Rate: 1
-  - Group: HALLOW_RING_BOX
+  - Id: 192
+    Group: HALLOW_RING_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Hallow_Ring
             Duration: 10080
             UniqueId: true
-  - Group: HALLO_SCROLL
+  - Id: 193
+    Group: HALLO_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -10747,7 +10940,8 @@ Body:
           - Item: Zeny_Scroll
             Rate: 100
             Amount: 30
-  - Group: HAPPY_TIME_SCROLL
+  - Id: 194
+    Group: HAPPY_TIME_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -10816,7 +11010,8 @@ Body:
           - Item: Randgris_Card
             Rate: 1
             Announced: true
-  - Group: HARD_CORE_SET_BOX
+  - Id: 195
+    Group: HARD_CORE_SET_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -10829,7 +11024,8 @@ Body:
           - Item: Insurance
             Amount: 10
             UniqueId: true
-  - Group: HEART_SCROLL
+  - Id: 196
+    Group: HEART_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -10885,7 +11081,8 @@ Body:
           - Item: Ear_Mufs
             Rate: 45
             UniqueId: true
-  - Group: HEAVEN_SCROLL
+  - Id: 197
+    Group: HEAVEN_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -10938,13 +11135,15 @@ Body:
           - Item: Enchant_Book
             Rate: 100
             Announced: true
-  - Group: HEN_SET_BOX
+  - Id: 198
+    Group: HEN_SET_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Chicken_Beak
           - Item: Cocks_Comb
-  - Group: HERB
+  - Id: 199
+    Group: HERB
     SubGroups:
       - SubGroup: 1
         List:
@@ -10954,7 +11153,8 @@ Body:
             Rate: 1
           - Item: White_Herb
             Rate: 1
-  - Group: HERO_MIDGARD_EGG
+  - Id: 200
+    Group: HERO_MIDGARD_EGG
     SubGroups:
       - SubGroup: 1
         List:
@@ -11026,7 +11226,8 @@ Body:
           - Item: Incant_Samurai_Card
             Rate: 1
             Announced: true
-  - Group: HIGH_COIN_POCKET
+  - Id: 201
+    Group: HIGH_COIN_POCKET
     SubGroups:
       - SubGroup: 1
         List:
@@ -11060,7 +11261,8 @@ Body:
             Rate: 300
           - Item: Dgrade_Coin
             Rate: 200
-  - Group: HOLY_EGG_2
+  - Id: 202
+    Group: HOLY_EGG_2
     SubGroups:
       - SubGroup: 1
         List:
@@ -11082,7 +11284,8 @@ Body:
             Rate: 5
           - Item: Drooping_Bunny
             Rate: 1
-  - Group: HOLY_SPIRIT_SCROLL
+  - Id: 203
+    Group: HOLY_SPIRIT_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -11137,7 +11340,8 @@ Body:
           - Item: Fallen_Bishop_Card
             Rate: 1
             Announced: true
-  - Group: HOMETOWNGIFT
+  - Id: 204
+    Group: HOMETOWNGIFT
     SubGroups:
       - SubGroup: 1
         List:
@@ -11157,7 +11361,8 @@ Body:
             Rate: 1
           - Item: Lucky_Rice_Cake
             Rate: 1
-  - Group: HORNED_SCROLL
+  - Id: 205
+    Group: HORNED_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -11219,7 +11424,8 @@ Body:
             Rate: 1500
           - Item: Dead_Tree_Branch_Box2
             Rate: 1500
-  - Group: IDN_HEART_SCROLL
+  - Id: 206
+    Group: IDN_HEART_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -11271,7 +11477,8 @@ Body:
           - Item: Guarantee_Armor_8Up
             Rate: 50
             Announced: true
-  - Group: IDN_LEGEND_HERO_SCROLL
+  - Id: 207
+    Group: IDN_LEGEND_HERO_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -11339,7 +11546,8 @@ Body:
           - Item: Berzebub_Card
             Rate: 1
             Announced: true
-  - Group: IDN_WISDOM_EGG
+  - Id: 208
+    Group: IDN_WISDOM_EGG
     SubGroups:
       - SubGroup: 1
         List:
@@ -11398,7 +11606,8 @@ Body:
           - Item: Incant_Samurai_Card
             Rate: 1
             UniqueId: true
-  - Group: IDRO10TH_SCROLL
+  - Id: 209
+    Group: IDRO10TH_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -11459,7 +11668,8 @@ Body:
           - Item: Turtle_General_Card
             Rate: 1
             Announced: true
-  - Group: ILLUSION_NOTHING
+  - Id: 210
+    Group: ILLUSION_NOTHING
     SubGroups:
       - SubGroup: 1
         List:
@@ -11519,7 +11729,8 @@ Body:
             Rate: 5
             Announced: true
             UniqueId: true
-  - Group: IMMORTAL_EGG
+  - Id: 211
+    Group: IMMORTAL_EGG
     SubGroups:
       - SubGroup: 1
         List:
@@ -11568,7 +11779,8 @@ Body:
           - Item: Guarantee_Weapon_9Up
             Rate: 25
             Announced: true
-  - Group: IMORTAL_MIDGARD_SCROLL
+  - Id: 212
+    Group: IMORTAL_MIDGARD_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -11638,7 +11850,8 @@ Body:
           - Item: Berzebub_Card
             Rate: 1
             Announced: true
-  - Group: IMPROVED_COIN_BAG
+  - Id: 213
+    Group: IMPROVED_COIN_BAG
     SubGroups:
       - SubGroup: 1
         List:
@@ -11658,7 +11871,8 @@ Body:
             Rate: 1
           - Item: Malang_Sp_Can
             Rate: 8
-  - Group: INDIGO_SCROLL
+  - Id: 214
+    Group: INDIGO_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -11709,14 +11923,16 @@ Body:
           - Item: Deviling_Card
             Rate: 2
             Announced: true
-  - Group: INFILTRATOR_BOX
+  - Id: 215
+    Group: INFILTRATOR_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Infiltrator_C
             Duration: 10080
             UniqueId: true
-  - Group: INK_BALL
+  - Id: 216
+    Group: INK_BALL
     SubGroups:
       - SubGroup: 1
         List:
@@ -11748,14 +11964,16 @@ Body:
             Rate: 666
           - Item: Hometown_Gift
             Rate: 933
-  - Group: INSECTICIDE_RING_BOX
+  - Id: 217
+    Group: INSECTICIDE_RING_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Insecticide_Ring
             Duration: 10080
             UniqueId: true
-  - Group: INTERMEDIATE_COIN_BAG
+  - Id: 218
+    Group: INTERMEDIATE_COIN_BAG
     SubGroups:
       - SubGroup: 1
         List:
@@ -11775,7 +11993,8 @@ Body:
             Rate: 1
           - Item: Malang_Sp_Can
             Rate: 9
-  - Group: JEWEL
+  - Id: 219
+    Group: JEWEL
     SubGroups:
       - SubGroup: 1
         List:
@@ -11819,7 +12038,8 @@ Body:
             Rate: 27
           - Item: Glass_Bead
             Rate: 50
-  - Group: JE_UN_SCROLL
+  - Id: 220
+    Group: JE_UN_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -11870,7 +12090,8 @@ Body:
           - Item: Drake_Card
             Rate: 1
             Announced: true
-  - Group: JUICE
+  - Id: 221
+    Group: JUICE
     SubGroups:
       - SubGroup: 1
         List:
@@ -11880,7 +12101,8 @@ Body:
             Rate: 1
           - Item: Carrot_Juice
             Rate: 1
-  - Group: JULY7_SCROLL
+  - Id: 222
+    Group: JULY7_SCROLL
     SubGroups:
       - SubGroup: 0
         List:
@@ -11950,7 +12172,8 @@ Body:
             Rate: 75
             Announced: true
             UniqueId: true
-  - Group: JULY_LUCKY_SCROLL
+  - Id: 223
+    Group: JULY_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -12016,7 +12239,8 @@ Body:
           - Item: STR_Biscuit_Stick
             Rate: 1130
             Amount: 20
-  - Group: JUNG_BI_SCROLL
+  - Id: 224
+    Group: JUNG_BI_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -12067,14 +12291,16 @@ Body:
           - Item: Mistress_Card
             Rate: 1
             Announced: true
-  - Group: KAISER_KNUCKLE_BOX
+  - Id: 225
+    Group: KAISER_KNUCKLE_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Kaiser_Knuckle_C
             Duration: 10080
             UniqueId: true
-  - Group: KITTY_SET_BOX
+  - Id: 226
+    Group: KITTY_SET_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -12088,7 +12314,8 @@ Body:
             UniqueId: true
           - Item: Gray_Drooping_Kitty
             UniqueId: true
-  - Group: LASTANGEL_LUCKYSCROLL
+  - Id: 227
+    Group: LASTANGEL_LUCKYSCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -12156,7 +12383,8 @@ Body:
           - Item: Kiel_Card
             Rate: 1
             Announced: true
-  - Group: LEO_SCROLL
+  - Id: 228
+    Group: LEO_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -12206,13 +12434,15 @@ Body:
             Rate: 1300
           - Item: Vermilion_10_Scroll_Box
             Rate: 500
-  - Group: LEVEL_UP_BOX100
+  - Id: 229
+    Group: LEVEL_UP_BOX100
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Guarantee_Weapon_6Up
           - Item: Level_Up_Box120
-  - Group: LEVEL_UP_BOX120
+  - Id: 230
+    Group: LEVEL_UP_BOX120
     SubGroups:
       - SubGroup: 0
         List:
@@ -12226,7 +12456,8 @@ Body:
             Amount: 5
           - Item: Guarantee_Armor_6Up
           - Item: Level_Up_Box130
-  - Group: LEVEL_UP_BOX130
+  - Id: 231
+    Group: LEVEL_UP_BOX130
     SubGroups:
       - SubGroup: 0
         List:
@@ -12240,7 +12471,8 @@ Body:
             Amount: 5
           - Item: Guarantee_Weapon_7Up
           - Item: Level_Up_Box140
-  - Group: LEVEL_UP_BOX140
+  - Id: 232
+    Group: LEVEL_UP_BOX140
     SubGroups:
       - SubGroup: 0
         List:
@@ -12254,7 +12486,8 @@ Body:
             Amount: 5
           - Item: Guarantee_Armor_7Up
           - Item: Level_Up_Box150
-  - Group: LEVEL_UP_BOX150
+  - Id: 233
+    Group: LEVEL_UP_BOX150
     SubGroups:
       - SubGroup: 0
         List:
@@ -12268,7 +12501,8 @@ Body:
             Amount: 5
           - Item: Guarantee_Weapon_8Up
           - Item: Level_Up_Box160
-  - Group: LEVEL_UP_BOX160
+  - Id: 234
+    Group: LEVEL_UP_BOX160
     SubGroups:
       - SubGroup: 0
         List:
@@ -12282,7 +12516,8 @@ Body:
             Amount: 5
           - Item: Guarantee_Armor_8Up
             Amount: 2
-  - Group: LIBRA_SCROLL
+  - Id: 235
+    Group: LIBRA_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -12329,35 +12564,40 @@ Body:
             Rate: 1700
           - Item: Branch_Of_Dead_Tree_Box
             Rate: 2500
-  - Group: LIFE_RIBBON_BOX
+  - Id: 236
+    Group: LIFE_RIBBON_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Ribbon_Of_Life
             Duration: 60
             UniqueId: true
-  - Group: LIFE_RIBBON_BOX2
+  - Id: 237
+    Group: LIFE_RIBBON_BOX2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Ribbon_Of_Life
             Duration: 120
             UniqueId: true
-  - Group: LIFE_RIBBON_BOX3
+  - Id: 238
+    Group: LIFE_RIBBON_BOX3
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Ribbon_Of_Life
             Duration: 240
             UniqueId: true
-  - Group: LORD_CIRCLET_BOX
+  - Id: 239
+    Group: LORD_CIRCLET_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Lord_Circlet_C
             Duration: 10080
             UniqueId: true
-  - Group: LOTTOBOX
+  - Id: 240
+    Group: LOTTOBOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -12381,7 +12621,8 @@ Body:
             Rate: 1
           - Item: Lotto40
             Rate: 1
-  - Group: LOTTOBOX1
+  - Id: 241
+    Group: LOTTOBOX1
     SubGroups:
       - SubGroup: 1
         List:
@@ -12405,7 +12646,8 @@ Body:
             Rate: 1
           - Item: Lotto10
             Rate: 1
-  - Group: LOTTOBOX2
+  - Id: 242
+    Group: LOTTOBOX2
     SubGroups:
       - SubGroup: 1
         List:
@@ -12429,7 +12671,8 @@ Body:
             Rate: 1
           - Item: Lotto20
             Rate: 1
-  - Group: LOTTOBOX3
+  - Id: 243
+    Group: LOTTOBOX3
     SubGroups:
       - SubGroup: 1
         List:
@@ -12453,7 +12696,8 @@ Body:
             Rate: 1
           - Item: Lotto30
             Rate: 1
-  - Group: LOTTOBOX4
+  - Id: 244
+    Group: LOTTOBOX4
     SubGroups:
       - SubGroup: 1
         List:
@@ -12477,7 +12721,8 @@ Body:
             Rate: 1
           - Item: Lotto40
             Rate: 1
-  - Group: LOTTOBOX5
+  - Id: 245
+    Group: LOTTOBOX5
     SubGroups:
       - SubGroup: 1
         List:
@@ -12491,7 +12736,8 @@ Body:
             Rate: 1
           - Item: Lotto45
             Rate: 1
-  - Group: LOUISE_COSTUME_BOX
+  - Id: 246
+    Group: LOUISE_COSTUME_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -12499,7 +12745,8 @@ Body:
             Rate: 18
           - Item: Cool_Summer_Outfit
             Rate: 2
-  - Group: LOVELY_AQUARIUS_BOX
+  - Id: 247
+    Group: LOVELY_AQUARIUS_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -12507,7 +12754,8 @@ Body:
             Amount: 10
             UniqueId: true
             Stacked: false
-  - Group: LOVELY_AQUARIUS_SCROLL
+  - Id: 248
+    Group: LOVELY_AQUARIUS_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -12555,7 +12803,8 @@ Body:
             Rate: 20
             Amount: 2
             UniqueId: true
-  - Group: LOW_COIN_POCKET
+  - Id: 249
+    Group: LOW_COIN_POCKET
     SubGroups:
       - SubGroup: 1
         List:
@@ -12589,7 +12838,8 @@ Body:
             Rate: 300
           - Item: Egrade_Coin
             Rate: 200
-  - Group: LUCKY_BAG
+  - Id: 250
+    Group: LUCKY_BAG
     SubGroups:
       - SubGroup: 1
         List:
@@ -12603,7 +12853,8 @@ Body:
             Rate: 3
           - Item: Big_Luk_Bookmark
             Rate: 1
-  - Group: LUCKY_EGG_C
+  - Id: 251
+    Group: LUCKY_EGG_C
     SubGroups:
       - SubGroup: 1
         List:
@@ -12646,7 +12897,8 @@ Body:
             Announced: true
           - Item: Rabbit_Earplug
             Rate: 200
-  - Group: LUCKY_EGG_C10
+  - Id: 252
+    Group: LUCKY_EGG_C10
     SubGroups:
       - SubGroup: 1
         List:
@@ -12719,7 +12971,8 @@ Body:
           - Item: Enchant_Book
             Rate: 22
             Announced: true
-  - Group: LUCKY_EGG_C2
+  - Id: 253
+    Group: LUCKY_EGG_C2
     SubGroups:
       - SubGroup: 1
         List:
@@ -12778,7 +13031,8 @@ Body:
           - Item: Jasper_Crest
             Rate: 150
             Announced: true
-  - Group: LUCKY_EGG_C3
+  - Id: 254
+    Group: LUCKY_EGG_C3
     SubGroups:
       - SubGroup: 1
         List:
@@ -12843,7 +13097,8 @@ Body:
           - Item: K_Rabbit_Bonnet
             Rate: 50
             Announced: true
-  - Group: LUCKY_EGG_C4
+  - Id: 255
+    Group: LUCKY_EGG_C4
     SubGroups:
       - SubGroup: 1
         List:
@@ -12908,7 +13163,8 @@ Body:
           - Item: Magic_Card_Album
             Rate: 50
             Announced: true
-  - Group: LUCKY_EGG_C5
+  - Id: 256
+    Group: LUCKY_EGG_C5
     SubGroups:
       - SubGroup: 1
         List:
@@ -12970,7 +13226,8 @@ Body:
           - Item: Ring_Of_Resonance
             Rate: 50
             Announced: true
-  - Group: LUCKY_EGG_C6
+  - Id: 257
+    Group: LUCKY_EGG_C6
     SubGroups:
       - SubGroup: 1
         List:
@@ -13026,7 +13283,8 @@ Body:
           - Item: Glory_FB_Hat
             Rate: 100
             Announced: true
-  - Group: LUCKY_EGG_C7
+  - Id: 258
+    Group: LUCKY_EGG_C7
     SubGroups:
       - SubGroup: 1
         List:
@@ -13082,7 +13340,8 @@ Body:
           - Item: Ifrit's_Ear
             Rate: 1
             Announced: true
-  - Group: LUCKY_EGG_C8
+  - Id: 259
+    Group: LUCKY_EGG_C8
     SubGroups:
       - SubGroup: 1
         List:
@@ -13137,7 +13396,8 @@ Body:
           - Item: Wanderer's_Sakkat
             Rate: 150
             Announced: true
-  - Group: LUCKY_EGG_C9
+  - Id: 260
+    Group: LUCKY_EGG_C9
     SubGroups:
       - SubGroup: 1
         List:
@@ -13188,7 +13448,8 @@ Body:
           - Item: Guarantee_Weapon_8Up
             Rate: 5
             Announced: true
-  - Group: LUCKY_SCROLL08
+  - Id: 261
+    Group: LUCKY_SCROLL08
     SubGroups:
       - SubGroup: 1
         List:
@@ -13248,14 +13509,16 @@ Body:
             Rate: 110
             Amount: 15
             UniqueId: true
-  - Group: LUCKY_SILVERVINE_FRUIT_BOX_III10
+  - Id: 262
+    Group: LUCKY_SILVERVINE_FRUIT_BOX_III10
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Silvervine
             Amount: 10
           - Item: Sealed_Vesper_Scroll
-  - Group: LUCKY_SILVERVINE_FRUIT_BOX_III110
+  - Id: 263
+    Group: LUCKY_SILVERVINE_FRUIT_BOX_III110
     SubGroups:
       - SubGroup: 0
         List:
@@ -13263,7 +13526,8 @@ Body:
             Amount: 110
           - Item: Sealed_Vesper_Scroll
             Amount: 11
-  - Group: MAGICCARDALBUM
+  - Id: 264
+    Group: MAGICCARDALBUM
     SubGroups:
       - SubGroup: 1
         List:
@@ -13329,7 +13593,8 @@ Body:
             Rate: 3
           - Item: Tha_Despero_Card
             Rate: 3
-  - Group: MAGICIAN_CARD_BOX
+  - Id: 265
+    Group: MAGICIAN_CARD_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -13345,14 +13610,16 @@ Body:
             UniqueId: true
           - Item: Loli_Ruri_Card
             UniqueId: true
-  - Group: MAGIC_CANDY_BOX10
+  - Id: 266
+    Group: MAGIC_CANDY_BOX10
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Magic_Candy
             Amount: 10
             UniqueId: true
-  - Group: MAJESTIC_DEVIL_SCROLL
+  - Id: 267
+    Group: MAJESTIC_DEVIL_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -13407,7 +13674,8 @@ Body:
           - Item: Majestic_Evil_Horn
             Rate: 1
             UniqueId: true
-  - Group: MAJESTIC_LUCKY_SCROLL
+  - Id: 268
+    Group: MAJESTIC_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -13476,25 +13744,29 @@ Body:
           - Item: Kiel_Card
             Rate: 1
             Announced: true
-  - Group: MALANG_CRAB_BOX1
+  - Id: 269
+    Group: MALANG_CRAB_BOX1
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Malang_Snow_Crab
             Duration: 60
-  - Group: MALANG_CRAB_BOX2
+  - Id: 270
+    Group: MALANG_CRAB_BOX2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Malang_Snow_Crab
             Duration: 10080
-  - Group: MALANG_WOE_ENCARD_BOX
+  - Id: 271
+    Group: MALANG_WOE_ENCARD_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Ptotection_Seagod_Box
           - Item: Octo_Hstick_Box
-  - Group: MASK
+  - Id: 272
+    Group: MASK
     SubGroups:
       - SubGroup: 1
         List:
@@ -13524,7 +13796,8 @@ Body:
             Rate: 1
           - Item: Hahoe_Mask
             Rate: 2
-  - Group: MASQUERADE
+  - Id: 273
+    Group: MASQUERADE
     SubGroups:
       - SubGroup: 1
         List:
@@ -13536,7 +13809,8 @@ Body:
             Rate: 10
           - Item: Ati_Atihan_Hat_
             Rate: 10
-  - Group: MASQUERADE_2
+  - Id: 274
+    Group: MASQUERADE_2
     SubGroups:
       - SubGroup: 1
         List:
@@ -13548,7 +13822,8 @@ Body:
             Rate: 10
           - Item: Cap_Of_Blindness
             Rate: 10
-  - Group: MEAT
+  - Id: 275
+    Group: MEAT
     SubGroups:
       - SubGroup: 1
         List:
@@ -13556,7 +13831,8 @@ Body:
             Rate: 1
           - Item: Monster's_Feed
             Rate: 1
-  - Group: MERCENARY
+  - Id: 276
+    Group: MERCENARY
     SubGroups:
       - SubGroup: 1
         List:
@@ -13620,7 +13896,8 @@ Body:
             Rate: 1
           - Item: SpearMercenary_Scroll10
             Rate: 1
-  - Group: MERCHANT_CARD_BOX
+  - Id: 277
+    Group: MERCHANT_CARD_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -13634,7 +13911,8 @@ Body:
             UniqueId: true
           - Item: Hylozoist_Card
             UniqueId: true
-  - Group: MERCURY_SCROLL
+  - Id: 278
+    Group: MERCURY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -13695,7 +13973,8 @@ Body:
             Rate: 1370
           - Item: Fruit_Of_Mastela_Box2
             Rate: 1500
-  - Group: MIDGARD_FES_SCROLL
+  - Id: 279
+    Group: MIDGARD_FES_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -13768,7 +14047,8 @@ Body:
           - Item: Berzebub_Card
             Rate: 1
             Announced: true
-  - Group: MIDGARD_LUCKY_SCROLL
+  - Id: 280
+    Group: MIDGARD_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -13840,7 +14120,8 @@ Body:
           - Item: Randgris_Card
             Rate: 1
             Announced: true
-  - Group: MIDGARD_SCROLL
+  - Id: 281
+    Group: MIDGARD_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -13890,7 +14171,8 @@ Body:
           - Item: Fallen_Bishop_Card
             Rate: 1
             Announced: true
-  - Group: MID_COIN_POCKET
+  - Id: 282
+    Group: MID_COIN_POCKET
     SubGroups:
       - SubGroup: 1
         List:
@@ -13924,14 +14206,16 @@ Body:
             Rate: 300
           - Item: Egrade_Coin
             Rate: 200
-  - Group: MIGHTY_STAFF_BOX
+  - Id: 283
+    Group: MIGHTY_STAFF_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Mighty_Staff_C
             Duration: 10080
             UniqueId: true
-  - Group: MINERAL
+  - Id: 284
+    Group: MINERAL
     SubGroups:
       - SubGroup: 1
         List:
@@ -13975,7 +14259,8 @@ Body:
             Rate: 1
           - Item: Emveretarcon
             Rate: 1
-  - Group: MINOR_COIN_BAG
+  - Id: 285
+    Group: MINOR_COIN_BAG
     SubGroups:
       - SubGroup: 1
         List:
@@ -13995,14 +14280,16 @@ Body:
             Rate: 1
           - Item: Malang_Sp_Can
             Rate: 10
-  - Group: MOUTH_BUBBLE_GUM_BOX
+  - Id: 286
+    Group: MOUTH_BUBBLE_GUM_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Bubble_Gum_In_Mouth
             Duration: 60
             UniqueId: true
-  - Group: MS_CANCER_SCROLL
+  - Id: 287
+    Group: MS_CANCER_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -14047,7 +14334,8 @@ Body:
             Rate: 2000
           - Item: Storm_10_Scroll_Box
             Rate: 500
-  - Group: MS_SCORPIO_SCROLL
+  - Id: 288
+    Group: MS_SCORPIO_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -14096,7 +14384,8 @@ Body:
             Amount: 5
           - Item: Small_Life_Potion_Box
             Rate: 2300
-  - Group: MS_VIRGO_SCROLL
+  - Id: 289
+    Group: MS_VIRGO_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -14139,14 +14428,16 @@ Body:
             Amount: 3
           - Item: Meteor_10_Scroll_Box
             Rate: 500
-  - Group: MURAMASA_BOX
+  - Id: 290
+    Group: MURAMASA_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Muramasa_C
             Duration: 10080
             UniqueId: true
-  - Group: MVP_HUNT_BOX
+  - Id: 291
+    Group: MVP_HUNT_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -14159,7 +14450,8 @@ Body:
             UniqueId: true
           - Item: Megaphone_
             UniqueId: true
-  - Group: MYSTERIOUS_TRAVEL_SACK1
+  - Id: 292
+    Group: MYSTERIOUS_TRAVEL_SACK1
     SubGroups:
       - SubGroup: 1
         List:
@@ -14217,7 +14509,8 @@ Body:
           - Item: Regeneration_Box10
             Rate: 205
             UniqueId: true
-  - Group: MYSTERIOUS_TRAVEL_SACK2
+  - Id: 293
+    Group: MYSTERIOUS_TRAVEL_SACK2
     SubGroups:
       - SubGroup: 1
         List:
@@ -14275,7 +14568,8 @@ Body:
           - Item: Regeneration_Box10
             Rate: 100
             UniqueId: true
-  - Group: MYSTERIOUS_TRAVEL_SACK3
+  - Id: 294
+    Group: MYSTERIOUS_TRAVEL_SACK3
     SubGroups:
       - SubGroup: 1
         List:
@@ -14333,7 +14627,8 @@ Body:
           - Item: Regeneration_Box10
             Rate: 100
             UniqueId: true
-  - Group: MYSTERIOUS_TRAVEL_SACK4
+  - Id: 295
+    Group: MYSTERIOUS_TRAVEL_SACK4
     SubGroups:
       - SubGroup: 1
         List:
@@ -14388,7 +14683,8 @@ Body:
           - Item: Dun_Tele_Scroll1
             Rate: 1
             UniqueId: true
-  - Group: MY_SCROLL1
+  - Id: 296
+    Group: MY_SCROLL1
     SubGroups:
       - SubGroup: 1
         List:
@@ -14449,7 +14745,8 @@ Body:
             Rate: 120
             Announced: true
             UniqueId: true
-  - Group: MY_SCROLL2
+  - Id: 297
+    Group: MY_SCROLL2
     SubGroups:
       - SubGroup: 1
         List:
@@ -14505,14 +14802,16 @@ Body:
           - Item: Rabbit_Bonnet
             Rate: 1
             UniqueId: true
-  - Group: NECKLACE_BOX
+  - Id: 298
+    Group: NECKLACE_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Necklace_C
             Duration: 10080
             UniqueId: true
-  - Group: NEW_GIFT_ENVELOPE
+  - Id: 299
+    Group: NEW_GIFT_ENVELOPE
     SubGroups:
       - SubGroup: 1
         List:
@@ -14544,7 +14843,8 @@ Body:
             Rate: 100
           - Item: Magic_Card_Album
             Rate: 5
-  - Group: NEW_YEAR_SCROLL
+  - Id: 300
+    Group: NEW_YEAR_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -14617,7 +14917,8 @@ Body:
             Rate: 2000
           - Item: Blue_Herb_Box2
             Rate: 1600
-  - Group: NOIVE_BOX
+  - Id: 301
+    Group: NOIVE_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -14636,25 +14937,29 @@ Body:
           - Item: Old_Bandanna
             Rate: 1
             Duration: 10080
-  - Group: OCTO_HSTICK_BOX
+  - Id: 302
+    Group: OCTO_HSTICK_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Octopus_Hunt_Stick
             Duration: 1380
-  - Group: OCTO_HSTICK_BOX2
+  - Id: 303
+    Group: OCTO_HSTICK_BOX2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Octopus_Hunt_Stick
             Duration: 4320
-  - Group: OCTO_HSTICK_BOX3
+  - Id: 304
+    Group: OCTO_HSTICK_BOX3
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Octopus_Hunt_Stick
             Duration: 10080
-  - Group: OLDGIFTBOX
+  - Id: 305
+    Group: OLDGIFTBOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -14664,7 +14969,8 @@ Body:
             Rate: 15
           - Item: Tongue_Mask_
             Rate: 40
-  - Group: OLD_COIN_POCKET
+  - Id: 306
+    Group: OLD_COIN_POCKET
     SubGroups:
       - SubGroup: 1
         List:
@@ -14714,7 +15020,8 @@ Body:
             Rate: 75
           - Item: Bgrade_Coin
             Rate: 60
-  - Group: OLD_ORE_BOX
+  - Id: 307
+    Group: OLD_ORE_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -14758,7 +15065,8 @@ Body:
             Rate: 600
           - Item: Emveretarcon
             Rate: 380
-  - Group: ORE
+  - Id: 308
+    Group: ORE
     SubGroups:
       - SubGroup: 1
         List:
@@ -14802,7 +15110,8 @@ Body:
             Rate: 2
           - Item: Emperium
             Rate: 1
-  - Group: OX_TAIL_SCROLL
+  - Id: 309
+    Group: OX_TAIL_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -14867,19 +15176,22 @@ Body:
             Rate: 5
             Announced: true
             UniqueId: true
-  - Group: PASSION_FB_HAT_BOX
+  - Id: 310
+    Group: PASSION_FB_HAT_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Passion_FB_Hat
             Duration: 60
-  - Group: PASSION_HAT_BOX2
+  - Id: 311
+    Group: PASSION_HAT_BOX2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Passion_FB_Hat
             Duration: 3600
-  - Group: PATRON_SCROLL
+  - Id: 312
+    Group: PATRON_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -14930,7 +15242,8 @@ Body:
           - Item: Guarantee_Armor_9Up
             Rate: 5
             Announced: true
-  - Group: PET_EGG_SCROLL1
+  - Id: 313
+    Group: PET_EGG_SCROLL1
     SubGroups:
       - SubGroup: 1
         List:
@@ -14959,7 +15272,8 @@ Body:
           - Item: Red_Deviruchi_Cap
             Rate: 10
             UniqueId: true
-  - Group: PET_EGG_SCROLL10
+  - Id: 314
+    Group: PET_EGG_SCROLL10
     SubGroups:
       - SubGroup: 1
         List:
@@ -15007,7 +15321,8 @@ Body:
           - Item: Satanic_Chain_
             Rate: 2
             UniqueId: true
-  - Group: PET_EGG_SCROLL11
+  - Id: 315
+    Group: PET_EGG_SCROLL11
     SubGroups:
       - SubGroup: 1
         List:
@@ -15054,7 +15369,8 @@ Body:
           - Item: Big_Golden_Bell_
             Rate: 2
             UniqueId: true
-  - Group: PET_EGG_SCROLL12
+  - Id: 316
+    Group: PET_EGG_SCROLL12
     SubGroups:
       - SubGroup: 1
         List:
@@ -15093,7 +15409,8 @@ Body:
           - Item: Zeny_Scroll
             Rate: 10
             UniqueId: true
-  - Group: PET_EGG_SCROLL13
+  - Id: 317
+    Group: PET_EGG_SCROLL13
     SubGroups:
       - SubGroup: 1
         List:
@@ -15134,7 +15451,8 @@ Body:
             Rate: 100
             Amount: 20
             UniqueId: true
-  - Group: PET_EGG_SCROLL14
+  - Id: 318
+    Group: PET_EGG_SCROLL14
     SubGroups:
       - SubGroup: 1
         List:
@@ -15175,7 +15493,8 @@ Body:
             Rate: 130
             Amount: 20
             UniqueId: true
-  - Group: PET_EGG_SCROLL2
+  - Id: 319
+    Group: PET_EGG_SCROLL2
     SubGroups:
       - SubGroup: 1
         List:
@@ -15206,7 +15525,8 @@ Body:
           - Item: Red_Wizardry_Hat
             Rate: 10
             UniqueId: true
-  - Group: PET_EGG_SCROLL3
+  - Id: 320
+    Group: PET_EGG_SCROLL3
     SubGroups:
       - SubGroup: 1
         List:
@@ -15235,7 +15555,8 @@ Body:
           - Item: Pink_Drooping_Kitty
             Rate: 100
             UniqueId: true
-  - Group: PET_EGG_SCROLL4
+  - Id: 321
+    Group: PET_EGG_SCROLL4
     SubGroups:
       - SubGroup: 1
         List:
@@ -15266,7 +15587,8 @@ Body:
           - Item: Pink_Fur_Hat
             Rate: 10
             UniqueId: true
-  - Group: PET_EGG_SCROLL5
+  - Id: 322
+    Group: PET_EGG_SCROLL5
     SubGroups:
       - SubGroup: 1
         List:
@@ -15294,7 +15616,8 @@ Body:
           - Item: White_Wizardry_Hat
             Rate: 10
             UniqueId: true
-  - Group: PET_EGG_SCROLL6
+  - Id: 323
+    Group: PET_EGG_SCROLL6
     SubGroups:
       - SubGroup: 1
         List:
@@ -15322,7 +15645,8 @@ Body:
           - Item: Magestic_Goat_TW
             Rate: 1
             UniqueId: true
-  - Group: PET_EGG_SCROLL7
+  - Id: 324
+    Group: PET_EGG_SCROLL7
     SubGroups:
       - SubGroup: 1
         List:
@@ -15369,7 +15693,8 @@ Body:
           - Item: Pair_Of_Red_Ribbon_
             Rate: 9
             UniqueId: true
-  - Group: PET_EGG_SCROLL8
+  - Id: 325
+    Group: PET_EGG_SCROLL8
     SubGroups:
       - SubGroup: 1
         List:
@@ -15417,7 +15742,8 @@ Body:
           - Item: Fish_On_Head_
             Rate: 9
             UniqueId: true
-  - Group: PET_EGG_SCROLL9
+  - Id: 326
+    Group: PET_EGG_SCROLL9
     SubGroups:
       - SubGroup: 1
         List:
@@ -15464,73 +15790,85 @@ Body:
           - Item: Bunny_Band_
             Rate: 10
             UniqueId: true
-  - Group: PET_EGG_SCROLL_BOX1
+  - Id: 327
+    Group: PET_EGG_SCROLL_BOX1
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Pet_Egg_Scroll1
             UniqueId: true
-  - Group: PET_EGG_SCROLL_BOX10
+  - Id: 328
+    Group: PET_EGG_SCROLL_BOX10
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Pet_Egg_Scroll10
             UniqueId: true
-  - Group: PET_EGG_SCROLL_BOX11
+  - Id: 329
+    Group: PET_EGG_SCROLL_BOX11
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Pet_Egg_Scroll11
             UniqueId: true
-  - Group: PET_EGG_SCROLL_BOX2
+  - Id: 330
+    Group: PET_EGG_SCROLL_BOX2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Pet_Egg_Scroll2
             UniqueId: true
-  - Group: PET_EGG_SCROLL_BOX3
+  - Id: 331
+    Group: PET_EGG_SCROLL_BOX3
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Pet_Egg_Scroll3
             UniqueId: true
-  - Group: PET_EGG_SCROLL_BOX4
+  - Id: 332
+    Group: PET_EGG_SCROLL_BOX4
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Pet_Egg_Scroll4
             UniqueId: true
-  - Group: PET_EGG_SCROLL_BOX5
+  - Id: 333
+    Group: PET_EGG_SCROLL_BOX5
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Pet_Egg_Scroll5
             UniqueId: true
-  - Group: PET_EGG_SCROLL_BOX6
+  - Id: 334
+    Group: PET_EGG_SCROLL_BOX6
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Pet_Egg_Scroll6
             UniqueId: true
-  - Group: PET_EGG_SCROLL_BOX7
+  - Id: 335
+    Group: PET_EGG_SCROLL_BOX7
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Pet_Egg_Scroll7
             UniqueId: true
-  - Group: PET_EGG_SCROLL_BOX8
+  - Id: 336
+    Group: PET_EGG_SCROLL_BOX8
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Pet_Egg_Scroll8
             UniqueId: true
-  - Group: PET_EGG_SCROLL_BOX9
+  - Id: 337
+    Group: PET_EGG_SCROLL_BOX9
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Pet_Egg_Scroll9
             UniqueId: true
-  - Group: PET_EGG_SCROLL_E
+  - Id: 338
+    Group: PET_EGG_SCROLL_E
     SubGroups:
       - SubGroup: 1
         List:
@@ -15562,7 +15900,8 @@ Body:
           - Item: Zeny_Scroll_Box
             Rate: 10
             UniqueId: true
-  - Group: PIERRE_TREASUREBOX
+  - Id: 339
+    Group: PIERRE_TREASUREBOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -15622,7 +15961,8 @@ Body:
             Rate: 3
           - Item: Bloody_Dead_Branch
             Rate: 1
-  - Group: PISCES_DIADEM_BOX
+  - Id: 340
+    Group: PISCES_DIADEM_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -15630,7 +15970,8 @@ Body:
             Amount: 10
             UniqueId: true
             Stacked: false
-  - Group: PISCES_DIADEM_SCROLL
+  - Id: 341
+    Group: PISCES_DIADEM_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -15677,7 +16018,8 @@ Body:
           - Item: Yggdrasilberry_Box_
             Rate: 70
             UniqueId: true
-  - Group: POISON
+  - Id: 342
+    Group: POISON
     SubGroups:
       - SubGroup: 1
         List:
@@ -15697,14 +16039,16 @@ Body:
             Rate: 1
           - Item: Poison_Fatigue
             Rate: 1
-  - Group: POLE_AXE_BOX
+  - Id: 343
+    Group: POLE_AXE_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Pole_Axe_C
             Duration: 10080
             UniqueId: true
-  - Group: POTION
+  - Id: 344
+    Group: POTION
     SubGroups:
       - SubGroup: 1
         List:
@@ -15716,7 +16060,8 @@ Body:
             Rate: 1
           - Item: White_Potion
             Rate: 1
-  - Group: PRIVATE_AIRSHIP
+  - Id: 345
+    Group: PRIVATE_AIRSHIP
     SubGroups:
       - SubGroup: 1
         List:
@@ -15724,7 +16069,8 @@ Body:
             Rate: 1
           - Item: World_Tour_Ticket
             Rate: 1
-  - Group: PRIZEOFHERO
+  - Id: 346
+    Group: PRIZEOFHERO
     SubGroups:
       - SubGroup: 1
         List:
@@ -15786,30 +16132,35 @@ Body:
             Rate: 2
           - Item: Vet_Ungo_Boots
             Rate: 2
-  - Group: PR_RESET_STONE_BOX
+  - Id: 347
+    Group: PR_RESET_STONE_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Premium_Reset_Stone
-  - Group: PTOTECTION_SEAGOD_BOX
+  - Id: 348
+    Group: PTOTECTION_SEAGOD_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Ptotection_Seagod
             Duration: 1380
-  - Group: PTOTECTION_SEAGOD_BOX2
+  - Id: 349
+    Group: PTOTECTION_SEAGOD_BOX2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Ptotection_Seagod
             Duration: 10080
-  - Group: PTOTECTION_SEAGOD_BOX3
+  - Id: 350
+    Group: PTOTECTION_SEAGOD_BOX3
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Ptotection_Seagod
             Duration: 21600
-  - Group: QUIVER
+  - Id: 351
+    Group: QUIVER
     SubGroups:
       - SubGroup: 1
         List:
@@ -15839,14 +16190,16 @@ Body:
             Rate: 1
           - Item: Holy_Arrow_Quiver
             Rate: 2
-  - Group: RAMEN_HAT_BOX
+  - Id: 352
+    Group: RAMEN_HAT_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Ramen_Hat
             Duration: 20160
             UniqueId: true
-  - Group: RECOVERY
+  - Id: 353
+    Group: RECOVERY
     SubGroups:
       - SubGroup: 1
         List:
@@ -15878,7 +16231,8 @@ Body:
             Rate: 200
           - Item: Popped_Rice
             Rate: 600
-  - Group: REDBOX
+  - Id: 354
+    Group: REDBOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -15910,7 +16264,8 @@ Body:
             Rate: 11
           - Item: Twin_Ribbon
             Rate: 10
-  - Group: REDBOX_2
+  - Id: 355
+    Group: REDBOX_2
     SubGroups:
       - SubGroup: 1
         List:
@@ -15922,7 +16277,8 @@ Body:
             Rate: 10
           - Item: Charming_Ribbon
             Rate: 10
-  - Group: REPAIR_SCROLL_BOX
+  - Id: 356
+    Group: REPAIR_SCROLL_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -15936,7 +16292,8 @@ Body:
             UniqueId: true
           - Item: Steel
             UniqueId: true
-  - Group: REQUIEM_SCROLL
+  - Id: 357
+    Group: REQUIEM_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -15993,7 +16350,8 @@ Body:
           - Item: Berzebub_Card
             Rate: 1
             Announced: true
-  - Group: RESIST
+  - Id: 358
+    Group: RESIST
     SubGroups:
       - SubGroup: 1
         List:
@@ -16005,28 +16363,32 @@ Body:
             Rate: 1
           - Item: Resist_Wind
             Rate: 1
-  - Group: RIGHT_EPSILON_BOX
+  - Id: 359
+    Group: RIGHT_EPSILON_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Right_Epsilon_C
             Duration: 10080
             UniqueId: true
-  - Group: RING_BOX
+  - Id: 360
+    Group: RING_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Ring_C
             Duration: 10080
             UniqueId: true
-  - Group: ROSARY_BOX
+  - Id: 361
+    Group: ROSARY_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Rosary_C
             Duration: 10080
             UniqueId: true
-  - Group: RWC2010_SUITCASEA
+  - Id: 362
+    Group: RWC2010_SUITCASEA
     SubGroups:
       - SubGroup: 1
         List:
@@ -16067,7 +16429,8 @@ Body:
           - Item: Neuralizer
             Rate: 1
             UniqueId: true
-  - Group: RWC2010_SUITCASEB
+  - Id: 363
+    Group: RWC2010_SUITCASEB
     SubGroups:
       - SubGroup: 1
         List:
@@ -16115,7 +16478,8 @@ Body:
           - Item: Miracle_Medicine
             Rate: 1
             UniqueId: true
-  - Group: RWC_2012_SET_BOX
+  - Id: 364
+    Group: RWC_2012_SET_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -16125,7 +16489,8 @@ Body:
             UniqueId: true
           - Item: C_Wing_Of_Fly_3Day_Box
             UniqueId: true
-  - Group: RWC_FINAL_COMP_BOX
+  - Id: 365
+    Group: RWC_FINAL_COMP_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -16153,7 +16518,8 @@ Body:
             Rate: 40
           - Item: Muffler_
             Rate: 300
-  - Group: RWC_LIMITED_SCROLL
+  - Id: 366
+    Group: RWC_LIMITED_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -16180,7 +16546,8 @@ Body:
           - Item: B_Ygnizem_Card
             Rate: 1
             Amount: 50
-  - Group: RWC_PARTI_BOX
+  - Id: 367
+    Group: RWC_PARTI_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -16251,7 +16618,8 @@ Body:
             Rate: 10
           - Item: Red_Deviruchi_Cap
             Rate: 10
-  - Group: RWC_SCROLL_2012
+  - Id: 368
+    Group: RWC_SCROLL_2012
     SubGroups:
       - SubGroup: 1
         List:
@@ -16304,7 +16672,8 @@ Body:
           - Item: C_Rainbow_Feather_Deco
             Rate: 110
             Announced: true
-  - Group: RWC_SPECIAL_SCROLL
+  - Id: 369
+    Group: RWC_SPECIAL_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -16331,7 +16700,8 @@ Body:
             Amount: 50
           - Item: Str_Dish_Box
             Rate: 150
-  - Group: RWC_SUPER_SCROLL
+  - Id: 370
+    Group: RWC_SUPER_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -16388,14 +16758,16 @@ Body:
             Rate: 2500
           - Item: Unbreak_Def_Box
             Rate: 3000
-  - Group: SAFETY_RING_BOX
+  - Id: 371
+    Group: SAFETY_RING_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Safety_Ring_C
             Duration: 10080
             UniqueId: true
-  - Group: SAGITTARIUS_SCROLL
+  - Id: 372
+    Group: SAGITTARIUS_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -16439,7 +16811,8 @@ Body:
           - Item: Tyr's_Blessing
             Rate: 110
             UniqueId: true
-  - Group: SAGITTARIUS_SCR_BOX
+  - Id: 373
+    Group: SAGITTARIUS_SCR_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -16447,7 +16820,8 @@ Body:
             Amount: 10
             UniqueId: true
             Stacked: false
-  - Group: SAGITTAR_DIADEM_SCROLL
+  - Id: 374
+    Group: SAGITTAR_DIADEM_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -16491,7 +16865,8 @@ Body:
             Rate: 180
             Amount: 5
             UniqueId: true
-  - Group: SAGITTAR_DI_SCROLL_BOX
+  - Id: 375
+    Group: SAGITTAR_DI_SCROLL_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -16499,14 +16874,16 @@ Body:
             Amount: 10
             UniqueId: true
             Stacked: false
-  - Group: SAHKKAT_BOX
+  - Id: 376
+    Group: SAHKKAT_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Sahkkat_C
             Duration: 10080
             UniqueId: true
-  - Group: SAKURA_SCROLL
+  - Id: 377
+    Group: SAKURA_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -16563,7 +16940,8 @@ Body:
           - Item: Mistic_Rose
             Rate: 2
             UniqueId: true
-  - Group: SANCTUARY_LUCKY_SCROLL
+  - Id: 378
+    Group: SANCTUARY_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -16621,7 +16999,8 @@ Body:
             Rate: 6
           - Item: Thanatos_Card
             Rate: 1
-  - Group: SANTA_GIFT
+  - Id: 379
+    Group: SANTA_GIFT
     SubGroups:
       - SubGroup: 1
         List:
@@ -16657,7 +17036,8 @@ Body:
           - Item: Miracle_Medicine
             Rate: 500
             Amount: 2
-  - Group: SAPPHIRE_EGG
+  - Id: 380
+    Group: SAPPHIRE_EGG
     SubGroups:
       - SubGroup: 1
         List:
@@ -16704,26 +17084,30 @@ Body:
           - Item: Fallen_Bishop_Card
             Rate: 1
             Announced: true
-  - Group: SATANIC_RING_BOX
+  - Id: 381
+    Group: SATANIC_RING_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Satanic_Ring
             Duration: 10080
             UniqueId: true
-  - Group: SAUREL_BOX1
+  - Id: 382
+    Group: SAUREL_BOX1
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Saurel
             Duration: 60
-  - Group: SAUREL_BOX2
+  - Id: 383
+    Group: SAUREL_BOX2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Saurel
             Duration: 10080
-  - Group: SCROLL
+  - Id: 384
+    Group: SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -16763,7 +17147,8 @@ Body:
             Rate: 1
           - Item: Holy_Scroll_1_5
             Rate: 1
-  - Group: SCROLL_OF_DARKNESS
+  - Id: 385
+    Group: SCROLL_OF_DARKNESS
     SubGroups:
       - SubGroup: 1
         List:
@@ -16829,7 +17214,8 @@ Body:
             Amount: 5
           - Item: Shadow_Armor_S_Box10
             Rate: 1500
-  - Group: SCROLL_OF_DEATH
+  - Id: 386
+    Group: SCROLL_OF_DEATH
     SubGroups:
       - SubGroup: 1
         List:
@@ -16896,7 +17282,8 @@ Body:
             Amount: 10
           - Item: Siegfried_Box5
             Rate: 1100
-  - Group: SCROLL_OF_HOLINESS
+  - Id: 387
+    Group: SCROLL_OF_HOLINESS
     SubGroups:
       - SubGroup: 1
         List:
@@ -16962,7 +17349,8 @@ Body:
             Amount: 5
           - Item: Gril's_Naivety
             Rate: 1100
-  - Group: SCROLL_OF_LIFE
+  - Id: 388
+    Group: SCROLL_OF_LIFE
     SubGroups:
       - SubGroup: 1
         List:
@@ -17022,7 +17410,8 @@ Body:
             Amount: 30
           - Item: Spark_Candy_Box10
             Rate: 644
-  - Group: SCROLL_OF_MAGIC
+  - Id: 389
+    Group: SCROLL_OF_MAGIC
     SubGroups:
       - SubGroup: 1
         List:
@@ -17089,7 +17478,8 @@ Body:
           - Item: HE_Battle_Manual
             Rate: 1200
             Amount: 3
-  - Group: SCROLL_OF_THEWS
+  - Id: 390
+    Group: SCROLL_OF_THEWS
     SubGroups:
       - SubGroup: 1
         List:
@@ -17156,7 +17546,8 @@ Body:
             Rate: 1000
           - Item: Str_Dish_Box
             Rate: 1000
-  - Group: SEALED_MIND_BOX
+  - Id: 391
+    Group: SEALED_MIND_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -17192,7 +17583,8 @@ Body:
             Rate: 1
           - Item: Lush_Rose
             Rate: 1
-  - Group: SQUAD_PRIZE1
+  - Id: 392
+    Group: SQUAD_PRIZE1
     SubGroups:
       - SubGroup: 1
         List:
@@ -17232,7 +17624,8 @@ Body:
             Rate: 1167
           - Item: Fortune1
             Rate: 1167
-  - Group: SQUAD_PRIZE2
+  - Id: 393
+    Group: SQUAD_PRIZE2
     SubGroups:
       - SubGroup: 1
         List:
@@ -17252,7 +17645,8 @@ Body:
           - Item: Blue_Potion
             Rate: 40
             Amount: 10
-  - Group: SGRADE_POCKET
+  - Id: 394
+    Group: SGRADE_POCKET
     SubGroups:
       - SubGroup: 0
         List:
@@ -17272,7 +17666,8 @@ Body:
             Rate: 200
           - Item: Anger_Seagod
             Rate: 100
-  - Group: SG_WEAPON_SUPPLY_BOX
+  - Id: 395
+    Group: SG_WEAPON_SUPPLY_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -17314,7 +17709,8 @@ Body:
             Rate: 13
           - Item: Siege_Arrow_Quiver_S
             Rate: 13
-  - Group: SHAPESHIFTER_COSTUME
+  - Id: 396
+    Group: SHAPESHIFTER_COSTUME
     SubGroups:
       - SubGroup: 1
         List:
@@ -17338,7 +17734,8 @@ Body:
             Rate: 190
           - Item: C_Vanilmirth_Hat
             Rate: 200
-  - Group: SHINING_EGG
+  - Id: 397
+    Group: SHINING_EGG
     SubGroups:
       - SubGroup: 1
         List:
@@ -17375,7 +17772,8 @@ Body:
             Rate: 1100
           - Item: Unbreak_Weap_Box
             Rate: 1300
-  - Group: SILVERVINE_FRUIT_BOX10
+  - Id: 398
+    Group: SILVERVINE_FRUIT_BOX10
     SubGroups:
       - SubGroup: 0
         List:
@@ -17383,7 +17781,8 @@ Body:
             Amount: 10
           - Item: Malang_Sp_Can
             Amount: 30
-  - Group: SILVERVINE_FRUIT_BOX4
+  - Id: 399
+    Group: SILVERVINE_FRUIT_BOX4
     SubGroups:
       - SubGroup: 0
         List:
@@ -17391,7 +17790,8 @@ Body:
             Amount: 4
           - Item: Malang_Sp_Can
             Amount: 12
-  - Group: SILVERVINE_FRUIT_BOX40
+  - Id: 400
+    Group: SILVERVINE_FRUIT_BOX40
     SubGroups:
       - SubGroup: 0
         List:
@@ -17399,7 +17799,8 @@ Body:
             Amount: 40
           - Item: Malang_Sp_Can
             Amount: 120
-  - Group: SMITHY_LUCKY_SCROLL
+  - Id: 401
+    Group: SMITHY_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -17467,7 +17868,8 @@ Body:
           - Item: Tao_Gunka_Card
             Rate: 1
             Announced: true
-  - Group: SOFT_CORE_SET_BOX
+  - Id: 402
+    Group: SOFT_CORE_SET_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -17480,7 +17882,8 @@ Body:
           - Item: Insurance
             Amount: 5
             UniqueId: true
-  - Group: SOGRAT_LUCKY_SCROLL
+  - Id: 403
+    Group: SOGRAT_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -17544,7 +17947,8 @@ Body:
           - Item: Berzebub_Card
             Rate: 1
             Announced: true
-  - Group: SOLARIS_FESTIVAL_SCROLL
+  - Id: 404
+    Group: SOLARIS_FESTIVAL_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -17617,7 +18021,8 @@ Body:
           - Item: Kiel_Card
             Rate: 1
             Announced: true
-  - Group: SOLO_CHRISTMAS_GIFT
+  - Id: 405
+    Group: SOLO_CHRISTMAS_GIFT
     SubGroups:
       - SubGroup: 1
         List:
@@ -17642,7 +18047,8 @@ Body:
           - Item: Vivid_Notation
             Rate: 1
             Amount: 5
-  - Group: SOLO_GIFT_BASKET
+  - Id: 406
+    Group: SOLO_GIFT_BASKET
     SubGroups:
       - SubGroup: 1
         List:
@@ -17664,7 +18070,8 @@ Body:
           - Item: HandMade_Chocolate_
             Rate: 1
             Amount: 10
-  - Group: SOMETHING_CANDY_HOLDER
+  - Id: 407
+    Group: SOMETHING_CANDY_HOLDER
     SubGroups:
       - SubGroup: 1
         List:
@@ -17718,19 +18125,22 @@ Body:
             Rate: 5
           - Item: DARK_INVITATION
             Rate: 1
-  - Group: SPEARFISH_BOX1
+  - Id: 408
+    Group: SPEARFISH_BOX1
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Spearfish_
             Duration: 60
-  - Group: SPEARFISH_BOX2
+  - Id: 409
+    Group: SPEARFISH_BOX2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Spearfish_
             Duration: 10080
-  - Group: SPECIAL_BOX
+  - Id: 410
+    Group: SPECIAL_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -17786,7 +18196,8 @@ Body:
           - Item: Slow_Down_Potion
             Rate: 80
             Amount: 2
-  - Group: SPECIAL_CHRISTMAS_BOX
+  - Id: 411
+    Group: SPECIAL_CHRISTMAS_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -17826,7 +18237,8 @@ Body:
             Rate: 5
           - Item: Piece_Of_Angent_Skin
             Rate: 5
-  - Group: SPLASH_RAINBOW_LUCKY_SCROLL
+  - Id: 412
+    Group: SPLASH_RAINBOW_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -17898,7 +18310,8 @@ Body:
           - Item: Dark_Lord_Card
             Rate: 1
             Announced: true
-  - Group: SPLASH_SCROLL
+  - Id: 413
+    Group: SPLASH_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -17945,7 +18358,8 @@ Body:
           - Item: B_Eremes_Card
             Rate: 1
             Announced: true
-  - Group: SPLENDID_BOX
+  - Id: 414
+    Group: SPLENDID_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -18003,7 +18417,8 @@ Body:
             Rate: 1
           - Item: Mystic_Bow
             Rate: 2
-  - Group: SPRING_FESTIVAL_SCROLL
+  - Id: 415
+    Group: SPRING_FESTIVAL_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -18076,14 +18491,16 @@ Body:
           - Item: Incant_Samurai_Card
             Rate: 1
             Announced: true
-  - Group: STEEL_FLOWER_BOX
+  - Id: 416
+    Group: STEEL_FLOWER_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Steel_Flower_C
             Duration: 10080
             UniqueId: true
-  - Group: SUMMER_SCROLL3
+  - Id: 417
+    Group: SUMMER_SCROLL3
     SubGroups:
       - SubGroup: 1
         List:
@@ -18136,7 +18553,8 @@ Body:
           - Item: B_Eremes_Card
             Rate: 1
             Announced: true
-  - Group: SUPER_CARD_PET_EGG1
+  - Id: 418
+    Group: SUPER_CARD_PET_EGG1
     SubGroups:
       - SubGroup: 1
         List:
@@ -18203,7 +18621,8 @@ Body:
             Rate: 150
             Amount: 5
             UniqueId: true
-  - Group: SUPER_CARD_PET_EGG2
+  - Id: 419
+    Group: SUPER_CARD_PET_EGG2
     SubGroups:
       - SubGroup: 1
         List:
@@ -18270,7 +18689,8 @@ Body:
             Rate: 166
             Amount: 5
             UniqueId: true
-  - Group: SUPER_CARD_PET_EGG3
+  - Id: 420
+    Group: SUPER_CARD_PET_EGG3
     SubGroups:
       - SubGroup: 1
         List:
@@ -18337,7 +18757,8 @@ Body:
             Rate: 140
             Amount: 5
             UniqueId: true
-  - Group: SUPER_CARD_PET_EGG4
+  - Id: 421
+    Group: SUPER_CARD_PET_EGG4
     SubGroups:
       - SubGroup: 1
         List:
@@ -18404,7 +18825,8 @@ Body:
             Rate: 140
             Amount: 5
             UniqueId: true
-  - Group: SUPER_PET_EGG1
+  - Id: 422
+    Group: SUPER_PET_EGG1
     SubGroups:
       - SubGroup: 1
         List:
@@ -18464,7 +18886,8 @@ Body:
             Rate: 230
             Amount: 10
             UniqueId: true
-  - Group: SUPER_PET_EGG1_2
+  - Id: 423
+    Group: SUPER_PET_EGG1_2
     SubGroups:
       - SubGroup: 1
         List:
@@ -18507,7 +18930,8 @@ Body:
           - Item: Zeny_Scroll
             Rate: 955
             Amount: 10
-  - Group: SUPER_PET_EGG2
+  - Id: 424
+    Group: SUPER_PET_EGG2
     SubGroups:
       - SubGroup: 1
         List:
@@ -18567,7 +18991,8 @@ Body:
             Rate: 227
             Amount: 10
             UniqueId: true
-  - Group: SUPER_PET_EGG3
+  - Id: 425
+    Group: SUPER_PET_EGG3
     SubGroups:
       - SubGroup: 1
         List:
@@ -18627,7 +19052,8 @@ Body:
             Rate: 220
             Amount: 10
             UniqueId: true
-  - Group: SUPER_PET_EGG4
+  - Id: 426
+    Group: SUPER_PET_EGG4
     SubGroups:
       - SubGroup: 1
         List:
@@ -18687,7 +19113,8 @@ Body:
             Rate: 230
             Amount: 10
             UniqueId: true
-  - Group: SUPER_PET_EGG4_2
+  - Id: 427
+    Group: SUPER_PET_EGG4_2
     SubGroups:
       - SubGroup: 1
         List:
@@ -18729,7 +19156,8 @@ Body:
           - Item: Zeny_Scroll
             Rate: 2300
             Amount: 10
-  - Group: SUPER_PET_EGG5
+  - Id: 428
+    Group: SUPER_PET_EGG5
     SubGroups:
       - SubGroup: 1
         List:
@@ -18781,7 +19209,8 @@ Body:
             Rate: 216
             Amount: 10
             UniqueId: true
-  - Group: SUPER_PET_EGG6
+  - Id: 429
+    Group: SUPER_PET_EGG6
     SubGroups:
       - SubGroup: 1
         List:
@@ -18833,7 +19262,8 @@ Body:
             Rate: 226
             Amount: 10
             UniqueId: true
-  - Group: SUPER_PET_EGG7
+  - Id: 430
+    Group: SUPER_PET_EGG7
     SubGroups:
       - SubGroup: 1
         List:
@@ -18885,7 +19315,8 @@ Body:
             Rate: 209
             Amount: 10
             UniqueId: true
-  - Group: SUPER_PET_EGG8
+  - Id: 431
+    Group: SUPER_PET_EGG8
     SubGroups:
       - SubGroup: 1
         List:
@@ -18937,7 +19368,8 @@ Body:
             Rate: 217
             Amount: 10
             UniqueId: true
-  - Group: SUPPORT_PACKAGE
+  - Id: 432
+    Group: SUPPORT_PACKAGE
     SubGroups:
       - SubGroup: 1
         List:
@@ -18955,7 +19387,8 @@ Body:
             Amount: 2
           - Item: Scroll_Sealed_Dark_Lord
             Rate: 1
-  - Group: SUPPORT_PACKAGE_10
+  - Id: 433
+    Group: SUPPORT_PACKAGE_10
     SubGroups:
       - SubGroup: 1
         List:
@@ -18974,7 +19407,8 @@ Body:
           - Item: Scroll_Sealed_Dark_Lord
             Rate: 1
             Amount: 11
-  - Group: SUPPORT_PACKAGE_II
+  - Id: 434
+    Group: SUPPORT_PACKAGE_II
     SubGroups:
       - SubGroup: 1
         List:
@@ -18992,7 +19426,8 @@ Body:
             Amount: 2
           - Item: Sealed_Bacsojin_Scroll
             Rate: 1
-  - Group: SUPPORT_PACKAGE_III
+  - Id: 435
+    Group: SUPPORT_PACKAGE_III
     SubGroups:
       - SubGroup: 1
         List:
@@ -19010,7 +19445,8 @@ Body:
             Amount: 2
           - Item: Sealed_Bacsojin_Scroll
             Rate: 1
-  - Group: SUPPORT_PACKAGE_III_10
+  - Id: 436
+    Group: SUPPORT_PACKAGE_III_10
     SubGroups:
       - SubGroup: 1
         List:
@@ -19029,7 +19465,8 @@ Body:
           - Item: Sealed_Bacsojin_Scroll
             Rate: 1
             Amount: 11
-  - Group: SUPPORT_PACKAGE_II_10
+  - Id: 437
+    Group: SUPPORT_PACKAGE_II_10
     SubGroups:
       - SubGroup: 1
         List:
@@ -19047,7 +19484,8 @@ Body:
             Amount: 20
           - Item: Sealed_Bacsojin_Scroll
             Rate: 1
-  - Group: SURPRISE_SCROLL
+  - Id: 438
+    Group: SURPRISE_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -19088,7 +19526,8 @@ Body:
           - Item: Neuralizer
             Rate: 1
             UniqueId: true
-  - Group: SWEET_MIDGARD_SCROLL
+  - Id: 439
+    Group: SWEET_MIDGARD_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -19147,7 +19586,8 @@ Body:
           - Item: Tao_Gunka_Card
             Rate: 1
             Announced: true
-  - Group: SWORDMAN_CARD_BOX
+  - Id: 440
+    Group: SWORDMAN_CARD_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -19161,7 +19601,8 @@ Body:
             UniqueId: true
           - Item: Assulter_Card
             UniqueId: true
-  - Group: S_GRADE_COIN_BAG
+  - Id: 441
+    Group: S_GRADE_COIN_BAG
     SubGroups:
       - SubGroup: 1
         List:
@@ -19171,7 +19612,8 @@ Body:
             Rate: 2
           - Item: Bgrade_Coin
             Rate: 1
-  - Group: TAMING
+  - Id: 442
+    Group: TAMING
     SubGroups:
       - SubGroup: 1
         List:
@@ -19275,7 +19717,8 @@ Body:
             Rate: 1
           - Item: Tantanmen
             Rate: 1
-  - Group: TAURUS_CROWN_SCROLL
+  - Id: 443
+    Group: TAURUS_CROWN_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -19312,7 +19755,8 @@ Body:
           - Item: Zeny_Scroll
             Rate: 2004
             Amount: 10
-  - Group: TAURUS_CROWN_SCROLL_BOX
+  - Id: 444
+    Group: TAURUS_CROWN_SCROLL_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -19320,7 +19764,8 @@ Body:
             Amount: 10
             UniqueId: true
             Stacked: false
-  - Group: TAURUS_DIADEM_SCROLL
+  - Id: 445
+    Group: TAURUS_DIADEM_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -19357,7 +19802,8 @@ Body:
           - Item: Zeny_Scroll
             Rate: 2004
             Amount: 10
-  - Group: TAURUS_DI_SCROLL_BOX
+  - Id: 446
+    Group: TAURUS_DI_SCROLL_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -19365,7 +19811,8 @@ Body:
             Amount: 10
             UniqueId: true
             Stacked: false
-  - Group: TCG_CARD_SCROLL
+  - Id: 447
+    Group: TCG_CARD_SCROLL
     SubGroups:
       - SubGroup: 0
         List:
@@ -19387,7 +19834,8 @@ Body:
           - Item: Light_White_Pot
             Rate: 500
             Amount: 25
-  - Group: THANKS_GIVING_SCROLL
+  - Id: 448
+    Group: THANKS_GIVING_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -19451,7 +19899,8 @@ Body:
           - Item: Incant_Samurai_Card
             Rate: 1
             Announced: true
-  - Group: THIEF_CARD_BOX
+  - Id: 449
+    Group: THIEF_CARD_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -19465,7 +19914,8 @@ Body:
             UniqueId: true
           - Item: Dancing_Dragon_Card
             UniqueId: true
-  - Group: THREE_MASTER_PACKAGE_III
+  - Id: 450
+    Group: THREE_MASTER_PACKAGE_III
     SubGroups:
       - SubGroup: 1
         List:
@@ -19477,7 +19927,8 @@ Body:
             Amount: 20
           - Item: Sealed_Moonlight_Flower_Scroll
             Rate: 1
-  - Group: THREE_MASTER_PACKAGE_III_10
+  - Id: 451
+    Group: THREE_MASTER_PACKAGE_III_10
     SubGroups:
       - SubGroup: 1
         List:
@@ -19490,7 +19941,8 @@ Body:
           - Item: Sealed_Moonlight_Flower_Scroll
             Rate: 1
             Amount: 11
-  - Group: THROWABLE
+  - Id: 452
+    Group: THROWABLE
     SubGroups:
       - SubGroup: 1
         List:
@@ -19540,7 +19992,8 @@ Body:
             Rate: 1
           - Item: Black_Thing_To_Throw
             Rate: 1
-  - Group: TIME_TRAVEL_SCROLL
+  - Id: 453
+    Group: TIME_TRAVEL_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -19613,7 +20066,8 @@ Body:
           - Item: Megaphone_
             Rate: 1290
             Amount: 10
-  - Group: TOKEN_OF_SIEGFRIED
+  - Id: 454
+    Group: TOKEN_OF_SIEGFRIED
     SubGroups:
       - SubGroup: 1
         List:
@@ -19625,7 +20079,8 @@ Body:
             Rate: 1
           - Item: DF_Token_Of_Siegfried
             Rate: 1
-  - Group: TRESURE_BOX_WOE
+  - Id: 455
+    Group: TRESURE_BOX_WOE
     SubGroups:
       - SubGroup: 1
         List:
@@ -19669,7 +20124,8 @@ Body:
             Rate: 22
           - Item: Old_Bleu_Box
             Rate: 8
-  - Group: TRESURE_BOX_WOE_
+  - Id: 456
+    Group: TRESURE_BOX_WOE_
     SubGroups:
       - SubGroup: 1
         List:
@@ -19722,19 +20178,22 @@ Body:
           - Item: Old_Blue_Box
             Rate: 180
             Amount: 5
-  - Group: TUNA_BOX1
+  - Id: 457
+    Group: TUNA_BOX1
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Tuna
             Duration: 60
-  - Group: TUNA_BOX2
+  - Id: 458
+    Group: TUNA_BOX2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Tuna
             Duration: 10080
-  - Group: TW_13Y_LUCKY_EGG_06
+  - Id: 459
+    Group: TW_13Y_LUCKY_EGG_06
     SubGroups:
       - SubGroup: 1
         List:
@@ -19780,7 +20239,8 @@ Body:
           - Item: Tao_Gunka_Card
             Rate: 1
             Announced: true
-  - Group: TW_APRIL_SCROLL
+  - Id: 460
+    Group: TW_APRIL_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -19819,7 +20279,8 @@ Body:
           - Item: Fish_Head_Hat_Box
             Rate: 180
             Announced: true
-  - Group: TW_AUG_SCROLL
+  - Id: 461
+    Group: TW_AUG_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -19859,7 +20320,8 @@ Body:
           - Item: Gloom_Under_Night_Card
             Rate: 1
             Announced: true
-  - Group: TW_NOV_SCROLL
+  - Id: 462
+    Group: TW_NOV_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -19907,7 +20369,8 @@ Body:
           - Item: Miracle_Medicine
             Rate: 5
             UniqueId: true
-  - Group: TW_NOV_SCROLL2
+  - Id: 463
+    Group: TW_NOV_SCROLL2
     SubGroups:
       - SubGroup: 1
         List:
@@ -19950,7 +20413,8 @@ Body:
           - Item: Black_Knitted_Hat
             Rate: 30
             Announced: true
-  - Group: TW_OCTOBER_SCROLL
+  - Id: 464
+    Group: TW_OCTOBER_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -19999,7 +20463,8 @@ Body:
           - Item: Miracle_Medicine
             Rate: 1
             UniqueId: true
-  - Group: TW_ORANGE_SCROLL
+  - Id: 465
+    Group: TW_ORANGE_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -20057,7 +20522,8 @@ Body:
           - Item: Guarantee_Weapon_8Up
             Rate: 10
             Announced: true
-  - Group: TW_RAINBOW_SCROLL
+  - Id: 466
+    Group: TW_RAINBOW_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -20113,7 +20579,8 @@ Body:
             Rate: 44
             Announced: true
             UniqueId: true
-  - Group: TW_RED_SCROLL
+  - Id: 467
+    Group: TW_RED_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -20169,7 +20636,8 @@ Body:
           - Item: Majestic_Evil_Horn
             Rate: 5
             Announced: true
-  - Group: TW_SEP_SCROLL
+  - Id: 468
+    Group: TW_SEP_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -20208,7 +20676,8 @@ Body:
           - Item: B_Katrinn_Card
             Rate: 1
             Announced: true
-  - Group: TW_YELLOW_SCROLL
+  - Id: 469
+    Group: TW_YELLOW_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -20264,14 +20733,16 @@ Body:
           - Item: RWC2010_Indonesia
             Rate: 3
             Announced: true
-  - Group: UMBALA_SPIRIT_BOX2
+  - Id: 470
+    Group: UMBALA_SPIRIT_BOX2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Umbala_Spirit
             Duration: 10080
             UniqueId: true
-  - Group: UNDINE_LUCKY_SCROLL
+  - Id: 471
+    Group: UNDINE_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -20335,14 +20806,16 @@ Body:
           - Item: B_Harword_Card
             Rate: 1
             Announced: true
-  - Group: UNLIMITED_BOX
+  - Id: 472
+    Group: UNLIMITED_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Red_Booster
             Amount: 10
           - Item: Golden_Treasure_Box
-  - Group: UNLIMITED_BOX_II
+  - Id: 473
+    Group: UNLIMITED_BOX_II
     SubGroups:
       - SubGroup: 0
         List:
@@ -20351,7 +20824,8 @@ Body:
           - Item: Golden_Treasure_Box
             Amount: 11
           - Item: Sealed_Pharaoh_Scroll
-  - Group: UNLIMITED_BOX_II_10
+  - Id: 474
+    Group: UNLIMITED_BOX_II_10
     SubGroups:
       - SubGroup: 0
         List:
@@ -20359,14 +20833,16 @@ Body:
             Amount: 100
           - Item: Sealed_Pharaoh_Scroll
             Amount: 11
-  - Group: VALENTINE_PLEDGE_BOX
+  - Id: 475
+    Group: VALENTINE_PLEDGE_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Valentine_Pledge
             Duration: 8760
             UniqueId: true
-  - Group: VALERIAN_SCROLL
+  - Id: 476
+    Group: VALERIAN_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -20419,7 +20895,8 @@ Body:
             Announced: true
           - Item: Guyak_Pudding
             Rate: 500
-  - Group: VALKYRIE_LUCKY_SCROLL
+  - Id: 477
+    Group: VALKYRIE_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -20489,7 +20966,8 @@ Body:
           - Item: Thanatos_Card
             Rate: 1
             Announced: true
-  - Group: VENUS_LUCKY_SCROLL
+  - Id: 478
+    Group: VENUS_LUCKY_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -20553,47 +21031,54 @@ Body:
           - Item: Kiel_Card
             Rate: 1
             Announced: true
-  - Group: VESPER_CORE01_BOX
+  - Id: 479
+    Group: VESPER_CORE01_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Vesper_Core01_C
             Duration: 10080
             UniqueId: true
-  - Group: VESPER_CORE02_BOX
+  - Id: 480
+    Group: VESPER_CORE02_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Vesper_Core02_C
             Duration: 10080
             UniqueId: true
-  - Group: VESPER_CORE03_BOX
+  - Id: 481
+    Group: VESPER_CORE03_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Vesper_Core03_C
             Duration: 10080
             UniqueId: true
-  - Group: VESPER_CORE04_BOX
+  - Id: 482
+    Group: VESPER_CORE04_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Vesper_Core04_C
             Duration: 10080
             UniqueId: true
-  - Group: VICTORY_FB_HAT_BOX
+  - Id: 483
+    Group: VICTORY_FB_HAT_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Victory_FB_Hat
             Duration: 60
-  - Group: VICTORY_HAT_BOX2
+  - Id: 484
+    Group: VICTORY_HAT_BOX2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Victory_FB_Hat
             Duration: 3600
-  - Group: VIGORGRA_PACKAGE1
+  - Id: 485
+    Group: VIGORGRA_PACKAGE1
     SubGroups:
       - SubGroup: 0
         List:
@@ -20616,7 +21101,8 @@ Body:
             UniqueId: true
           - Item: Token_Of_Siegfried
             UniqueId: true
-  - Group: VIGORGRA_PACKAGE10
+  - Id: 486
+    Group: VIGORGRA_PACKAGE10
     SubGroups:
       - SubGroup: 0
         List:
@@ -20641,7 +21127,8 @@ Body:
           - Item: Token_Of_Siegfried
             Amount: 2
             UniqueId: true
-  - Group: VIGORGRA_PACKAGE11
+  - Id: 487
+    Group: VIGORGRA_PACKAGE11
     SubGroups:
       - SubGroup: 0
         List:
@@ -20666,7 +21153,8 @@ Body:
           - Item: Token_Of_Siegfried
             Amount: 2
             UniqueId: true
-  - Group: VIGORGRA_PACKAGE12
+  - Id: 488
+    Group: VIGORGRA_PACKAGE12
     SubGroups:
       - SubGroup: 0
         List:
@@ -20694,7 +21182,8 @@ Body:
           - Item: Token_Of_Siegfried
             Amount: 2
             UniqueId: true
-  - Group: VIGORGRA_PACKAGE2
+  - Id: 489
+    Group: VIGORGRA_PACKAGE2
     SubGroups:
       - SubGroup: 0
         List:
@@ -20717,7 +21206,8 @@ Body:
             UniqueId: true
           - Item: Token_Of_Siegfried
             UniqueId: true
-  - Group: VIGORGRA_PACKAGE3
+  - Id: 490
+    Group: VIGORGRA_PACKAGE3
     SubGroups:
       - SubGroup: 0
         List:
@@ -20740,7 +21230,8 @@ Body:
             UniqueId: true
           - Item: Token_Of_Siegfried
             UniqueId: true
-  - Group: VIGORGRA_PACKAGE4
+  - Id: 491
+    Group: VIGORGRA_PACKAGE4
     SubGroups:
       - SubGroup: 0
         List:
@@ -20763,7 +21254,8 @@ Body:
             UniqueId: true
           - Item: Token_Of_Siegfried
             UniqueId: true
-  - Group: VIGORGRA_PACKAGE5
+  - Id: 492
+    Group: VIGORGRA_PACKAGE5
     SubGroups:
       - SubGroup: 0
         List:
@@ -20786,7 +21278,8 @@ Body:
             UniqueId: true
           - Item: Token_Of_Siegfried
             UniqueId: true
-  - Group: VIGORGRA_PACKAGE6
+  - Id: 493
+    Group: VIGORGRA_PACKAGE6
     SubGroups:
       - SubGroup: 0
         List:
@@ -20812,7 +21305,8 @@ Body:
             UniqueId: true
           - Item: Token_Of_Siegfried
             UniqueId: true
-  - Group: VIGORGRA_PACKAGE7
+  - Id: 494
+    Group: VIGORGRA_PACKAGE7
     SubGroups:
       - SubGroup: 0
         List:
@@ -20837,7 +21331,8 @@ Body:
           - Item: Token_Of_Siegfried
             Amount: 2
             UniqueId: true
-  - Group: VIGORGRA_PACKAGE8
+  - Id: 495
+    Group: VIGORGRA_PACKAGE8
     SubGroups:
       - SubGroup: 0
         List:
@@ -20862,7 +21357,8 @@ Body:
           - Item: Token_Of_Siegfried
             Amount: 2
             UniqueId: true
-  - Group: VIGORGRA_PACKAGE9
+  - Id: 496
+    Group: VIGORGRA_PACKAGE9
     SubGroups:
       - SubGroup: 0
         List:
@@ -20887,7 +21383,8 @@ Body:
           - Item: Token_Of_Siegfried
             Amount: 2
             UniqueId: true
-  - Group: VIOLETBOX
+  - Id: 497
+    Group: VIOLETBOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -22807,7 +23304,8 @@ Body:
             Rate: 1
           - Item: Mystic_Bow
             Rate: 1
-  - Group: VIOLET_SCROLL
+  - Id: 498
+    Group: VIOLET_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -22858,7 +23356,8 @@ Body:
           - Item: Maya_Puple_Card
             Rate: 5
             Announced: true
-  - Group: VOCATION_SCROLL
+  - Id: 499
+    Group: VOCATION_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -22915,7 +23414,8 @@ Body:
           - Item: Neuralizer_Box
             Rate: 50
             Announced: true
-  - Group: WATER_TYPE_SCROLL
+  - Id: 500
+    Group: WATER_TYPE_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -22972,7 +23472,8 @@ Body:
           - Item: Diabolic_Scroll
             Rate: 1500
             Amount: 5
-  - Group: WEATHER_REPORT_BOX
+  - Id: 501
+    Group: WEATHER_REPORT_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -22980,7 +23481,8 @@ Body:
           - Item: Rainbow
           - Item: Rain_Cloud
           - Item: Lightning_Cloud
-  - Group: WIND_TYPE_SCROLL
+  - Id: 502
+    Group: WIND_TYPE_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -23035,7 +23537,8 @@ Body:
             Announced: true
           - Item: Fruit_Of_Mastela_Box2
             Rate: 1500
-  - Group: WINTER_MIDGARD_SCROLL
+  - Id: 503
+    Group: WINTER_MIDGARD_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -23108,7 +23611,8 @@ Body:
           - Item: Fallen_Bishop_Card
             Rate: 1
             Announced: true
-  - Group: WISDOM_SCROLL
+  - Id: 504
+    Group: WISDOM_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -23160,7 +23664,8 @@ Body:
           - Item: Ghostring_Card
             Rate: 5
             Announced: true
-  - Group: XMAS_BLESS
+  - Id: 505
+    Group: XMAS_BLESS
     SubGroups:
       - SubGroup: 0
         List:
@@ -23217,7 +23722,8 @@ Body:
           - Item: Spark_Candy_Box10
             Rate: 150
             UniqueId: true
-  - Group: XMAS_GIFT
+  - Id: 506
+    Group: XMAS_GIFT
     SubGroups:
       - SubGroup: 1
         List:
@@ -23259,7 +23765,8 @@ Body:
             Rate: 6
           - Item: Fire_Cracker_Xmas
             Rate: 6
-  - Group: XMAS_PET_SCROLL
+  - Id: 507
+    Group: XMAS_PET_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -23321,7 +23828,8 @@ Body:
             Rate: 50
             Amount: 5
             UniqueId: true
-  - Group: YELLOWBOX
+  - Id: 508
+    Group: YELLOWBOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -23333,7 +23841,8 @@ Body:
             Rate: 1
           - Item: Gold_Tiara_
             Rate: 1
-  - Group: YONG_KWANG_SCROLL
+  - Id: 509
+    Group: YONG_KWANG_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -23383,7 +23892,8 @@ Body:
           - Item: Detale_Card
             Rate: 1
             Announced: true
-  - Group: XMAS_PACKAGE_14
+  - Id: 510
+    Group: XMAS_PACKAGE_14
     SubGroups:
       - SubGroup: 1
         List:
@@ -23475,7 +23985,8 @@ Body:
             Rate: 100
             Amount: 1
             UniqueId: true
-  - Group: EASTER_EGG
+  - Id: 511
+    Group: EASTER_EGG
     SubGroups:
       - SubGroup: 1
         List:
@@ -23494,7 +24005,8 @@ Body:
           - Item: Mystery_Egg
             Rate: 1
             Amount: 1
-  - Group: PITAPAT_BOX
+  - Id: 512
+    Group: PITAPAT_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -23528,7 +24040,8 @@ Body:
             Rate: 300
             Amount: 1
             Announced: true
-  - Group: HAPPY_BOX_J
+  - Id: 513
+    Group: HAPPY_BOX_J
     SubGroups:
       - SubGroup: 1
         List:
@@ -23594,7 +24107,8 @@ Body:
             Rate: 100
           - Item: Honey
             Rate: 130
-  - Group: CLASS_SHADOW_CUBE
+  - Id: 514
+    Group: CLASS_SHADOW_CUBE
     SubGroups:
       - SubGroup: 1
         List:
@@ -23778,7 +24292,8 @@ Body:
             Rate: 235
           - Item: S_Archer_earring
             Rate: 235
-  - Group: SEALED_SCROLL
+  - Id: 515
+    Group: SEALED_SCROLL
     SubGroups:
       - SubGroup: 1
         List:
@@ -23822,7 +24337,8 @@ Body:
             Rate: 1250
           - Item: C_Wing_Of_Fly_1Day_Box
             Rate: 1250
-  - Group: LI_Nyangvine_Box1_26
+  - Id: 516
+    Group: LI_Nyangvine_Box1_26
     SubGroups:
       - SubGroup: 0
         List:
@@ -23832,7 +24348,8 @@ Body:
             Amount: 2
           - Item: Comp_Bubble_Gum
             Amount: 3
-  - Group: LI_Nyangvine_Box2_26
+  - Id: 517
+    Group: LI_Nyangvine_Box2_26
     SubGroups:
       - SubGroup: 0
         List:
@@ -23842,7 +24359,8 @@ Body:
             Amount: 2
           - Item: Battle_Manual100
             Amount: 2
-  - Group: LI_Nyangvine_Box3_26
+  - Id: 518
+    Group: LI_Nyangvine_Box3_26
     SubGroups:
       - SubGroup: 0
         List:
@@ -23854,7 +24372,8 @@ Body:
             Amount: 5
           - Item: Battle_Manual100
             Amount: 5
-  - Group: Enchant_Stone_Box26
+  - Id: 519
+    Group: Enchant_Stone_Box26
     SubGroups:
       - SubGroup: 1
         List:
@@ -23980,7 +24499,8 @@ Body:
             Rate: 36
           - Item: Critical_Stone_Bottom
             Rate: 36
-  - Group: THIRD_JOB_STONE_GARMENT_BOX
+  - Id: 520
+    Group: THIRD_JOB_STONE_GARMENT_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -24016,7 +24536,8 @@ Body:
             Rate: 1
           - Item: DoramStone_Robe
             Rate: 1
-  - Group: THIRD_JOB_STONE_GARMENT_BOX2
+  - Id: 521
+    Group: THIRD_JOB_STONE_GARMENT_BOX2
     SubGroups:
       - SubGroup: 1
         List:
@@ -24048,7 +24569,8 @@ Body:
             Rate: 1
           - Item: StarEmperorStone_Garment
             Rate: 1
-  - Group: THIRD_JOB_STONE_TOP_BOX
+  - Id: 522
+    Group: THIRD_JOB_STONE_TOP_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -24082,7 +24604,8 @@ Body:
             Rate: 1
           - Item: DoramStone_Top
             Rate: 1
-  - Group: THIRD_JOB_STONE_TOP_BOX2
+  - Id: 523
+    Group: THIRD_JOB_STONE_TOP_BOX2
     SubGroups:
       - SubGroup: 1
         List:
@@ -24114,7 +24637,8 @@ Body:
             Rate: 1
           - Item: StarGladiatorStone_Top
             Rate: 1
-  - Group: THIRD_JOB_STONE_MIDDLE_BOX
+  - Id: 524
+    Group: THIRD_JOB_STONE_MIDDLE_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -24148,7 +24672,8 @@ Body:
             Rate: 1
           - Item: DoramStone_Middle
             Rate: 1
-  - Group: THIRD_JOB_STONE_MIDDLE_BOX2
+  - Id: 525
+    Group: THIRD_JOB_STONE_MIDDLE_BOX2
     SubGroups:
       - SubGroup: 1
         List:
@@ -24180,7 +24705,8 @@ Body:
             Rate: 1
           - Item: StarGladiatorStone_Middle
             Rate: 1
-  - Group: THIRD_JOB_STONE_BOTTOM_BOX
+  - Id: 526
+    Group: THIRD_JOB_STONE_BOTTOM_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -24214,7 +24740,8 @@ Body:
             Rate: 1
           - Item: DoramStone_Bottom
             Rate: 1
-  - Group: THIRD_JOB_STONE_BOTTOM_BOX2
+  - Id: 527
+    Group: THIRD_JOB_STONE_BOTTOM_BOX2
     SubGroups:
       - SubGroup: 1
         List:
@@ -24246,7 +24773,8 @@ Body:
             Rate: 1
           - Item: StarGladiatorStone_Bottom
             Rate: 1
-  - Group: SHADOW_EXCHANGE_BOX
+  - Id: 528
+    Group: SHADOW_EXCHANGE_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -25388,13 +25916,15 @@ Body:
             Rate: 73
           - Item: S_FullPene_Earring
             Rate: 73
-  - Group: GUNSLINGER_ENCHANT
+  - Id: 529
+    Group: GUNSLINGER_ENCHANT
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Drooping_Rebellion_
             RandomOptionGroup: GUNSLINGER_ENCHANT
-  - Group: ENCHANTSTONE_RECIPE
+  - Id: 530
+    Group: ENCHANTSTONE_RECIPE
     SubGroups:
       - SubGroup: 1
         List:
@@ -25430,12 +25960,14 @@ Body:
             Rate: 1
           - Item: Enchant_Stone_Box19
             Rate: 1
-  - Group: PET_EGG_BOX
+  - Id: 531
+    Group: PET_EGG_BOX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Set_Of_Taiming_Item
-  - Group: COSTUME_EXCHANGE_BOX
+  - Id: 532
+    Group: COSTUME_EXCHANGE_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -26046,25 +26578,29 @@ Body:
             Rate: 130
           - Item: C_Giant_White_Rabbit
             Rate: 130
-  - Group: FAN_UPGRADE_KIT
+  - Id: 533
+    Group: FAN_UPGRADE_KIT
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Sea_Otter_Mini_Fan
             RandomOptionGroup: FAN_UPGRADE_KIT
-  - Group: SUIT_UPGRADE_KIT
+  - Id: 534
+    Group: SUIT_UPGRADE_KIT
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Kafra_Uniform
             RandomOptionGroup: SUIT_UPGRADE_KIT
-  - Group: SCROLL_OF_FALLEN_ANGEL_WINGS
+  - Id: 535
+    Group: SCROLL_OF_FALLEN_ANGEL_WINGS
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Fallen_Angel_Wings_
   # Source: https://ro.gnjoy.com/news/probability/View.asp?seq=3955662
-  - Group: CLASS_SHADOW_BOX_WEAPON
+  - Id: 536
+    Group: CLASS_SHADOW_BOX_WEAPON
     SubGroups:
       - SubGroup: 1
         List:
@@ -26164,7 +26700,8 @@ Body:
             RefineMinimum: 1
             RefineMaximum: 10
   # Source: https://ro.gnjoy.com/news/probability/View.asp?seq=3955664
-  - Group: CLASS_SHADOW_BOX_ARMOR
+  - Id: 537
+    Group: CLASS_SHADOW_BOX_ARMOR
     SubGroups:
       - SubGroup: 1
         List:
@@ -26269,7 +26806,8 @@ Body:
             RefineMinimum: 1
             RefineMaximum: 10
   # Source: https://ro.gnjoy.com/news/probability/View.asp?seq=3955669
-  - Group: CLASS_SHADOW_BOX_SHOES
+  - Id: 538
+    Group: CLASS_SHADOW_BOX_SHOES
     SubGroups:
       - SubGroup: 1
         List:
@@ -26374,7 +26912,8 @@ Body:
             RefineMinimum: 1
             RefineMaximum: 10
   # Source: https://ro.gnjoy.com/news/probability/View.asp?seq=3955671
-  - Group: CLASS_SHADOW_BOX_SHIELD
+  - Id: 539
+    Group: CLASS_SHADOW_BOX_SHIELD
     SubGroups:
       - SubGroup: 1
         List:
@@ -26474,7 +27013,8 @@ Body:
             RefineMinimum: 1
             RefineMaximum: 10
   # Source: https://ro.gnjoy.com/news/probability/View.asp?seq=3955672
-  - Group: CLASS_SHADOW_BOX_PENDANT
+  - Id: 540
+    Group: CLASS_SHADOW_BOX_PENDANT
     SubGroups:
       - SubGroup: 1
         List:
@@ -26509,7 +27049,8 @@ Body:
             RefineMinimum: 1
             RefineMaximum: 10
   # Source: https://ro.gnjoy.com/news/probability/View.asp?seq=3955674
-  - Group: CLASS_SHADOW_BOX_EARRING
+  - Id: 541
+    Group: CLASS_SHADOW_BOX_EARRING
     SubGroups:
       - SubGroup: 1
         List:
@@ -26543,7 +27084,8 @@ Body:
             RandomOptionGroup: CLASS_SHADOW_BOX_EARRING
             RefineMinimum: 1
             RefineMaximum: 10
-  - Group: STATUSSHADOW_MIX
+  - Id: 542
+    Group: STATUSSHADOW_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -26551,7 +27093,8 @@ Body:
             Rate: 1
           - Item: S_Almighty_Pendant
             Rate: 1
-  - Group: GEMSTONESHADOW_MIX
+  - Id: 543
+    Group: GEMSTONESHADOW_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -26559,7 +27102,8 @@ Body:
             Rate: 1
           - Item: S_Gemstone_Shield_II
             Rate: 1
-  - Group: BEARERSSHADOW_MIX
+  - Id: 544
+    Group: BEARERSSHADOW_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -26567,12 +27111,14 @@ Body:
             Rate: 1
           - Item: S_Bearer's_Shoes_II
             Rate: 1
-  - Group: COMPOSESHADOW_MIX
+  - Id: 545
+    Group: COMPOSESHADOW_MIX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: S_Magic_Compose_Armor
-  - Group: RACESHADOW_MIX
+  - Id: 546
+    Group: RACESHADOW_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -26580,25 +27126,29 @@ Body:
             Rate: 1
           - Item: S_All_Race_Shield
             Rate: 1
-  - Group: CANDY_BAG_SCROLL_MELEE
+  - Id: 547
+    Group: CANDY_BAG_SCROLL_MELEE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Bag_Of_Antonio_P
             RandomOptionGroup: CANDY_BAG_SCROLL_MELEE
-  - Group: CANDY_BAG_SCROLL_RANGE
+  - Id: 548
+    Group: CANDY_BAG_SCROLL_RANGE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Bag_Of_Antonio_S
             RandomOptionGroup: CANDY_BAG_SCROLL_RANGE
-  - Group: CANDY_BAG_SCROLL_MAGIC
+  - Id: 549
+    Group: CANDY_BAG_SCROLL_MAGIC
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Bag_Of_Antonio_
             RandomOptionGroup: CANDY_BAG_SCROLL_MAGIC
-  - Group: BOOSTER_AMPLIFIER
+  - Id: 550
+    Group: BOOSTER_AMPLIFIER
     SubGroups:
       - SubGroup: 1
         List:
@@ -26607,18 +27157,21 @@ Body:
           - Item: Magical_Booster_K
             RandomOptionGroup: BOOSTER_AMPLIFIER
             Rate: 1
-  - Group: MAGICAL_CAT_HAND
+  - Id: 551
+    Group: MAGICAL_CAT_HAND
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Neko_Headress
             RandomOptionGroup: MAGICAL_CAT_HAND
-  - Group: INFINITYSHADOW_MIX
+  - Id: 552
+    Group: INFINITYSHADOW_MIX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: S_Infinity_Weapon
-  - Group: SILVER_STATUE
+  - Id: 553
+    Group: SILVER_STATUE
     SubGroups:
       - SubGroup: 1
         List:
@@ -26628,7 +27181,8 @@ Body:
             Rate: 99
           - Item: Bloody_Knight_Shield__
             Rate: 1
-  - Group: PHYSICALMAGICAL_MIX
+  - Id: 554
+    Group: PHYSICALMAGICAL_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -26644,72 +27198,86 @@ Body:
             Rate: 1
           - Item: S_Magical_Shield
             Rate: 1
-  - Group: IMMUNEDATHENA_MIX
+  - Id: 555
+    Group: IMMUNEDATHENA_MIX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: S_Immune_Athena_Shield
-  - Group: HARDCHAMPTION_MIX
+  - Id: 556
+    Group: HARDCHAMPTION_MIX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: S_Hard_Champion_Shoes
-  - Group: KINGBIRDANCIENT_MIX
+  - Id: 557
+    Group: KINGBIRDANCIENT_MIX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: S_Kingbird_Ancient_Armor
-  - Group: CRITICALHIT_MIX
+  - Id: 558
+    Group: CRITICALHIT_MIX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: S_Cri_Hit_Armor
-  - Group: BS_ITEM_M_S_2
+  - Id: 559
+    Group: BS_ITEM_M_S_2
     SubGroups:
       - SubGroup: 0
         List:
           - Item: L_Orc_Hero_Helm
-  - Group: BS_ITEM_M_S_8
+  - Id: 560
+    Group: BS_ITEM_M_S_8
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Scarlet_Rose
-  - Group: BS_ITEM_M_S_10
+  - Id: 561
+    Group: BS_ITEM_M_S_10
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Hairband_Of_Grandpeco
-  - Group: BS_ITEM_M_S_11
+  - Id: 562
+    Group: BS_ITEM_M_S_11
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Moonlight_Flower_Hat
-  - Group: BS_ITEM_M_S_34
+  - Id: 563
+    Group: BS_ITEM_M_S_34
     SubGroups:
       - SubGroup: 0
         List:
           - Item: 8_Type_PurgatorialWing
-  - Group: BS_ITEM_M_S_41
+  - Id: 564
+    Group: BS_ITEM_M_S_41
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Tare_Neko_Cru
-  - Group: BS_ITEM_M_S_42
+  - Id: 565
+    Group: BS_ITEM_M_S_42
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Glory_FB_Hat
-  - Group: BS_ITEM_M_S_43
+  - Id: 566
+    Group: BS_ITEM_M_S_43
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Evil_Marcher_Hat
-  - Group: BS_ITEM_M_S_44
+  - Id: 567
+    Group: BS_ITEM_M_S_44
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Wondering_Wolf_Helm
-  - Group: BS_SHA_M_S_1
+  - Id: 568
+    Group: BS_SHA_M_S_1
     SubGroups:
       - SubGroup: 1
         List:
@@ -26737,7 +27305,8 @@ Body:
             Rate: 1
           - Item: S_Lucky_Armor
             Rate: 1
-  - Group: BS_SHA_M_S_17
+  - Id: 569
+    Group: BS_SHA_M_S_17
     SubGroups:
       - SubGroup: 1
         List:
@@ -26747,7 +27316,8 @@ Body:
             Rate: 1
           - Item: S_Elegant_Weapon
             Rate: 1
-  - Group: BS_SHA_M_S_18
+  - Id: 570
+    Group: BS_SHA_M_S_18
     SubGroups:
       - SubGroup: 1
         List:
@@ -26757,7 +27327,8 @@ Body:
             Rate: 1
           - Item: S_Tension_Weapon
             Rate: 1
-  - Group: BS_SHA_M_S_19
+  - Id: 571
+    Group: BS_SHA_M_S_19
     SubGroups:
       - SubGroup: 1
         List:
@@ -26765,7 +27336,8 @@ Body:
             Rate: 1
           - Item: S_Restore_Earring
             Rate: 1
-  - Group: BS_SHA_M_S_20
+  - Id: 572
+    Group: BS_SHA_M_S_20
     SubGroups:
       - SubGroup: 1
         List:
@@ -26781,22 +27353,26 @@ Body:
             Rate: 1
           - Item: S_Mortal_Blow_Weapon
             Rate: 1
-  - Group: BS_ITEM_M_S_4
+  - Id: 573
+    Group: BS_ITEM_M_S_4
     SubGroups:
       - SubGroup: 0
         List:
           - Item: C_Amistr_Cap
-  - Group: BS_ITEM_M_S_6
+  - Id: 574
+    Group: BS_ITEM_M_S_6
     SubGroups:
       - SubGroup: 0
         List:
           - Item: King_Tiger_Doll_Hat
-  - Group: BS_ITEM_M_S_7
+  - Id: 575
+    Group: BS_ITEM_M_S_7
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Zaha_Doll_Hat
-  - Group: BS_ITEM_M_S_12
+  - Id: 576
+    Group: BS_ITEM_M_S_12
     SubGroups:
       - SubGroup: 1
         List:
@@ -26806,12 +27382,14 @@ Body:
             Rate: 1
           - Item: Bag_Of_Antonio_P
             Rate: 1
-  - Group: BS_ITEM_M_S_13
+  - Id: 577
+    Group: BS_ITEM_M_S_13
     SubGroups:
       - SubGroup: 0
         List:
           - Item: GoldFish_Hat
-  - Group: BS_ITEM_M_S_15
+  - Id: 578
+    Group: BS_ITEM_M_S_15
     SubGroups:
       - SubGroup: 1
         List:
@@ -26819,87 +27397,104 @@ Body:
             Rate: 1
           - Item: Survive_Circlet_
             Rate: 1
-  - Group: BS_ITEM_M_S_28
+  - Id: 579
+    Group: BS_ITEM_M_S_28
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Toy_Syringe_K
-  - Group: BS_ITEM_M_S_29
+  - Id: 580
+    Group: BS_ITEM_M_S_29
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Blue_Rear_Ribbon
-  - Group: BS_ITEM_M_S_31
+  - Id: 581
+    Group: BS_ITEM_M_S_31
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Magical_Booster_K
-  - Group: BS_ITEM_M_S_32
+  - Id: 582
+    Group: BS_ITEM_M_S_32
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Necklace_Rosary_K
-  - Group: BS_ITEM_M_S_33
+  - Id: 583
+    Group: BS_ITEM_M_S_33
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Elemental_Crown_
-  - Group: BS_ITEM_M_S_36
+  - Id: 584
+    Group: BS_ITEM_M_S_36
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Palace_Guard_Cap
-  - Group: BS_ITEM_M_S_37
+  - Id: 585
+    Group: BS_ITEM_M_S_37
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Thief_Hood
-  - Group: BS_ITEM_M_S_38
+  - Id: 586
+    Group: BS_ITEM_M_S_38
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Fallen_Angel_Blessing
-  - Group: BS_ITEM_M_S_39
+  - Id: 587
+    Group: BS_ITEM_M_S_39
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Rabbit_Magic_Hat_
-  - Group: BS_ITEM_M_S_40
+  - Id: 588
+    Group: BS_ITEM_M_S_40
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Anubis_Helm_
-  - Group: BS_ITEM_M_S_45
+  - Id: 589
+    Group: BS_ITEM_M_S_45
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Imp_Hat
-  - Group: BS_ITEM_M_S_46
+  - Id: 590
+    Group: BS_ITEM_M_S_46
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Holy_Marching_Hat_J
-  - Group: BS_ITEM_M_S_47
+  - Id: 591
+    Group: BS_ITEM_M_S_47
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Mask_Of_Ifrit
-  - Group: BS_ITEM_M_S_48
+  - Id: 592
+    Group: BS_ITEM_M_S_48
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Drooping_Morocc_Minion
-  - Group: BS_ITEM_M_S_49
+  - Id: 593
+    Group: BS_ITEM_M_S_49
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Samambaia
-  - Group: BS_ITEM_M_S_50
+  - Id: 594
+    Group: BS_ITEM_M_S_50
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Chick_Hat_
-  - Group: BS_SHA_M_S_5
+  - Id: 595
+    Group: BS_SHA_M_S_5
     SubGroups:
       - SubGroup: 1
         List:
@@ -26921,7 +27516,8 @@ Body:
             Rate: 1
           - Item: S_Caster_Shield
             Rate: 1
-  - Group: BS_SHA_M_S_6
+  - Id: 596
+    Group: BS_SHA_M_S_6
     SubGroups:
       - SubGroup: 1
         List:
@@ -26949,7 +27545,8 @@ Body:
             Rate: 1
           - Item: S_Gigantic_Earring
             Rate: 1
-  - Group: BS_SHA_M_S_7
+  - Id: 597
+    Group: BS_SHA_M_S_7
     SubGroups:
       - SubGroup: 1
         List:
@@ -26993,7 +27590,8 @@ Body:
             Rate: 1
           - Item: S_Fisher_Shoes
             Rate: 1
-  - Group: BS_SHA_M_S_8
+  - Id: 598
+    Group: BS_SHA_M_S_8
     SubGroups:
       - SubGroup: 1
         List:
@@ -27035,7 +27633,8 @@ Body:
             Rate: 1
           - Item: Vitality_Pendant_S
             Rate: 1
-  - Group: BS_SHA_M_S_13
+  - Id: 599
+    Group: BS_SHA_M_S_13
     SubGroups:
       - SubGroup: 1
         List:
@@ -27089,7 +27688,8 @@ Body:
             Rate: 1
           - Item: S_Malicious_Shield
             Rate: 1
-  - Group: BS_SHA_M_S_15
+  - Id: 600
+    Group: BS_SHA_M_S_15
     SubGroups:
       - SubGroup: 1
         List:
@@ -27099,7 +27699,8 @@ Body:
             Rate: 1
           - Item: S_Physical_Pendant
             Rate: 1
-  - Group: BS_SHA_M_S_16
+  - Id: 601
+    Group: BS_SHA_M_S_16
     SubGroups:
       - SubGroup: 1
         List:
@@ -27109,7 +27710,8 @@ Body:
             Rate: 1
           - Item: S_Magical_Pendant
             Rate: 1
-  - Group: BS_SHA_M_S_23
+  - Id: 602
+    Group: BS_SHA_M_S_23
     SubGroups:
       - SubGroup: 1
         List:
@@ -27129,7 +27731,8 @@ Body:
             Rate: 1
           - Item: S_Beginner_Shoes
             Rate: 1
-  - Group: BS_ITEM_M_S_5
+  - Id: 603
+    Group: BS_ITEM_M_S_5
     SubGroups:
       - SubGroup: 1
         List:
@@ -27137,42 +27740,50 @@ Body:
             Rate: 1
           - Item: Mad_Bunny_K_
             Rate: 1
-  - Group: BS_ITEM_M_S_9
+  - Id: 604
+    Group: BS_ITEM_M_S_9
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Archangel_Wing
-  - Group: BS_ITEM_M_S_14
+  - Id: 605
+    Group: BS_ITEM_M_S_14
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Smoky_TransformHat
-  - Group: BS_ITEM_M_S_16
+  - Id: 606
+    Group: BS_ITEM_M_S_16
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Ifrit's_Ear_
-  - Group: BS_ITEM_M_S_17
+  - Id: 607
+    Group: BS_ITEM_M_S_17
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Heart_Wing_Hairband
-  - Group: BS_ITEM_M_S_19
+  - Id: 608
+    Group: BS_ITEM_M_S_19
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Sigrun's_Wings_
-  - Group: BS_ITEM_M_S_27
+  - Id: 609
+    Group: BS_ITEM_M_S_27
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Neko_Headress
-  - Group: BS_ITEM_M_S_35
+  - Id: 610
+    Group: BS_ITEM_M_S_35
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Noble_Mask
-  - Group: BS_SHA_M_S_9
+  - Id: 611
+    Group: BS_SHA_M_S_9
     SubGroups:
       - SubGroup: 1
         List:
@@ -27188,7 +27799,8 @@ Body:
             Rate: 1
           - Item: S_Gemstone_Pendent
             Rate: 1
-  - Group: BS_SHA_M_S_10
+  - Id: 612
+    Group: BS_SHA_M_S_10
     SubGroups:
       - SubGroup: 1
         List:
@@ -27204,7 +27816,8 @@ Body:
             Rate: 1
           - Item: S_Bearers_Pendent
             Rate: 1
-  - Group: BS_SHA_M_S_11
+  - Id: 613
+    Group: BS_SHA_M_S_11
     SubGroups:
       - SubGroup: 1
         List:
@@ -27212,7 +27825,8 @@ Body:
             Rate: 1
           - Item: S_Hasty_Shoes
             Rate: 1
-  - Group: BS_SHA_M_S_21
+  - Id: 614
+    Group: BS_SHA_M_S_21
     SubGroups:
       - SubGroup: 1
         List:
@@ -27222,62 +27836,74 @@ Body:
             Rate: 1
           - Item: S_Critical_Shield
             Rate: 1
-  - Group: BS_ITEM_M_S_1
+  - Id: 615
+    Group: BS_ITEM_M_S_1
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Fallen_Angel_Wing
-  - Group: BS_ITEM_M_S_3
+  - Id: 616
+    Group: BS_ITEM_M_S_3
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Bravery_Bag
-  - Group: BS_ITEM_M_S_18
+  - Id: 617
+    Group: BS_ITEM_M_S_18
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Spell_Circuit
-  - Group: BS_ITEM_M_S_20
+  - Id: 618
+    Group: BS_ITEM_M_S_20
     SubGroups:
       - SubGroup: 0
         List:
           - Item: New_Wave_Sunglasses_
-  - Group: BS_ITEM_M_S_21
+  - Id: 619
+    Group: BS_ITEM_M_S_21
     SubGroups:
       - SubGroup: 0
         List:
           - Item: FaceWorm_Breath
-  - Group: BS_ITEM_M_S_22
+  - Id: 620
+    Group: BS_ITEM_M_S_22
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Hat_Of_Judge
-  - Group: BS_ITEM_M_S_23
+  - Id: 621
+    Group: BS_ITEM_M_S_23
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Dog_Officer
-  - Group: BS_ITEM_M_S_24
+  - Id: 622
+    Group: BS_ITEM_M_S_24
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Classical_Fhat
-  - Group: BS_ITEM_M_S_25
+  - Id: 623
+    Group: BS_ITEM_M_S_25
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Amistr_Beret
-  - Group: BS_ITEM_M_S_26
+  - Id: 624
+    Group: BS_ITEM_M_S_26
     SubGroups:
       - SubGroup: 0
         List:
           - Item: General_Helmet_
-  - Group: BS_ITEM_M_S_30
+  - Id: 625
+    Group: BS_ITEM_M_S_30
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Bloody_Knight_Shield
-  - Group: BS_SHA_M_S_3
+  - Id: 626
+    Group: BS_SHA_M_S_3
     SubGroups:
       - SubGroup: 1
         List:
@@ -27319,7 +27945,8 @@ Body:
             Rate: 1
           - Item: S_Scissors_Weapon
             Rate: 1
-  - Group: BS_SHA_M_S_4
+  - Id: 627
+    Group: BS_SHA_M_S_4
     SubGroups:
       - SubGroup: 1
         List:
@@ -27361,7 +27988,8 @@ Body:
             Rate: 1
           - Item: S_M_Scissors_Weapon
             Rate: 1
-  - Group: BS_SHA_M_S_12
+  - Id: 628
+    Group: BS_SHA_M_S_12
     SubGroups:
       - SubGroup: 1
         List:
@@ -27377,7 +28005,8 @@ Body:
             Rate: 1
           - Item: S_Blitz_Earring
             Rate: 1
-  - Group: BS_SHA_M_S_14
+  - Id: 629
+    Group: BS_SHA_M_S_14
     SubGroups:
       - SubGroup: 1
         List:
@@ -27387,7 +28016,8 @@ Body:
             Rate: 1
           - Item: S_Reload_Shield
             Rate: 1
-  - Group: BS_SHA_M_S_24
+  - Id: 630
+    Group: BS_SHA_M_S_24
     SubGroups:
       - SubGroup: 1
         List:
@@ -27407,7 +28037,8 @@ Body:
             Rate: 1
           - Item: S_Enhance_Spirit_Weapon
             Rate: 1
-  - Group: BS_SHA_M_S_25
+  - Id: 631
+    Group: BS_SHA_M_S_25
     SubGroups:
       - SubGroup: 1
         List:
@@ -27415,12 +28046,14 @@ Body:
             Rate: 1
           - Item: S_Infinity_Earring
             Rate: 1
-  - Group: BS_ITEM_M_S_51
+  - Id: 632
+    Group: BS_ITEM_M_S_51
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Wickebines_Black_Cat_Ears
-  - Group: ENCHANTSTONE_RECIPE_9M
+  - Id: 633
+    Group: ENCHANTSTONE_RECIPE_9M
     SubGroups:
       - SubGroup: 1
         List:
@@ -27432,13 +28065,15 @@ Body:
             Rate: 1
           - Item: Enchant_Stone_Box16
             Rate: 1
-  - Group: IDTEST_SPECIAL
+  - Id: 634
+    Group: IDTEST_SPECIAL
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Arrow
             Amount: 10
-  - Group: PERFECTSIZE_MIX
+  - Id: 635
+    Group: PERFECTSIZE_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -27446,7 +28081,8 @@ Body:
             Rate: 1
           - Item: S_PerfectSize_Armor
             Rate: 1
-  - Group: MAGICPIERCING_MIX
+  - Id: 636
+    Group: MAGICPIERCING_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -27460,7 +28096,8 @@ Body:
             Rate: 1
           - Item: S_M_Exe_Ho_Weapon
             Rate: 1
-  - Group: PIERCING_MIX
+  - Id: 637
+    Group: PIERCING_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -27474,12 +28111,14 @@ Body:
             Rate: 1
           - Item: S_Exo_Co_Weapon
             Rate: 1
-  - Group: HASTY_MIX
+  - Id: 638
+    Group: HASTY_MIX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: S_Infinity_Weapon
-  - Group: ENCHANTSTONE_RECIPE_4M
+  - Id: 639
+    Group: ENCHANTSTONE_RECIPE_4M
     SubGroups:
       - SubGroup: 1
         List:
@@ -27497,7 +28136,8 @@ Body:
             Rate: 1
           - Item: Enchant_Stone_Box19
             Rate: 1
-  - Group: ANGELPORING_BOX
+  - Id: 640
+    Group: ANGELPORING_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -27516,7 +28156,8 @@ Body:
             Rate: 1667
           - Item: Taurus_Stone
             Rate: 1667
-  - Group: SHADOW_CUBE_PENDANT
+  - Id: 641
+    Group: SHADOW_CUBE_PENDANT
     SubGroups:
       - SubGroup: 1
         List:
@@ -27592,7 +28233,8 @@ Body:
             Rate: 278
           - Item: Enchanting_Pendant_S
             Rate: 278
-  - Group: SHADOW_CUBE_EARING
+  - Id: 642
+    Group: SHADOW_CUBE_EARING
     SubGroups:
       - SubGroup: 1
         List:
@@ -27670,7 +28312,8 @@ Body:
             Rate: 270
           - Item: Enchanting_Earring_S
             Rate: 270
-  - Group: SHADOW_CUBE
+  - Id: 643
+    Group: SHADOW_CUBE
     SubGroups:
       - SubGroup: 1
         List:
@@ -28466,7 +29109,8 @@ Body:
             Rate: 33
           - Item: S_Archer_earring
             Rate: 33
-  - Group: HELM_OF_FAITH_BOX
+  - Id: 644
+    Group: HELM_OF_FAITH_BOX
     SubGroups:
       - SubGroup: 1
         List:
@@ -28538,7 +29182,8 @@ Body:
             Rate: 1
           - Item: Viva_Adul_Hat_SU2
             Rate: 1
-  - Group: 2022_LUNARNEWYEARS_BOX
+  - Id: 645
+    Group: 2022_LUNARNEWYEARS_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -28557,7 +29202,8 @@ Body:
             Amount: 10
           - Item: World_Tour_Ticket
             Amount: 30
-  - Group: 2020_REWARD_BOX
+  - Id: 646
+    Group: 2020_REWARD_BOX
     SubGroups:
       - SubGroup: 0
         List:
@@ -28567,7 +29213,8 @@ Body:
             Amount: 3
           - Item: World_Tour_Ticket
             Amount: 20
-  - Group: COSTUME_MILE_PACK_26_1
+  - Id: 647
+    Group: COSTUME_MILE_PACK_26_1
     SubGroups:
       - SubGroup: 0
         List:
@@ -28577,7 +29224,8 @@ Body:
             Amount: 12
           - Item: aegis_101271
             Amount: 3
-  - Group: COSTUME_MILE_PACK_26_2
+  - Id: 648
+    Group: COSTUME_MILE_PACK_26_2
     SubGroups:
       - SubGroup: 0
         List:
@@ -28587,7 +29235,8 @@ Body:
             Amount: 25
           - Item: aegis_101271
             Amount: 5
-  - Group: COSTUME_MILE_PACK_26_3
+  - Id: 649
+    Group: COSTUME_MILE_PACK_26_3
     SubGroups:
       - SubGroup: 0
         List:
@@ -28597,7 +29246,8 @@ Body:
             Amount: 50
           - Item: aegis_101271
             Amount: 10
-  - Group: EP17_1_SPC01
+  - Id: 650
+    Group: EP17_1_SPC01
     SubGroups:
       - SubGroup: 1
         List:
@@ -28633,7 +29283,8 @@ Body:
             Rate: 625
           - Item: Boost_Lance_OS
             Rate: 625
-  - Group: EP17_1_SPC02
+  - Id: 651
+    Group: EP17_1_SPC02
     SubGroups:
       - SubGroup: 1
         List:
@@ -28643,7 +29294,8 @@ Body:
             Rate: 2000
           - Item: EP17_1_SPC07
             Rate: 500
-  - Group: EP17_1_SPC03
+  - Id: 652
+    Group: EP17_1_SPC03
     SubGroups:
       - SubGroup: 1
         List:
@@ -28653,7 +29305,8 @@ Body:
             Rate: 2000
           - Item: EP17_1_SPC10
             Rate: 500
-  - Group: EP17_1_SPC04
+  - Id: 653
+    Group: EP17_1_SPC04
     SubGroups:
       - SubGroup: 1
         List:
@@ -28729,7 +29382,8 @@ Body:
             Rate: 1
           - Item: EP17_1_EVT38
             Rate: 1
-  - Group: STABILITYSHADOW_MIX
+  - Id: 654
+    Group: STABILITYSHADOW_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -28749,7 +29403,8 @@ Body:
             Rate: 1
           - Item: S_Uncursed_Pendant_II
             Rate: 1
-  - Group: BS_SHA_M_S_2
+  - Id: 655
+    Group: BS_SHA_M_S_2
     SubGroups:
       - SubGroup: 1
         List:
@@ -28901,7 +29556,8 @@ Body:
             Rate: 1
           - Item: S_Gunslinger_Shield
             Rate: 1
-  - Group: BS_SHA_M_S_22
+  - Id: 656
+    Group: BS_SHA_M_S_22
     SubGroups:
       - SubGroup: 1
         List:
@@ -28911,7 +29567,8 @@ Body:
             Rate: 1
           - Item: S_Mortal_Blow_Pendant
             Rate: 1
-  - Group: SLD_CARD_RECIPE
+  - Id: 657
+    Group: SLD_CARD_RECIPE
     SubGroups:
       - SubGroup: 1
         List:
@@ -28995,7 +29652,8 @@ Body:
             Rate: 1
           - Item: SLD_Timeholder_Card
             Rate: 1
-  - Group: R_BEARERSSHADOW_MIX
+  - Id: 658
+    Group: R_BEARERSSHADOW_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -29007,7 +29665,8 @@ Body:
             Rate: 1
           - Item: S_R_Bearers_Earring
             Rate: 1
-  - Group: M_BLITZSHADOW_MIX
+  - Id: 659
+    Group: M_BLITZSHADOW_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -29015,12 +29674,14 @@ Body:
             Rate: 1
           - Item: S_Mega_Blitz_Weapon
             Rate: 1
-  - Group: RELOADSHADOW_MIX
+  - Id: 660
+    Group: RELOADSHADOW_MIX
     SubGroups:
       - SubGroup: 0
         List:
           - Item: S_S_Reload_Shield
-  - Group: SPELLCASTERSHADOW_MIX
+  - Id: 661
+    Group: SPELLCASTERSHADOW_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -29032,7 +29693,8 @@ Body:
             Rate: 1
           - Item: S_SpellCaster_Pendant
             Rate: 1
-  - Group: MAGICALSHADOW_MIX
+  - Id: 662
+    Group: MAGICALSHADOW_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -29040,7 +29702,8 @@ Body:
             Rate: 1
           - Item: S_Clever_Shield
             Rate: 1
-  - Group: PHYSICALSHADOW_MIX
+  - Id: 663
+    Group: PHYSICALSHADOW_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -29048,7 +29711,8 @@ Body:
             Rate: 1
           - Item: S_Durable_Shield
             Rate: 1
-  - Group: MAJORAUTOSPELL_MIX
+  - Id: 664
+    Group: MAJORAUTOSPELL_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -29060,7 +29724,8 @@ Body:
             Rate: 1
           - Item: S_M_AutoSpell_Pendant
             Rate: 1
-  - Group: ABSORBSHADOW_MIX
+  - Id: 665
+    Group: ABSORBSHADOW_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -29068,7 +29733,8 @@ Body:
             Rate: 1
           - Item: S_Absorb_Weapon
             Rate: 1
-  - Group: TRUE_GEMSHADOW_MIX
+  - Id: 666
+    Group: TRUE_GEMSHADOW_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -29080,7 +29746,8 @@ Body:
             Rate: 1
           - Item: S_TrueGem_Pendant
             Rate: 1
-  - Group: MAMMOTH_MIX
+  - Id: 667
+    Group: MAMMOTH_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -29092,7 +29759,8 @@ Body:
             Rate: 1
           - Item: S_M_Mammoth_Pendant
             Rate: 1
-  - Group: FULLTEMPSHADOW_MIX
+  - Id: 668
+    Group: FULLTEMPSHADOW_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -29104,7 +29772,8 @@ Body:
             Rate: 1
           - Item: S_FullTemp_Pendant
             Rate: 1
-  - Group: FULLPENESHADOW_MIX
+  - Id: 669
+    Group: FULLPENESHADOW_MIX
     SubGroups:
       - SubGroup: 1
         List:
@@ -29116,252 +29785,288 @@ Body:
             Rate: 1
           - Item: S_FullPene_Shoes
             Rate: 1
-  - Group: REMODEL_HERO_BOOTS
+  - Id: 670
+    Group: REMODEL_HERO_BOOTS
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Great_Hero_Boots
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: ORIENTAL_SWORD_CUBE
+  - Id: 671
+    Group: ORIENTAL_SWORD_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Oriental_Sword
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: DRAGONIC_SLAYER_CUBE
+  - Id: 672
+    Group: DRAGONIC_SLAYER_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Dragonic_Slayer
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: SHIVER_KATAR_K_CUBE
+  - Id: 673
+    Group: SHIVER_KATAR_K_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Shiver_Katar_K
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: BLADE_KATAR_CUBE
+  - Id: 674
+    Group: BLADE_KATAR_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Blade_Katar
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: SWORD_OF_BLUEFIRE_CUBE
+  - Id: 675
+    Group: SWORD_OF_BLUEFIRE_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Sword_Of_Bluefire
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: SLATE_SWORD_CUBE
+  - Id: 676
+    Group: SLATE_SWORD_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Slate_Sword
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: NARCIS_BOW_CUBE
+  - Id: 677
+    Group: NARCIS_BOW_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Narcis_Bow
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: TRUMPET_SHELL_K_CUBE
+  - Id: 678
+    Group: TRUMPET_SHELL_K_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Trumpet_Shell_K
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: BARB_WIRE_K_CUBE
+  - Id: 679
+    Group: BARB_WIRE_K_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Barb_Wire_K
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: AVENGER_CUBE
+  - Id: 680
+    Group: AVENGER_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Avenger
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: METEOR_STRIKER_CUBE
+  - Id: 681
+    Group: METEOR_STRIKER_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Meteor_Striker
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: MAGIC_SWORD_CUBE
+  - Id: 682
+    Group: MAGIC_SWORD_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Magic_Sword
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: FATALIST_CUBE
+  - Id: 683
+    Group: FATALIST_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Fatalist
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: ROYAL_BOW_K_CUBE
+  - Id: 684
+    Group: ROYAL_BOW_K_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Royal_Bow_K
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: SCALET_DRAGON_L_CUBE
+  - Id: 685
+    Group: SCALET_DRAGON_L_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Scalet_Dragon_L_Bow
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: SHADOW_STAFF_K_CUBE
+  - Id: 686
+    Group: SHADOW_STAFF_K_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Shadow_Staff_K
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: FREEZING_ROD_CUBE
+  - Id: 687
+    Group: FREEZING_ROD_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Freezing_Rod
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: IRON_NAIL_K_CUBE
+  - Id: 688
+    Group: IRON_NAIL_K_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Iron_Nail_K
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: RAY_KNUCKLE_CUBE
+  - Id: 689
+    Group: RAY_KNUCKLE_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Ray_Knuckle
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: UNDINE_SPEAR_K_CUBE
+  - Id: 690
+    Group: UNDINE_SPEAR_K_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Undine_Spear_K
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: LIGHT_BLADE_CUBE
+  - Id: 691
+    Group: LIGHT_BLADE_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Light_Blade
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: IRON_STAFF_CUBE
+  - Id: 692
+    Group: IRON_STAFF_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Iron_Staff
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: BLUE_CRYSTAL_STAFF_CUBE
+  - Id: 693
+    Group: BLUE_CRYSTAL_STAFF_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Blue_Crystal_Staff
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: DEMON_HUNT_BIBLE_CUBE
+  - Id: 694
+    Group: DEMON_HUNT_BIBLE_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Demon_Hunting_Bible
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: SAINT_HALL_CUBE
+  - Id: 695
+    Group: SAINT_HALL_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Saint_Hall
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: MEAWFOXTAIL_CUBE
+  - Id: 696
+    Group: MEAWFOXTAIL_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_MeawFoxtail
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: FOG_DEW_SWORD_CUBE
+  - Id: 697
+    Group: FOG_DEW_SWORD_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Fog_Dew_Sword
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: HUMMA_CLEAR_CUBE
+  - Id: 698
+    Group: HUMMA_CLEAR_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Humma_Clear
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: THOUSAND_SUN_CUBE
+  - Id: 699
+    Group: THOUSAND_SUN_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Thousand_Sun
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: SPIRIT_PENDULUM_CUBE
+  - Id: 700
+    Group: SPIRIT_PENDULUM_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Spirit_Pendulum_
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: CRIMSON_ROSE_CUBE
+  - Id: 701
+    Group: CRIMSON_ROSE_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Crimson_Rose
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: MASTER_SOUL_RIFLE_CUBE
+  - Id: 702
+    Group: MASTER_SOUL_RIFLE_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Master_Soul_Rifle
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: GOLDEN_LORD_LAUNCHER_CUBE
+  - Id: 703
+    Group: GOLDEN_LORD_LAUNCHER_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_Golden_Lord_Launcher
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: THE_BLACK_CUBE
+  - Id: 704
+    Group: THE_BLACK_CUBE
     SubGroups:
       - SubGroup: 0
         List:
           - Item: Up_The_Black
             RefineMinimum: 7
             RefineMaximum: 7
-  - Group: DEMON_SLAYER_SHOT_CUBE
+  - Id: 705
+    Group: DEMON_SLAYER_SHOT_CUBE
     SubGroups:
       - SubGroup: 0
         List:

@@ -2055,30 +2055,39 @@ const std::string ItemGroupDatabase::getDefaultLocation() {
  * @return count of successfully parsed rows
  */
 uint64 ItemGroupDatabase::parseBodyNode(const ryml::NodeRef& node) {
-	std::string group_name;
+	uint16 id;
 
-	if (!this->asString(node, "Group", group_name))
+	if (!this->asUInt16(node, "Id", id))
 		return 0;
 
-	std::string group_name_constant = "IG_" + group_name;
-	int64 constant;
-
-	if (!script_get_constant(group_name_constant.c_str(), &constant) || constant < IG_BLUEBOX) {
-		if (strncasecmp(group_name.c_str(), "IG_", 3) != 0)
-			this->invalidWarning(node["Group"], "Invalid group %s.\n", group_name.c_str());
-		else
-			this->invalidWarning(node["Group"], "Invalid group %s. Note that 'IG_' is automatically appended to the group name.\n", group_name.c_str());
+	if (id < 1)
 		return 0;
-	}
-
-	uint16 id = static_cast<uint16>(constant);
 
 	std::shared_ptr<s_item_group_db> group = this->find(id);
 	bool exists = group != nullptr;
 
 	if (!exists) {
+		if (!this->nodesExist(node, { "Group" }))
+			return 0;
+
 		group = std::make_shared<s_item_group_db>();
 		group->id = id;
+	}
+
+	if (this->nodeExists(node, "Group")) {
+		std::string group_name;
+
+		if (!this->asString(node, "Group", group_name))
+			return 0;
+
+		std::string group_name_constant = "IG_" + group_name;
+
+		if (group->name.compare(group_name_constant) != 0 && itemdb_group.group_exists(group_name_constant)) {
+			this->invalidWarning(node["Group"], "Found duplicate group %s, skipping.\n", group_name.c_str());
+			return 0;
+		}
+
+		group->name = group_name_constant;
 	}
 
 	if (this->nodeExists(node, "SubGroups")) {
@@ -2092,7 +2101,7 @@ uint64 ItemGroupDatabase::parseBodyNode(const ryml::NodeRef& node) {
 					continue;
 
 				if (group->random.erase(id) == 0)
-					this->invalidWarning(subit["Clear"], "The SubGroup %hu doesn't exist in the group %s. Clear failed.\n", id, group_name.c_str());
+					this->invalidWarning(subit["Clear"], "The SubGroup %hu doesn't exist in the group %s. Clear failed.\n", id, group->name.c_str());
 
 				continue;
 			}
@@ -2134,7 +2143,7 @@ uint64 ItemGroupDatabase::parseBodyNode(const ryml::NodeRef& node) {
 					}
 
 					if (random->data.erase(item->nameid) == 0)
-						this->invalidWarning(listit["Clear"], "Item %hu doesn't exist in the SubGroup %hu (group %s). Clear failed.\n", item->nameid, subgroup, group_name.c_str());
+						this->invalidWarning(listit["Clear"], "Item %hu doesn't exist in the SubGroup %hu (group %s). Clear failed.\n", item->nameid, subgroup, group->name.c_str());
 
 					continue;
 				}
@@ -2343,7 +2352,22 @@ uint64 ItemGroupDatabase::parseBodyNode(const ryml::NodeRef& node) {
 }
 
 void ItemGroupDatabase::loadingFinished() {
+	int64 constant;
+				ShowError("script_set_constant: overw\n");
+
 	for (const auto &group : *this) {
+		// Check if it has already been set
+		if( script_get_constant( group.second->name.c_str(), &constant ) ){
+			// It is already the same
+			if( constant == group.first ){
+				continue;
+			}else{
+				// Export it to the script engine -> will issue a warning
+			}
+		}
+
+		script_set_constant( group.second->name.c_str(), group.first, false, false );
+
 		for (const auto &random : group.second->random) {
 			random.second->total_rate = 0;
 			for (const auto &it : random.second->data) {
@@ -2351,6 +2375,15 @@ void ItemGroupDatabase::loadingFinished() {
 			}
 		}
 	}
+}
+
+bool ItemGroupDatabase::group_exists(std::string name) {
+	for (const auto &it : *this) {
+		if (it.second->name.compare(name) == 0)
+			return true;
+	}
+
+	return false;
 }
 
 /** Read item forbidden by mapflag (can't equip item)
