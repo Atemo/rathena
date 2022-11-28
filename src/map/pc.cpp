@@ -10844,10 +10844,12 @@ void pc_setmadogear(struct map_session_data *sd, bool flag, e_mado_type type)
  *------------------------------------------*/
 bool pc_candrop(struct map_session_data *sd, struct item *item)
 {
-	if( item && ((item->expire_time || (item->bound && !pc_can_give_bounded_items(sd))) || (itemdb_ishatched_egg(item))) )
+ 	if( !pc_can_give_items(sd) || sd->sc.cant.drop) //check if this GM level can drop items
+ 		return false;
+	if( item && (item->expire_time || itemdb_ishatched_egg(item)) )
 		return false;
-	if( !pc_can_give_items(sd) || sd->sc.cant.drop) //check if this GM level can drop items
-		return false;
+	if( item && item->bound )
+		return pc_can_give_bounded_items(sd);
 	return (itemdb_isdropable(item, pc_get_group_level(sd)));
 }
 
