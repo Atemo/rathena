@@ -230,6 +230,20 @@ Body:
         Items:
           - Item: Ep19_Snow_Flower
             Amount: 20
+  - Item: aegis_101565
+    Groups:
+      - Group: 0
+        Items:
+          - Item: Class_Sha_R_M_Melee
+      - Group: 1
+        Items:
+          - Item: Class_Sha_R_M_Magic
+      - Group: 2
+        Items:
+          - Item: Skill_Sha_R_M_Melee
+      - Group: 3
+        Items:
+          - Item: Skill_Sha_R_M_Magic
   - Item: Metal_W_Box
     Groups:
       - Group: 0
@@ -449,20 +463,6 @@ Body:
       - Group: 6
         Items:
           - Item: Sagittarius_DiademK
-  - Item: aegis_101565
-    Groups:
-      - Group: 0
-        Items:
-          - Item: Class_Sha_R_M_Melee
-      - Group: 1
-        Items:
-          - Item: Class_Sha_R_M_Magic
-      - Group: 2
-        Items:
-          - Item: Skill_Sha_R_M_Melee
-      - Group: 3
-        Items:
-          - Item: Skill_Sha_R_M_Magic
   - Item: aegis_101654
     Groups:
       - Group: 0
@@ -529,3 +529,371 @@ Body:
       - Group: 1
         Items:
           - Item: aegis_101726
+  - Item: aegis_101801
+    Groups:
+      - Group: 0
+        Items:
+          - Item: aegis_101802
+      - Group: 1
+        Items:
+          - Item: aegis_101803
+      - Group: 2
+        Items:
+          - Item: aegis_101804
+      - Group: 3
+        Items:
+          - Item: aegis_101805
+  - Item: aegis_101806
+    Groups:
+      - Group: 0
+        Items:
+          - Item: aegis_101807
+      - Group: 1
+        Items:
+          - Item: aegis_101808
+  - Item: aegis_101856
+    Groups:
+      - Group: 0
+        Items:
+          - Item: aegis_101858
+      - Group: 1
+        Items:
+          - Item: aegis_101859
+      - Group: 2
+        Items:
+          - Item: aegis_101860
+      - Group: 3
+        Items:
+          - Item: aegis_101861
+  - Item: aegis_101862
+    Groups:
+      - Group: 0
+        Items:
+          - Item: aegis_101863
+      - Group: 1
+        Items:
+          - Item: aegis_101864
+  - Item: aegis_101919
+    Groups:
+      - Group: 0
+        Items:
+          - Item: aegis_101920
+      - Group: 1
+        Items:
+          - Item: aegis_101921
+  - Item: aegis_101922
+    Groups:
+      - Group: 0
+        Items:
+          - Item: aegis_101923
+      - Group: 1
+        Items:
+          - Item: aegis_101924
+  - Item: aegis_102084
+    Groups:
+      - Group: 0
+        Items:
+          - Item: GoodnEvil_Circlet_NW
+      - Group: 1
+        Items:
+          - Item: GoodnEvil_Circlet_NW2
+      - Group: 2
+        Items:
+          - Item: GoodnEvil_Circlet_NW3
+      - Group: 3
+        Items:
+          - Item: GoodnEvil_Circlet_NW4
+      - Group: 4
+        Items:
+          - Item: GoodnEvil_Circlet_NW5
+  - Item: aegis_102213
+    Groups:
+      - Group: 0
+        Items:
+          - Item: Hero_Weapon_Up_Box_1
+      - Group: 1
+        Items:
+          - Item: Hero_Weapon_Up_Box_2
+      - Group: 2
+        Items:
+          - Item: Hero_Weapon_Up_Box_3
+      - Group: 3
+        Items:
+          - Item: Hero_Weapon_Up_Box_4
+      - Group: 4
+        Items:
+          - Item: Hero_Weapon_Up_Box_5
+      - Group: 5
+        Items:
+          - Item: Hero_Weapon_Up_Box_6
+  - Item: aegis_102214
+    Groups:
+      - Group: 0
+        Items:
+          - Item: Hero_Weapon_Hammer_1
+      - Group: 1
+        Items:
+          - Item: Hero_Weapon_Hammer_2
+      - Group: 2
+        Items:
+          - Item: Hero_Weapon_Hammer_3
+      - Group: 3
+        Items:
+          - Item: Hero_Weapon_Hammer_4
+      - Group: 4
+        Items:
+          - Item: Hero_Weapon_Hammer_5
+      - Group: 5
+        Items:
+          - Item: Hero_Weapon_Hammer_6
+  - Item: aegis_102215
+    Groups:
+      - Group: 0
+        Items:
+          - Item: Bio_Weapon_Refine_Cube
+      - Group: 1
+        Items:
+          - Item: Old_Refine_Cube
+      - Group: 2
+        Items:
+          - Item: Geffen_Refine_Cube
+  - Item: aegis_102216
+    Groups:
+      - Group: 0
+        Items:
+          - Item: Bio_Helm_Refine_Cube
+      - Group: 1
+        Items:
+          - Item: Circlet_Refine_Cube
+      - Group: 2
+        Items:
+          - Item: Auto_Armor_Refine_Cube
+      - Group: 3
+        Items:
+          - Item: Racecap_Refine_Cube
+      - Group: 4
+        Items:
+          - Item: OS_Weapon_Refine_Cube
+      - Group: 5
+        Items:
+          - Item: Temporal_Refine_Cube
+  - Item: aegis_102217
+    Groups:
+      - Group: 0
+        Items:
+          - Item: Royal_Bow_K
+            Refine: 11
+      - Group: 1
+        Items:
+          - Item: Shadow_Staff_K
+            Refine: 11
+      - Group: 2
+        Items:
+          - Item: Iron_Nail_K
+            Refine: 11
+      - Group: 3
+        Items:
+          - Item: Blue_Crystal_Staff
+            Refine: 11
+      - Group: 4
+        Items:
+          - Item: Freezing_Rod
+            Refine: 11
+      - Group: 5
+        Items:
+          - Item: Ancient_Hero_Boots
+            Refine: 11
+  - Item: aegis_102218
+    Groups:
+      - Group: 0
+        Items:
+          - Item: Sword_Of_Bluefire
+            Refine: 11
+      - Group: 1
+        Items:
+          - Item: Iron_Staff
+            Refine: 11
+      - Group: 2
+        Items:
+          - Item: Oriental_Sword
+            Refine: 11
+      - Group: 3
+        Items:
+          - Item: Fog_Dew_Sword
+            Refine: 11
+      - Group: 4
+        Items:
+          - Item: Sharp_Wind_Sword
+            Refine: 11
+      - Group: 5
+        Items:
+          - Item: Humma_Clear
+            Refine: 11
+  - Item: aegis_102219
+    Groups:
+      - Group: 0
+        Items:
+          - Item: Narcis_Bow
+            Refine: 11
+      - Group: 1
+        Items:
+          - Item: Magic_Sword
+            Refine: 11
+      - Group: 2
+        Items:
+          - Item: Avenger
+            Refine: 11
+      - Group: 3
+        Items:
+          - Item: Undine_Spear_K
+            Refine: 11
+      - Group: 4
+        Items:
+          - Item: Demon_Hunting_Bible_K
+            Refine: 11
+      - Group: 5
+        Items:
+          - Item: Shiver_Katar_K
+            Refine: 11
+  - Item: aegis_102220
+    Groups:
+      - Group: 0
+        Items:
+          - Item: OneSkyOneSun
+            Refine: 11
+      - Group: 1
+        Items:
+          - Item: SoulWeight
+            Refine: 11
+      - Group: 2
+        Items:
+          - Item: MeawFoxtail
+            Refine: 11
+      - Group: 3
+        Items:
+          - Item: Freedom_Stick
+            Refine: 11
+      - Group: 4
+        Items:
+          - Item: Blessed_Knife
+            Refine: 11
+  - Item: aegis_102221
+    Groups:
+      - Group: 0
+        Items:
+          - Item: Dragonic_Slayer
+            Refine: 11
+      - Group: 1
+        Items:
+          - Item: Light_Blade
+            Refine: 11
+      - Group: 2
+        Items:
+          - Item: Slate_Sword
+            Refine: 11
+      - Group: 3
+        Items:
+          - Item: Trumpet_Shell_K
+            Refine: 11
+      - Group: 4
+        Items:
+          - Item: Barb_Wire_K
+            Refine: 11
+      - Group: 5
+        Items:
+          - Item: Meteor_Striker
+            Refine: 11
+  - Item: aegis_102222
+    Groups:
+      - Group: 0
+        Items:
+          - Item: Saint_Hall
+            Refine: 11
+      - Group: 1
+        Items:
+          - Item: Ray_Knuckle
+            Refine: 11
+      - Group: 2
+        Items:
+          - Item: Blade_Katar
+            Refine: 11
+      - Group: 3
+        Items:
+          - Item: Fatalist
+            Refine: 11
+      - Group: 4
+        Items:
+          - Item: Scalet_Dragon_L_Bow
+            Refine: 11
+  - Item: aegis_102223
+    Groups:
+      - Group: 0
+        Items:
+          - Item: Crimson_Rose
+            Refine: 11
+      - Group: 1
+        Items:
+          - Item: Master_Soul_Rifle
+            Refine: 11
+      - Group: 2
+        Items:
+          - Item: Demon_S_Shot
+            Refine: 11
+      - Group: 3
+        Items:
+          - Item: Golden_L_Launcher
+            Refine: 11
+      - Group: 4
+        Items:
+          - Item: The_Black_Gatling
+            Refine: 11
+  - Item: 2023_Spring_Select
+    Groups:
+      - Group: 0
+        Items:
+          - Item: aegis_480297
+      - Group: 1
+        Items:
+          - Item: aegis_400432
+      - Group: 2
+        Items:
+          - Item: aegis_410231
+      - Group: 3
+        Items:
+          - Item: aegis_420208
+  - Item: RO_Concert_Scroll2
+    Groups:
+      - Group: 0
+        Items:
+          - Item: C_Headset_OST
+      - Group: 1
+        Items:
+          - Item: C_Music_Decoration
+      - Group: 2
+        Items:
+          - Item: C_Whistle
+  - Item: 21th_Costume_Select
+    Groups:
+      - Group: 0
+        Items:
+          - Item: C_Ocean_Color_Long
+      - Group: 1
+        Items:
+          - Item: C_Aqua_Fin_Decoration
+      - Group: 2
+        Items:
+          - Item: C_Sailor_Cap
+  - Item: Cinnamon_Costume_Box
+    Groups:
+      - Group: 0
+        Items:
+          - Item: C_Cinnamon2
+      - Group: 1
+        Items:
+          - Item: C_Cinnamon
+      - Group: 2
+        Items:
+          - Item: C_JP_EV16
+      - Group: 3
+        Items:
+          - Item: C_JP_EV17
