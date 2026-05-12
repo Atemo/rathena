@@ -132,6 +132,8 @@
 
 /// Maximum amount of elements in script arrays
 #define SCRIPT_MAX_ARRAYSIZE (UINT_MAX - 1)
+/// Maximum amount of dimensions supported by script multidimensional arrays
+#define SCRIPT_MAX_ARRAY_DIMENSIONS 8
 
 enum script_cmd_result {
 	SCRIPT_CMD_SUCCESS = 0, ///when a buildin cmd was correctly done

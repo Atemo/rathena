@@ -1,0 +1,189 @@
+//============================================================
+// npc/custom/callnpcsub_multireturn_tests.txt
+// Tests for callnpcsub and multiple return values.
+//============================================================
+// Load with:
+// npc: npc/custom/callnpcsub_multireturn_tests.txt
+//============================================================
+
+function	script	MR_ASSERT	{
+	.@ok = getarg(0);
+	.@msg$ = getarg(1);
+
+	if (.@ok)
+		debugmes "[OK] " + .@msg$;
+	else
+		debugmes "[FAIL] " + .@msg$;
+
+	return;
+}
+
+function	script	F_MR_Basic	{
+	return "Bob", 20, "Knight";
+}
+
+function	script	F_MR_Empty	{
+	return;
+}
+
+function	script	F_MR_One	{
+	return 123;
+}
+
+prontera,158,184,4	script	mr_test_runner	4_F_KAFRA1,{
+	mes "[mr_test_runner]";
+	mes "Runs callnpcsub / multiple-return tests.";
+	next;
+
+OnInit:
+	callsub S_CallFuncMultiple;
+	callsub S_CallFunc1;
+	callsub S_CallSubMultiple;
+	callsub S_CallNpcSubMultiple;
+	callsub S_EmptyAndSingleReturn;
+	callsub S_ReturnOverwrite;
+	callsub S_CallNpc2;
+	callsub S_ManualErrorChecks;
+	end;
+
+	mes "Done. Check the console for [OK]/[FAIL].";
+	close;
+
+S_CallFuncMultiple:
+	debugmes "-- S_CallFuncMultiple";
+
+	callfunc "F_MR_Basic";
+	.@count = getreturncount();
+	.@r0$ = getreturn(0);
+	.@r1 = getreturn(1);
+	.@r2$ = getreturn(2);
+
+	callfunc "MR_ASSERT", .@count == 3, "callfunc return count == 3";
+	callfunc "MR_ASSERT", .@r0$ == "Bob", "callfunc return[0] == Bob";
+	callfunc "MR_ASSERT", .@r1 == 20, "callfunc return[1] == 20";
+	callfunc "MR_ASSERT", .@r2$ == "Knight", "callfunc return[2] == Knight";
+
+	return;
+
+S_CallFunc1:
+	debugmes "-- S_CallFunc1";
+
+	.@name$ = callfunc("F_MR_Basic");
+	.@count = getreturncount();
+	.@age = getreturn(1);
+
+	callfunc "MR_ASSERT", .@name$ == "Bob", "direct callfunc expression gets first return";
+	callfunc "MR_ASSERT", .@count == 3, "return buffer still has 3 values";
+	callfunc "MR_ASSERT", .@age == 20, "getreturn still reads second value";
+
+	return;
+
+S_CallSubMultiple:
+	debugmes "-- S_CallSubMultiple";
+
+	callsub S_LocalInfo, "Prontera";
+	.@count = getreturncount();
+	.@r0$ = getreturn(0);
+	.@r1 = getreturn(1);
+	.@r2$ = getreturn(2);
+
+	callfunc "MR_ASSERT", .@count == 3, "callsub return count == 3";
+	callfunc "MR_ASSERT", .@r0$ == "Prontera", "callsub return[0]";
+	callfunc "MR_ASSERT", .@r1 == 100, "callsub return[1]";
+	callfunc "MR_ASSERT", .@r2$ == "local", "callsub return[2]";
+
+	return;
+
+S_LocalInfo:
+	.@name$ = getarg(0);
+	return .@name$, 100, "local";
+
+S_CallNpcSubMultiple:
+	debugmes "-- S_CallNpcSubMultiple";
+
+	callnpcsub "MR_TARGET", "S_GetInfo", "prtg_cas01";
+	.@count = getreturncount();
+	.@map$ = getreturn(0);
+	.@region$ = getreturn(1);
+	.@x = getreturn(2);
+	.@y = getreturn(3);
+
+	callfunc "MR_ASSERT", .@count == 4, "callnpcsub return count == 4";
+	callfunc "MR_ASSERT", .@map$ == "prtg_cas01", "callnpcsub return[0] map";
+	callfunc "MR_ASSERT", .@region$ == "Prontera", "callnpcsub return[1] region";
+	callfunc "MR_ASSERT", .@x == 134, "callnpcsub return[2] x";
+	callfunc "MR_ASSERT", .@y == 65, "callnpcsub return[3] y";
+
+	return;
+
+S_EmptyAndSingleReturn:
+	debugmes "-- S_EmptyAndSingleReturn";
+
+	callfunc "F_MR_Empty";
+	.@empty_count = getreturncount();
+
+	callfunc "F_MR_One";
+	.@one_count = getreturncount();
+	.@one_value = getreturn(0);
+
+	callfunc "MR_ASSERT", .@empty_count == 0, "return; gives zero return values";
+	callfunc "MR_ASSERT", .@one_count == 1, "single return count == 1";
+	callfunc "MR_ASSERT", .@one_value == 123, "single return value == 123";
+
+	return;
+
+S_ReturnOverwrite:
+	debugmes "-- S_ReturnOverwrite";
+
+	callfunc "F_MR_Basic";
+	.@first_count = getreturncount();
+
+	callfunc "F_MR_One";
+	.@second_count = getreturncount();
+	.@second_value = getreturn(0);
+
+	callfunc "MR_ASSERT", .@first_count == 3, "initial return count == 3";
+	callfunc "MR_ASSERT", .@second_count == 1, "second call overwrites return buffer";
+	callfunc "MR_ASSERT", .@second_value == 123, "second call return[0] == 123";
+
+	return;
+
+S_CallNpc2:
+	debugmes "-- S_CallNpc2";
+
+	.@local_value = 10;
+	callnpcsub "MR_TARGET", "S_ScopeTest", .@local_value;
+	.@r0 = getreturn(0);
+	.@r1 = getreturn(1);
+
+	callfunc "MR_ASSERT", .@local_value == 10, "caller .@ scope was not modified";
+	callfunc "MR_ASSERT", .@r0 == 11, "target received argument and returned arg + 1";
+	callfunc "MR_ASSERT", .@r1 == 99, "target .@ local scope worked";
+
+	return;
+
+S_ManualErrorChecks:
+	debugmes "-- S_ManualErrorChecks";
+	debugmes "Manual checks that should ERROR + stop script:";
+	debugmes "  callnpcsub \"MR_TARGET\", \"OnInit\";";
+	debugmes "  callnpcsub \"MissingNPC\", \"S_Label\";";
+	debugmes "  callnpcsub \"MR_TARGET\", \"S_Missing\";";
+	debugmes "  callfunc \"F_MR_One\"; getreturn(99);";
+	return;
+}
+
+-	script	MR_TARGET	-1,{
+	end;
+
+S_GetInfo:
+	.@map$ = getarg(0);
+	return .@map$, "Prontera", 134, 65;
+
+S_ScopeTest:
+	.@v = getarg(0);
+	.@local_only = 99;
+	return .@v + 1, .@local_only;
+
+OnInit:
+	end;
+}

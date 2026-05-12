@@ -1,0 +1,195 @@
+//============================================================
+// npc/custom/mdarray_dyn_string_debug_tests.txt
+// Regression tests for dyntostring() and debugdyn.
+//============================================================
+//
+// Requires:
+// - dyn dictionary-only model
+// - dyn literal support
+// - dyntostring(<dyn variable or branch>)
+// - debugdyn <dyn variable or branch>
+//
+// Load with:
+// npc: npc/custom/mdarray_dyn_string_debug_tests.txt
+//============================================================
+
+function	script	MD_STRDBG_ASSERT	{
+	.@ok = getarg(0);
+	.@msg$ = getarg(1);
+
+	if (.@ok)
+		debugmes "[OK] " + .@msg$;
+	else
+		debugmes "[FAIL] " + .@msg$;
+
+	return;
+}
+
+prontera,157,184,4	script	mdarray_dyn_string_debug	4_F_KAFRA1,{
+	mes "[mdarray_dyn_string_debug]";
+	mes "Runs dyntostring/debugdyn tests.";
+	next;
+
+OnInit:
+	sleep 2000;
+	callsub S_BasicDump;
+	callsub S_Escaping;
+	callsub S_EmptyTables;
+	callsub S_IntegerAndStringKeys;
+	callsub S_BranchDump;
+	callsub S_MissingPathDump;
+	callsub S_NodeLimit;
+	callsub S_DebugDyn;
+	end;
+
+	mes "Done. Check console for [OK]/[FAIL].";
+	close;
+
+S_BasicDump:
+	debugmes "-- S_BasicDump";
+
+	dyn .@a = [
+		"name": "Bob",
+		"age": 20,
+		"items": [
+			0: 501,
+			1: 502,
+		],
+	];
+
+	.@s$ = dyntostring(.@a);
+	debugmes .@s$;
+
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "[") == 1, "dump contains table open";
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "\"name\": \"Bob\"") == 1, "dump contains name";
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "\"age\": 20") == 1, "dump contains age";
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "\"items\": [") == 1, "dump contains nested items";
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "0: 501") == 1, "dump contains integer key 0";
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "1: 502") == 1, "dump contains integer key 1";
+
+	return;
+
+S_Escaping:
+	debugmes "-- S_Escaping";
+
+	dyn .@a;
+	.@a["quote"] = "He said \"Hello\"";
+	.@a["slash"] = "a\\b";
+	.@a["line"] = "a\nb";
+
+	.@s$ = dyntostring(.@a);
+	debugmes .@s$;
+
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "\\\"Hello\\\"") == 1, "dump escapes quotes";
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "a\\\\b") == 1, "dump escapes backslash";
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "a\\nb") == 1, "dump escapes newline";
+
+	return;
+
+S_EmptyTables:
+	debugmes "-- S_EmptyTables";
+
+	dyn .@a = [
+		"empty": [],
+		"filled": [
+			"x": 1,
+		],
+	];
+
+	.@s$ = dyntostring(.@a);
+	debugmes .@s$;
+
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "\"empty\": []") == 1, "dump contains empty table";
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "\"filled\": [") == 1, "dump contains filled table";
+
+	.@branch$ = dyntostring(.@a["empty"]);
+	callfunc "MD_STRDBG_ASSERT", .@branch$ == "[]", "empty branch dumps as []";
+
+	return;
+
+S_IntegerAndStringKeys:
+	debugmes "-- S_IntegerAndStringKeys";
+
+	dyn .@a = [
+		0: "integer-zero",
+		"0": "string-zero",
+		10: "ten",
+		"name": "Bob",
+	];
+
+	.@s$ = dyntostring(.@a);
+	debugmes .@s$;
+
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "0: \"integer-zero\"") == 1, "dump contains integer 0 key";
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "\"0\": \"string-zero\"") == 1, "dump contains string 0 key";
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "10: \"ten\"") == 1, "dump contains integer 10 key";
+
+	return;
+
+S_BranchDump:
+	debugmes "-- S_BranchDump";
+
+	dyn .@a = [
+		"user": [
+			"name": "Bob",
+			"age": 20,
+		],
+		"other": 123,
+	];
+
+	.@s$ = dyntostring(.@a["user"]);
+	debugmes .@s$;
+
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "\"name\": \"Bob\"") == 1, "branch dump contains name";
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "\"age\": 20") == 1, "branch dump contains age";
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "\"other\"") == 0, "branch dump does not contain sibling";
+
+	.@leaf$ = dyntostring(.@a["other"]);
+	callfunc "MD_STRDBG_ASSERT", .@leaf$ == "123", "scalar leaf dumps as scalar";
+
+	return;
+
+S_MissingPathDump:
+	debugmes "-- S_MissingPathDump";
+
+	dyn .@a;
+	.@s$ = dyntostring(.@a["missing"]);
+
+	callfunc "MD_STRDBG_ASSERT", .@s$ == "0", "missing path dumps as default 0";
+
+	return;
+
+S_NodeLimit:
+	debugmes "-- S_NodeLimit";
+
+	dyn .@a;
+
+	for (.@i = 0; .@i < 105; .@i++)
+		.@a[.@i] = .@i;
+
+	.@s$ = dyntostring(.@a);
+	debugmes .@s$;
+
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "\"...\": \"<max nodes reached>\"") == 1, "dump contains max nodes marker";
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "99: 99") == 1, "dump contains node 99";
+	callfunc "MD_STRDBG_ASSERT", compare(.@s$, "104: 104") == 0, "dump truncates before node 104";
+
+	return;
+
+S_DebugDyn:
+	debugmes "-- S_DebugDyn";
+
+	dyn .@a = [
+		"debug": "ok",
+		"nested": [
+			0: "value",
+		],
+	];
+
+	debugdyn .@a;
+	debugdyn .@a["nested"];
+
+	callfunc "MD_STRDBG_ASSERT", 1, "debugdyn executed; check console output manually";
+
+	return;
+}

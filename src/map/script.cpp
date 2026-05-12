@@ -13,6 +13,11 @@
 #include <cmath>
 #include <csetjmp>
 #include <cstdlib> // atoi, strtol, strtoll, exit
+#include <string>
+#include <algorithm>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
 #ifdef PCRE_SUPPORT
 #include <pcre.h> // preg_match
@@ -244,8 +249,20 @@ static int32 parse_options = 0;
 DBMap* script_get_label_db(void) { return scriptlabel_db; }
 DBMap* script_get_userfunc_db(void) { return userfunc_db; }
 
+// Per-script label positions used by callnpcsub. rAthena labels are normally
+// resolved during parsing and are not stored in script_code, so we keep a small
+// side table keyed by script_code*.
+static std::unordered_map<script_code*, std::unordered_map<std::string, int32>> script_code_label_positions;
+static std::unordered_map<std::string, int32> parser_current_label_positions;
+
+// Last multiple return values per running script state. The normal expression
+// return value remains the first returned value for backward compatibility.
+static std::unordered_map<script_state*, std::vector<script_data>> script_return_values;
+
 // important buildin function references for usage in scripts
 static int32 buildin_set_ref = 0;
+static int32 buildin_dyn_ref = 0;
+static int32 buildin_setarraydyn_ref = 0;
 static int32 buildin_callsub_ref = 0;
 static int32 buildin_callfunc_ref = 0;
 static int32 buildin_getelementofarray_ref = 0;
@@ -562,6 +579,7 @@ static void script_reportdata(struct script_data* data)
 
 
 /// Reports on the console information about the current built-in function.
+
 static void script_reportfunc(struct script_state* st)
 {
 	int32 params, id;
@@ -854,6 +872,7 @@ void set_label(int32 l,int32 pos, const char* script_pos_cur)
 	}
 	str_data[l].type=(str_data[l].type == C_USERFUNC ? C_USERFUNC_POS : C_POS);
 	str_data[l].label=pos;
+	parser_current_label_positions[get_str(l)] = pos;
 	for(i=str_data[l].backpatch;i>=0 && i!=0x00ffffff;){
 		int32 next=GETVALUE(script_buf,i);
 		script_buf[i-1]=(str_data[l].type == C_USERFUNC ? C_USERFUNC_POS : C_POS);
@@ -954,6 +973,29 @@ static int32 add_word(const char* p)
 }
 
 /// Parses a function call.
+/// Returns true when the first argument of dyn is visibly indexed in source code.
+/// Runtime references cannot reliably distinguish `.@a` from legacy `.@a[0]`,
+/// so this parse-time guard is required to forbid declarations such as
+/// `dyn .@a[0];` and `dyn(.@a["key"]);`.
+static bool parse_dyn_first_arg_is_indexed(const char* p)
+{
+	const char* q = skip_space(p);
+
+	if (q == nullptr)
+		return false;
+
+	if (*q == '(')
+		q = skip_space(q + 1);
+
+	if (q == nullptr)
+		return false;
+
+	q = skip_word(q);
+	q = skip_space(q);
+
+	return q != nullptr && *q == '[';
+}
+
 /// The argument list can have parenthesis or not.
 /// The number of arguments is checked.
 static
@@ -1002,6 +1044,10 @@ const char* parse_callfunc(const char* p, int32 require_paren, int32 is_custom)
 
 	p = skip_word(p);
 	p = skip_space(p);
+
+	if (str_data[func].type == C_FUNC && strcmp(get_str(func), "dyn") == 0 && parse_dyn_first_arg_is_indexed(p))
+		disp_error_message("parse_callfunc: dyn expects a root variable, not an indexed array element", p);
+
 	syntax.curly[syntax.curly_count].type = TYPE_ARGLIST;
 	syntax.curly[syntax.curly_count].count = 0;
 	if( *p == ';' )
@@ -1079,24 +1125,27 @@ static void parse_nextline(bool first, const char* p)
  */
 void parse_variable_sub_push(int32 word, const char *p2)
 {
-	if( p2 ) { // Process the variable index
-		const char *p3 = nullptr;
+	if (p2) { // Process one or more array indexes
+		const char* p3 = p2;
 
 		// Push the getelementofarray method into the stack
 		add_scriptl(buildin_getelementofarray_ref);
 		add_scriptc(C_ARG);
 		add_scriptl(word);
 
-		// Process the sub-expression for this assignment
-		p3 = parse_subexpr(p2 + 1, 1);
-		p3 = skip_space(p3);
+		while (p3 && *p3 == '[') {
+			// Process this index sub-expression
+			p3 = parse_subexpr(p3 + 1, 1);
+			p3 = skip_space(p3);
 
-		if( *p3 != ']' ) // Closing parenthesis is required for this script
-			disp_error_message("Missing closing ']' parenthesis for the variable assignment.", p3);
+			if (*p3 != ']')
+				disp_error_message("Missing closing ']' parenthesis for the variable assignment.", p3);
+
+			p3 = skip_space(p3 + 1);
+		}
 
 		// Push the closing function stack operator onto the stack
 		add_scriptc(C_FUNC);
-		p3++;
 	} else // No array index, simply push the variable or value onto the stack
 		add_scriptl(word);
 }
@@ -1128,15 +1177,19 @@ const char* parse_variable(const char* p) {
 		return nullptr;
 	}
 
-	if( *p == '[' ) {// array variable so process the array as appropriate
-		int32 i,j;
-		for( p2 = p, i = 0, j = 1; p; ++ i ) {
-			if( *p ++ == ']' && --(j) == 0 ) break;
-			if( *p == '[' ) ++ j;
-		}
+	if (*p == '[') {// array variable so process one or more array index groups
+		p2 = p;
+		while (p && *p == '[') {
+			int32 i, j;
+			for (i = 0, j = 1, ++p; p; ++i) {
+				if (*p == '[') ++j;
+				else if (*p == ']' && --j == 0) { ++p; break; }
+				++p;
+			}
 
-		if( !(p = skip_space(p)) ) {// end of line or invalid characters remaining
-			disp_error_message("Missing right expression or closing bracket for variable.", p);
+			if (!(p = skip_space(p))) {// end of line or invalid characters remaining
+				disp_error_message("Missing right expression or closing bracket for variable.", p);
+			}
 		}
 	}
 
@@ -1393,16 +1446,18 @@ const char* parse_simpleexpr(const char *p)
 
 		p=skip_word(p);
 		if( *p == '[' ){
-			// array(name[i] => getelementofarray(name,i) )
+			// array(name[i][j][k] => getelementofarray(name,i,j,k) )
 			add_scriptl(buildin_getelementofarray_ref);
 			add_scriptc(C_ARG);
 			add_scriptl(l);
 
-			p=parse_subexpr(p+1,-1);
-			p=skip_space(p);
-			if( *p != ']' )
-				disp_error_message("parse_simpleexpr: unmatched ']'",p);
-			++p;
+			while (*p == '[') {
+				p = parse_subexpr(p + 1, -1);
+				p = skip_space(p);
+				if (*p != ']')
+					disp_error_message("parse_simpleexpr: unmatched ']'", p);
+				p = skip_space(p + 1);
+			}
 			add_scriptc(C_FUNC);
 		}else
 			add_scriptl(l);
@@ -1489,6 +1544,349 @@ const char* parse_expr(const char *p)
 	return p;
 }
 
+
+/*==========================================
+ * Dynamic table literal parser
+ *------------------------------------------
+ * This parser handles a rAthena-specific literal form that is only accepted in
+ * a dyn declaration:
+ *
+ *     dyn .data = [
+ *         "key": "value",
+ *         (expr$): [ "nested": 1 ],
+ *     ];
+ *
+ * It deliberately does not make '[' a general expression literal.  Outside of
+ * this very specific context, '[' keeps its normal meaning as an array index.
+ */
+static const char* parse_dyn_literal_skip_string(const char* p)
+{
+	if (*p != '"')
+		return p;
+
+	++p;
+	while (*p && *p != '"') {
+		if ((unsigned char)p[-1] <= 0x7e && *p == '\\') {
+			p = skip_escaped_c(p);
+			continue;
+		}
+		if (*p == '\n')
+			disp_error_message("parse_dyn_literal: unexpected newline in string key", p);
+		++p;
+	}
+	if (!*p)
+		disp_error_message("parse_dyn_literal: unexpected eof in string key", p);
+	return p + 1;
+}
+
+static const char* parse_dyn_literal_skip_paren_expr(const char* p)
+{
+	if (*p != '(')
+		return p;
+
+	int32 depth = 1;
+	++p;
+	while (*p && depth > 0) {
+		if (*p == '"') {
+			p = parse_dyn_literal_skip_string(p);
+			continue;
+		}
+		if (*p == '(')
+			++depth;
+		else if (*p == ')')
+			--depth;
+		++p;
+	}
+	if (depth != 0)
+		disp_error_message("parse_dyn_literal: unmatched ')' in key expression", p);
+	return p;
+}
+
+static const char* parse_dyn_literal_skip_number(const char* p)
+{
+	const char* q = p;
+
+	// Integer literal keys follow rAthena array-index rules: only non-negative
+	// integer literals are accepted here. Use a parenthesized expression if a
+	// runtime value is needed; negative results will still be rejected at runtime.
+	if (*q == '-' || *q == '+')
+		disp_error_message("parse_dyn_literal: integer literal keys must be non-negative and unsigned", p);
+
+	if (q[0] == '0' && q[1] == 'x') {
+		q += 2;
+		if (!ISXDIGIT(*q))
+			disp_error_message("parse_dyn_literal: expected hexadecimal digit after 0x", p);
+		while (ISXDIGIT(*q))
+			++q;
+	} else {
+		if (!ISDIGIT(*q))
+			disp_error_message("parse_dyn_literal: expected decimal digit", p);
+		while (ISDIGIT(*q))
+			++q;
+	}
+	return q;
+}
+
+static const char* parse_dyn_literal_skip_key(const char* p)
+{
+	p = skip_space(p);
+	if (*p == '"')
+		return parse_dyn_literal_skip_string(p);
+	if (*p == '(')
+		return parse_dyn_literal_skip_paren_expr(p);
+	if (ISDIGIT(*p))
+		return parse_dyn_literal_skip_number(p);
+	if (*p == '-' || *p == '+')
+		disp_error_message("parse_dyn_literal: integer literal keys must be non-negative and unsigned", p);
+	disp_error_message("parse_dyn_literal: expected string key, integer key, or parenthesized key expression", p);
+	return p;
+}
+
+struct parse_dyn_literal_key {
+	const char* p;
+	bool integer_literal;
+};
+
+static parse_dyn_literal_key parse_dyn_literal_make_key(const char* p)
+{
+	p = skip_space(p);
+	return { p, is_number(p) };
+}
+
+static void parse_dyn_literal_emit_key(const parse_dyn_literal_key& key)
+{
+	/*
+	 * String keys and parenthesized expression keys were already emitted by
+	 * parse_subexpr(). Integer literal keys are handled the same way, but are
+	 * tracked explicitly so the dyn literal grammar documents and preserves the
+	 * intended distinction between:
+	 *
+	 *     0:   "value"   // integer key 0
+	 *     "0": "value"   // string key "0"
+	 *     (.@i): value   // runtime expression key
+	 */
+	parse_subexpr(key.p, -1);
+}
+
+static void parse_dyn_literal_emit_ref(int32 root_word, const std::vector<parse_dyn_literal_key>& keys)
+{
+	if (keys.empty()) {
+		add_scriptl(root_word);
+		return;
+	}
+
+	add_scriptl(buildin_getelementofarray_ref);
+	add_scriptc(C_ARG);
+	add_scriptl(root_word);
+
+	for (const parse_dyn_literal_key& key : keys)
+		parse_dyn_literal_emit_key(key);
+
+	add_scriptc(C_FUNC);
+}
+
+static void parse_dyn_literal_emit_dyn_decl(int32 root_word)
+{
+	add_scriptl(buildin_dyn_ref);
+	add_scriptc(C_ARG);
+	add_scriptl(root_word);
+	add_scriptc(C_FUNC);
+}
+
+static void parse_dyn_literal_emit_empty_dict(int32 root_word, const std::vector<parse_dyn_literal_key>& keys)
+{
+	/*
+	 * setarraydyn with no values is used internally by the literal parser to
+	 * create an explicit empty dictionary at the target path. This preserves the
+	 * distinction between a missing/default scalar and an empty dictionary.
+	 */
+	add_scriptl(buildin_setarraydyn_ref);
+	add_scriptc(C_ARG);
+	parse_dyn_literal_emit_ref(root_word, keys);
+	add_scriptc(C_FUNC);
+}
+
+static const char* parse_dyn_literal_emit_set(int32 root_word, const std::vector<parse_dyn_literal_key>& keys, const char* value)
+{
+	add_scriptl(buildin_set_ref);
+	add_scriptc(C_ARG);
+	parse_dyn_literal_emit_ref(root_word, keys);
+	const char* end = parse_subexpr(value, -1);
+	add_scriptc(C_FUNC);
+	return end;
+}
+
+static const char* parse_dyn_literal_table(const char* p, int32 root_word, std::vector<parse_dyn_literal_key>& keys)
+{
+	p = skip_space(p);
+	if (*p != '[')
+		disp_error_message("parse_dyn_literal: expected '['", p);
+	p = skip_space(p + 1);
+
+	if (*p == ']') {
+		parse_dyn_literal_emit_empty_dict(root_word, keys);
+		return p + 1;
+	}
+
+	while (*p) {
+		const char* key = skip_space(p);
+		const char* key_end = parse_dyn_literal_skip_key(key);
+		p = skip_space(key_end);
+		if (*p != ':')
+			disp_error_message("parse_dyn_literal: expected ':' after key", p);
+		p = skip_space(p + 1);
+
+		keys.push_back(parse_dyn_literal_make_key(key));
+		if (*p == '[') {
+			p = parse_dyn_literal_table(p, root_word, keys);
+		} else {
+			const char* value = p;
+			p = parse_dyn_literal_emit_set(root_word, keys, value);
+		}
+		keys.pop_back();
+
+		p = skip_space(p);
+		if (*p == ',') {
+			p = skip_space(p + 1);
+			if (*p == ']') {
+				++p;
+				return p;
+			}
+			continue;
+		}
+		if (*p == ']') {
+			++p;
+			return p;
+		}
+		disp_error_message("parse_dyn_literal: expected ',' or ']'", p);
+	}
+
+	disp_error_message("parse_dyn_literal: unexpected eof", p);
+	return p;
+}
+
+static const char* parse_dyn_literal_statement(const char* p)
+{
+	const char* word_end = skip_word(p);
+	if ((size_t)(word_end - p) != 3 || strncmp(p, "dyn", 3) != 0)
+		return nullptr;
+
+	p = skip_space(word_end);
+	if (p == nullptr || *p == 0)
+		return nullptr;
+
+	const char* root = p;
+	const char* root_end = skip_word(root);
+	if (root_end == root)
+		return nullptr;
+
+	const char* q = skip_space(root_end);
+	if (*q != '=')
+		return nullptr;
+	q = skip_space(q + 1);
+	if (*q != '[')
+		return nullptr;
+
+	int32 root_word = add_word(root);
+	if (str_data[root_word].type == C_FUNC || str_data[root_word].type == C_USERFUNC || str_data[root_word].type == C_USERFUNC_POS)
+		disp_error_message("parse_dyn_literal: dyn target cannot have the same name as a function or label", root);
+
+	parse_dyn_literal_emit_dyn_decl(root_word);
+
+	std::vector<parse_dyn_literal_key> keys;
+	// A literal declaration is an assignment, not a no-op redeclaration.
+	// Clear any previous dynamic dictionary before filling it with literal entries.
+	parse_dyn_literal_emit_empty_dict(root_word, keys);
+	p = parse_dyn_literal_table(q, root_word, keys);
+	p = skip_space(p);
+	if (*p != ';')
+		disp_error_message("parse_dyn_literal: expected ';' after literal", p);
+	return p + 1;
+}
+
+/*
+ * Parses explicit empty dynamic dictionary assignment:
+ *
+ *     .@a = [];
+ *     .@a["branch"] = [];
+ *
+ * This is intentionally limited to the empty literal. Non-empty literals are
+ * still only supported by the dyn declaration syntax for now:
+ *
+ *     dyn .@a = [ "key": "value" ];
+ */
+static const char* parse_dyn_empty_assignment_statement(const char* p)
+{
+	const char* lhs = skip_space(p);
+	const char* q = lhs;
+
+	if (q == nullptr || *q == 0)
+		return nullptr;
+
+	// Avoid stealing the dedicated dyn literal grammar.
+	const char* word_end = skip_word(q);
+	if ((size_t)(word_end - q) == 3 && strncmp(q, "dyn", 3) == 0)
+		return nullptr;
+
+	// Find the top-level '='. The left side is parsed later by parse_subexpr(),
+	// so we only need enough scanning to identify '= [] ;'.
+	int32 paren = 0;
+	int32 bracket = 0;
+	while (*q) {
+		if (*q == '"') {
+			q = parse_dyn_literal_skip_string(q);
+			continue;
+		}
+		if (*q == '(')
+			++paren;
+		else if (*q == ')' && paren > 0)
+			--paren;
+		else if (*q == '[')
+			++bracket;
+		else if (*q == ']' && bracket > 0)
+			--bracket;
+		else if (*q == '=' && paren == 0 && bracket == 0)
+			break;
+		else if ((*q == ';' || *q == '\n') && paren == 0 && bracket == 0)
+			return nullptr;
+		++q;
+	}
+
+	if (*q != '=')
+		return nullptr;
+
+	const char* rhs = skip_space(q + 1);
+	if (rhs == nullptr || rhs[0] != '[')
+		return nullptr;
+	rhs = skip_space(rhs + 1);
+	if (rhs == nullptr || rhs[0] != ']')
+		return nullptr;
+	rhs = skip_space(rhs + 1);
+	if (rhs == nullptr || rhs[0] != ';')
+		disp_error_message("parse_dyn_literal: expected ';' after empty dynamic table assignment", rhs);
+
+	add_scriptl(buildin_setarraydyn_ref);
+	add_scriptc(C_ARG);
+
+	/*
+	 * parse_subexpr() has no explicit end pointer. If we pass the original
+	 * source pointer directly, it will continue past the left-hand side and may
+	 * try to parse the "= []" part as a normal expression. That is exactly
+	 * what makes statements such as:
+	 *
+	 *     .@a["list"] = [];
+	 *
+	 * fail with "parse_simpleexpr: unexpected character" on '['. Compile the
+	 * left-hand side from an isolated temporary string so only the reference
+	 * expression is emitted as the first argument of setarraydyn.
+	 */
+	std::string lhs_expr(lhs, q - lhs);
+	parse_subexpr(lhs_expr.c_str(), -1);
+	add_scriptc(C_FUNC);
+
+	return rhs + 1;
+}
+
 /*==========================================
  * Analysis of the line
  *------------------------------------------*/
@@ -1497,6 +1895,14 @@ const char* parse_line(const char* p)
 	const char* p2;
 
 	p=skip_space(p);
+	if ((p2 = parse_dyn_literal_statement(p)) != nullptr) {
+		p = parse_syntax_close(p2);
+		return p;
+	}
+	if ((p2 = parse_dyn_empty_assignment_statement(p)) != nullptr) {
+		p = parse_syntax_close(p2);
+		return p;
+	}
 	if(*p==';') {
 		//Close decision for if(); for(); while();
 		p = parse_syntax_close(p + 1);
@@ -2257,6 +2663,8 @@ static void add_buildin_func(void)
 			str_data[n].deprecated = (buildin_func[i].deprecated != nullptr);
 
 			if (!strcmp(buildin_func[i].name, "setr")) buildin_set_ref = n;
+			else if (!strcmp(buildin_func[i].name, "dyn")) buildin_dyn_ref = n;
+			else if (!strcmp(buildin_func[i].name, "setarraydyn")) buildin_setarraydyn_ref = n;
 			else if (!strcmp(buildin_func[i].name, "callsub")) buildin_callsub_ref = n;
 			else if (!strcmp(buildin_func[i].name, "callfunc")) buildin_callfunc_ref = n;
 			else if( !strcmp(buildin_func[i].name, "getelementofarray") ) buildin_getelementofarray_ref = n;
@@ -2487,6 +2895,7 @@ struct script_code* parse_script_( const char *src, const char *file, int32 line
 		return nullptr;// empty script
 
 	memset(&syntax,0,sizeof(syntax));
+	parser_current_label_positions.clear();
 
 	script_buf=(unsigned char *)aMalloc(SCRIPT_BLOCK_SIZE*sizeof(unsigned char));
 	script_pos=0;
@@ -2513,6 +2922,7 @@ struct script_code* parse_script_( const char *src, const char *file, int32 line
 			if(str_data[j].type == C_NOP) str_data[j].type = C_NAME;
 		for(j=0; j<size; j++)
 			linkdb_final(&syntax.curly[j].case_label);
+		parser_current_label_positions.clear();
 		return nullptr;
 	}
 
@@ -2657,6 +3067,8 @@ struct script_code* parse_script_( const char *src, const char *file, int32 line
 	code->script_size = script_size;
 	code->local.vars = nullptr;
 	code->local.arrays = nullptr;
+	script_code_label_positions[code] = parser_current_label_positions;
+	parser_current_label_positions.clear();
 	return code;
 }
 
@@ -2675,6 +3087,158 @@ static bool script_rid2sd_( struct script_state *st, map_session_data** sd, cons
 		return false;
 	}
 }
+
+
+struct script_array_dynamic_value {
+	bool is_string = false;
+	int64 num = 0;
+	std::string str;
+};
+
+struct script_array_shape_info;
+static script_array_shape_info* script_array_dynamic_shape_get(script_state* st, map_session_data* sd, int64 uid, const char* name, reg_db* ref);
+static script_array_shape_info* script_array_shape_get_by_name(script_state* st, map_session_data* sd, const char* name, reg_db* ref, int32 id);
+static bool script_array_dynamic_reference_is_child(script_array_shape_info* shape, uint32 idx);
+static script_array_dynamic_value* script_array_dynamic_get_value(script_state* st, map_session_data* sd, int64 uid, const char* name, reg_db* ref);
+static bool script_array_is_dynamic_ref(script_state* st, map_session_data* sd, int64 uid, const char* name, reg_db* ref);
+
+
+/*
+ * -----------------------------------------------------------------------------
+ * Support des tableaux multidimensionnels / dictionnaires de script
+ * -----------------------------------------------------------------------------
+ * rAthena encode historiquement un élément de tableau sous la forme :
+ *   reference_uid(id_variable, index_1d)
+ * où index_1d est un entier unique. Cette représentation ne permet pas de
+ * stocker directement une coordonnée comme ["truc"][0]["age"].
+ *
+ * Le code ci-dessous ajoute donc une table de correspondance par variable :
+ *   coordonnée typée -> slot interne uint32
+ *
+ * Exemple :
+ *   .@a["truc"][0]["age"]
+ * est représenté comme la coordonnée :
+ *   { string:"truc", int:0, string:"age" }
+ * puis converti en un slot interne, par exemple 42. Le reste du moteur voit
+ * alors une référence classique :
+ *   reference_uid(id_de_.@a, 42)
+ *
+ * Important :
+ * - les clés entières et string sont typées, donc [0] et ["0"] sont distinctes ;
+ * - le slot 0 reste réservé à la référence racine de la variable ;
+ * - les slots hashés commencent à 1 ;
+ * - les clés string sont, pour l'instant, réservées aux variables temporaires
+ *   (.@, @, ., $@) afin d'éviter les problèmes de sauvegarde SQL des variables
+ *   permanentes ;
+ * - la table coord_to_slot ne stocke que les cellules réellement utilisées : une
+ *   lecture d'une valeur absente doit rester une valeur par défaut rAthena
+ *   (0 ou "") et ne doit pas créer une nouvelle entrée.
+ *
+ * Le support `dyn`, lorsqu'il est présent dans la branche, repose sur le même
+ * principe de slot interne, mais stocke en plus le type réel de la valeur
+ * (entier ou string). Cela permet à une variable déclarée dynamique de contenir
+ * à la fois des nombres et des chaînes, tout en conservant l'ancien moteur de
+ * références 1D en dessous.
+ */
+struct script_array_key {
+	// Type de la clé pour distinguer .@a[0] de .@a["0"].
+	bool is_string = false;
+
+	// Valeur utilisée quand la clé est numérique. Les indices négatifs sont
+	// refusés avant d'arriver ici.
+	uint64 num = 0;
+
+	// Valeur utilisée quand la clé est une chaîne. La chaîne vide "" est une
+	// clé valide et ne doit pas être confondue avec une clé inexistante.
+ 	std::string str;
+
+	bool operator==(const script_array_key& other) const {
+		return is_string == other.is_string && (is_string ? str == other.str : num == other.num);
+	}
+};
+
+struct script_array_key_hash {
+	// Hash d'une clé unique. Un sel différent est utilisé selon le type afin de
+	// limiter les collisions entre la clé entière 0 et la clé string "0".
+	size_t operator()(const script_array_key& key) const {
+		size_t h = key.is_string
+			? std::hash<std::string>()(key.str)
+			: std::hash<uint64>()(key.num);
+
+		size_t salt = key.is_string
+			? static_cast<size_t>(0x9e3779b9u)
+			: static_cast<size_t>(0x85ebca6bu);
+
+		return h ^ (salt + (h << 6) + (h >> 2));
+	}
+};
+
+struct script_array_coord_hash {
+	// Hash d'une coordonnée complète, par exemple ["truc"][0]["age"].
+	// On combine le hash de chaque clé dans l'ordre : ["a"][1] doit être
+	// différent de [1]["a"].
+	size_t operator()(const std::vector<script_array_key>& coords) const {
+		size_t h = static_cast<size_t>(2166136261u);
+		script_array_key_hash key_hasher;
+
+		for (const script_array_key& key : coords) {
+			size_t kh = key_hasher(key);
+			h ^= kh + static_cast<size_t>(0x9e3779b9u) + (h << 6) + (h >> 2);
+		}
+
+		return h;
+	}
+};
+ 
+// Les slots multidimensionnels doivent rester dans une plage sûre pour reference_uid().
+// SCRIPT_MAX_ARRAYSIZE peut valoir presque UINT32_MAX selon les branches, ce qui
+// produit des UID avec bit de signe haut et peut rendre les lectures/?itures
+// incoh?ntes sur certains chemins. On r?rve donc une plage haute mais sign?
+// positive pour les cellules hash?. Les indices 1D natifs continuent ?tiliser
+// leurs valeurs normales et sont ?t?par script_array_member_exists().
+#define SCRIPT_ARRAY_MD_SLOT_START 0x7ffffffeU
+#define SCRIPT_DYN_STRING_MAX_NODES 100U
+#define SCRIPT_DYN_STRING_MAX_BYTES 65535U
+
+struct script_array_shape_info {
+	// Taille maximale observée pour les dimensions numériques. Les dimensions
+	// contenant au moins une clé string gardent 0 ici, car elles ne peuvent pas
+	// être représentées comme une taille linéaire classique.
+	std::vector<uint64> dims;
+
+	// Correspondance principale : coordonnée typée -> slot interne.
+	// C'est ce slot qui est injecté dans reference_uid(id, slot).
+	std::unordered_map<std::vector<script_array_key>, uint32, script_array_coord_hash> coord_to_slot;
+
+	// Correspondance inverse utilisée par getarraysize/getarraykeys et par les
+	// nettoyages de branches : slot interne -> coordonnée typée.
+	std::unordered_map<uint32, std::vector<script_array_key>> slot_to_coord;
+
+	// Le slot 0 est réservé à la variable racine (.@a).
+	// Les cellules hashées multidimensionnelles/string-key sont allouées depuis
+	// le haut de la plage positive int32. Ne pas utiliser SCRIPT_MAX_ARRAYSIZE
+	// ici : dans cette branche il vaut UINT_MAX - 1. Un slot supérieur à
+	// INT32_MAX rend reference_uid(id, slot) négatif et peut produire des
+	// écritures/lectures invisibles, par exemple .@a[2][101] lu à 0.
+	// Cela évite aussi les collisions avec les tableaux 1D classiques
+	// (.@a[1], .@a[2], ...).
+	uint32 next_slot = SCRIPT_ARRAY_MD_SLOT_START;
+
+	// Dynamic variables declared with `dyn <var>;` store typed values here.
+	bool dynamic = false;
+
+	// false = scalar state (root value only), true = dictionary state (child keys only).
+	// A dynamic variable is always in exactly one of these states.
+	bool dynamic_dict = false;
+
+	std::unordered_map<uint32, script_array_dynamic_value> dynamic_values;
+
+	// Slots explicitly marked as empty dictionaries. Without this, a branch like
+	// .@a["empty"] = [] would be indistinguishable from a missing/default scalar.
+	std::unordered_set<uint32> dynamic_empty_dicts;
+};
+
+static uint32 script_array_count_child_keys(script_state* st, map_session_data* sd, const char* name, reg_db* ref, int32 id, script_array_shape_info* shape, const std::vector<script_array_key>& prefix);
 
 /**
  * Dereferences a variable/constant, replacing it with a copy of the value.
@@ -2707,6 +3271,79 @@ struct script_data *get_val_(struct script_state* st, struct script_data* data, 
 				data->type = C_INT;
 				data->u.num = 0;
 			}
+			return data;
+		}
+	}
+
+	if (script_array_is_dynamic_ref(st, sd, reference_getuid(data), name, data->ref)) {
+		script_array_shape_info* shape = script_array_dynamic_shape_get(st, sd, reference_getuid(data), name, data->ref);
+		uint32 dyn_idx = script_getvaridx(reference_getuid(data));
+
+		if (shape != nullptr && dyn_idx == 0 && shape->dynamic_dict) {
+			ShowError("script:get_val: dynamic variable '%s' is a dictionary and cannot be read as a scalar.\n", name);
+			script_reportsrc(st);
+			st->state = END;
+			data->type = C_INT;
+			data->u.num = 0;
+			data->ref = nullptr;
+			return data;
+		}
+
+		if (shape != nullptr && dyn_idx != 0 && !shape->dynamic_dict) {
+			ShowError("script:get_val: dynamic variable '%s' is a scalar and cannot be indexed.\n", name);
+			script_reportsrc(st);
+			st->state = END;
+			data->type = C_INT;
+			data->u.num = 0;
+			data->ref = nullptr;
+			return data;
+		}
+
+		if (shape != nullptr && dyn_idx != 0 && shape->dynamic_empty_dicts.find(dyn_idx) != shape->dynamic_empty_dicts.end()) {
+			ShowError("script:get_val: dynamic branch '%s' is a dictionary and cannot be read as a scalar.\n", name);
+			script_reportsrc(st);
+			st->state = END;
+			data->type = C_INT;
+			data->u.num = 0;
+			data->ref = nullptr;
+			return data;
+		}
+
+		if (shape != nullptr && dyn_idx != 0) {
+			auto coord_it = shape->slot_to_coord.find(dyn_idx);
+			if (coord_it != shape->slot_to_coord.end() && script_array_count_child_keys(st, sd, name, data->ref, script_getvarid(reference_getuid(data)), shape, coord_it->second) > 0) {
+				ShowError("script:get_val: dynamic branch '%s' is a dictionary and cannot be read as a scalar.\n", name);
+				script_reportsrc(st);
+				st->state = END;
+				data->type = C_INT;
+				data->u.num = 0;
+				data->ref = nullptr;
+				return data;
+			}
+		}
+
+		script_array_dynamic_value* dyn = script_array_dynamic_get_value(st, sd, reference_getuid(data), name, data->ref);
+		if (dyn != nullptr && dyn->is_string) {
+			data->type = dyn->str.empty() ? C_CONSTSTR : C_STR;
+			data->u.str = dyn->str.empty() ? const_cast<char*>("") : aStrdup(dyn->str.c_str());
+		}
+		else {
+			data->type = C_INT;
+			data->u.num = dyn != nullptr ? dyn->num : 0;
+		}
+		data->ref = nullptr;
+		return data;
+	}
+
+	{
+		script_array_shape_info* shape = script_array_shape_get_by_name(st, sd, name, data->ref, script_getvarid(reference_getuid(data)));
+		if (shape != nullptr && !shape->dynamic && script_array_dynamic_reference_is_child(shape, script_getvaridx(reference_getuid(data)))) {
+			ShowError("script:get_val: multidimensional/string-key array access on '%s' requires dyn.\n", name);
+			script_reportsrc(st);
+			st->state = END;
+			data->type = C_INT;
+			data->u.num = 0;
+			data->ref = nullptr;
 			return data;
 		}
 	}
@@ -2840,6 +3477,8 @@ struct script_data *get_val(struct script_state* st, struct script_data* data)
 }
 
 struct script_data* push_val2(struct script_stack* stack, enum c_op type, int64 val, struct reg_db* ref);
+/// Pushes a value into the stack
+#define push_val(stack,type,val) push_val2(stack, type, val, nullptr)
 
 const char* get_val2_str( struct script_state* st, int64 uid, struct reg_db* ref ){
 	push_val2( st->stack, C_NAME, uid, ref );
@@ -3076,6 +3715,1032 @@ struct reg_db *script_array_src(struct script_state *st, map_session_data *sd, c
 	return nullptr;
 }
 
+
+static std::unordered_map<uint64, script_array_shape_info> script_array_shapes;
+
+// Retourne l'identite stable du conteneur de variables.
+//
+// Important : il ne faut PAS utiliser l'adresse de `reg_db` directement pour les
+// variables .@. Pendant un callsub/callfunc, rAthena reutilise le meme objet
+// `st->stack->scope`, mais remplace ses pointeurs `vars`/`arrays` par ceux du
+// nouveau scope. Si la cle multiarray est basee sur l'adresse de `reg_db`, le
+// nettoyage du scope appele efface aussi les metadonnees du scope appelant.
+// Cela produisait exactement le symptome suivant :
+//   .@a[2][101] vaut 7 avant un callfunc d'assert, puis redevient 0 apres.
+//
+// Le pointeur `vars` est propre a chaque scope effectif et reste donc le meilleur
+// identifiant. `arrays` sert de secours, puis `src` en dernier recours.
+static uintptr_t script_array_shape_src_identity(const reg_db* src) {
+	if (src == nullptr)
+		return 0;
+	if (src->vars != nullptr)
+		return (uintptr_t)src->vars;
+	if (src->arrays != nullptr)
+		return (uintptr_t)src->arrays;
+	return (uintptr_t)src;
+}
+
+// Supprime toutes les metadonnees multiarray/dyn attachees a un conteneur de
+// variables precis. Voir script_array_shape_src_identity() pour la raison du
+// choix `vars/arrays` plutot que l'adresse de reg_db.
+static void script_array_shape_erase_src(const reg_db* src) {
+	uintptr_t identity = script_array_shape_src_identity(src);
+	if (identity == 0)
+		return;
+
+	uint32 src_key = (uint32)identity;
+	for (auto it = script_array_shapes.begin(); it != script_array_shapes.end();) {
+		if ((uint32)(it->first >> 32) == src_key)
+			it = script_array_shapes.erase(it);
+		else
+			++it;
+	}
+}
+
+// Construit une cle unique pour retrouver les metadonnees d'une variable.
+// On combine l'identite du conteneur reel (scope/local/player/global) et l'id
+// de variable.
+static uint64 script_array_shape_key(const reg_db* src, int32 id) {
+	return ((uint64)(uint32)script_array_shape_src_identity(src) << 32) ^ (uint32)id;
+}
+
+// Les clés string ne sont autorisées que pour les variables temporaires.
+// Les variables permanentes nécessiteraient une persistance SQL dédiée.
+static bool script_array_allows_string_keys(const char* name) {
+	return name != nullptr && (name[0] == '@' || name[0] == '.' || (name[0] == '$' && name[1] == '@') || name[0] == '\'');
+}
+
+bool clear_reg(struct script_state* st, map_session_data* sd, int64 num, const char* name, struct reg_db* ref);
+static bool script_array_member_exists(script_state* st, map_session_data* sd, const char* name, reg_db* ref, int32 id, uint32 idx);
+
+// Retrouve le reg_db qui contient réellement la variable référencée.
+// C’est indispensable pour que deux variables de même nom dans deux scopes
+// différents n’utilisent pas les mêmes métadonnées multidimensionnelles.
+static reg_db* script_array_src_data(script_state* st, map_session_data* sd, script_data* data) {
+	if (data == nullptr || !data_isreference(data))
+		return nullptr;
+
+	const char* name = get_str(reference_getid(data));
+	return script_array_src(st, sd, name, reference_getref(data));
+}
+
+static script_array_shape_info* script_array_shape_get(script_state* st, map_session_data* sd, script_data* data) {
+	reg_db* src = script_array_src_data(st, sd, data);
+	if (src == nullptr)
+		return nullptr;
+
+	auto it = script_array_shapes.find(script_array_shape_key(src, reference_getid(data)));
+	if (it == script_array_shapes.end())
+		return nullptr;
+
+	return &it->second;
+}
+
+static script_array_shape_info& script_array_shape_ensure(script_state* st, map_session_data* sd, script_data* data) {
+	reg_db* src = script_array_src_data(st, sd, data);
+	return script_array_shapes[script_array_shape_key(src, reference_getid(data))];
+}
+
+static script_array_shape_info* script_array_shape_get_by_name(script_state* st, map_session_data* sd, const char* name, reg_db* ref, int32 id) {
+	reg_db* src = script_array_src(st, sd, name, ref);
+	if (src == nullptr)
+		return nullptr;
+
+	auto it = script_array_shapes.find(script_array_shape_key(src, id));
+	if (it == script_array_shapes.end())
+		return nullptr;
+
+	return &it->second;
+}
+
+static script_array_shape_info& script_array_shape_ensure_by_name(script_state* st, map_session_data* sd, const char* name, reg_db* ref, int32 id) {
+	reg_db* src = script_array_src(st, sd, name, ref);
+	return script_array_shapes[script_array_shape_key(src, id)];
+}
+
+static script_array_shape_info* script_array_dynamic_shape_get(script_state* st, map_session_data* sd, int64 uid, const char* name, reg_db* ref) {
+	int32 id = script_getvarid(uid);
+
+	// Chemin normal : on resout la variable a partir du conteneur fourni par la reference.
+	script_array_shape_info* shape = script_array_shape_get_by_name(st, sd, name, ref, id);
+	if (shape != nullptr && shape->dynamic)
+		return shape;
+
+	// Certaines references racines (.@a sans index) peuvent perdre le pointeur ref
+	// pendant l'evaluation d'une expression. Pour les variables dynamiques, on refait
+	// donc une resolution explicite du conteneur courant avant de retomber sur le
+	// moteur classique. Ce fallback est volontairement limite aux variables temporaires.
+	if (name != nullptr && script_array_allows_string_keys(name)) {
+		reg_db* src = script_array_src(st, sd, name, nullptr);
+		if (src != nullptr) {
+			auto it = script_array_shapes.find(script_array_shape_key(src, id));
+			if (it != script_array_shapes.end() && it->second.dynamic)
+				return &it->second;
+		}
+	}
+
+	return nullptr;
+}
+
+static bool script_array_is_dynamic_ref(script_state* st, map_session_data* sd, int64 uid, const char* name, reg_db* ref) {
+	return script_array_dynamic_shape_get(st, sd, uid, name, ref) != nullptr;
+}
+
+static script_array_dynamic_value* script_array_dynamic_get_value(script_state* st, map_session_data* sd, int64 uid, const char* name, reg_db* ref) {
+	script_array_shape_info* shape = script_array_dynamic_shape_get(st, sd, uid, name, ref);
+	if (shape == nullptr)
+		return nullptr;
+
+	auto it = shape->dynamic_values.find(script_getvaridx(uid));
+	return it != shape->dynamic_values.end() ? &it->second : nullptr;
+}
+
+static bool script_array_slot_has_string_key(script_array_shape_info* shape, uint32 slot) {
+	if (shape == nullptr)
+		return false;
+
+	auto it = shape->slot_to_coord.find(slot);
+	if (it == shape->slot_to_coord.end())
+		return false;
+
+	for (const script_array_key& key : it->second) {
+		if (key.is_string)
+			return true;
+	}
+
+	return false;
+}
+
+static uint32 script_array_total_size_from_dims(const std::vector<uint64>& dims) {
+	if (dims.empty())
+		return 0;
+
+	uint64 total = 1;
+	for (uint64 dim : dims) {
+		if (dim == 0)
+			return 0;
+		if (total > ((uint64)SCRIPT_MAX_ARRAYSIZE - 1) / dim)
+			return SCRIPT_MAX_ARRAYSIZE;
+		total *= dim;
+	}
+
+	return total >= SCRIPT_MAX_ARRAYSIZE ? SCRIPT_MAX_ARRAYSIZE : (uint32)total;
+}
+
+// Convertit les arguments de script en clés typées.
+// Nombre -> clé entière, string -> clé string. Cette fonction applique aussi
+// les garde-fous : pas d’indice négatif et pas de clé string sur persistantes.
+static bool script_array_collect_keys(script_state* st, int32 first_arg, int32 last_arg, const char* name, std::vector<script_array_key>& out, const char* func) {
+	out.clear();
+	for (int32 i = first_arg; i <= last_arg; ++i) {
+		script_data* val = get_val(st, script_getdata(st, i));
+		script_array_key key;
+
+		if (data_isstring(val)) {
+			if (!script_array_allows_string_keys(name)) {
+				ShowWarning("script:%s: string array keys are only supported for temporary variables (.@, @, ., $@, ') for now.\n", func);
+				return false;
+			}
+			key.is_string = true;
+			key.str = conv_str(st, val);
+		}
+		else {
+			int64 idx = conv_num64(st, val);
+			if (idx < 0) {
+				ShowWarning("script:%s: negative multidimensional array index (%" PRId64 ").\n", func, idx);
+				return false;
+			}
+			key.is_string = false;
+			key.num = (uint64)idx;
+		}
+
+		out.push_back(key);
+	}
+	return true;
+}
+
+// Résout une coordonnée multidimensionnelle en slot interne.
+// Si la coordonnée existe déjà, on réutilise son slot. Sinon on crée un nouveau
+// slot, sans déplacer les anciennes valeurs : le tableau reste sparse.
+static bool script_array_resolve_hash_auto(script_state* st, map_session_data* sd, script_data* data, const char* name, int32 id, const std::vector<script_array_key>& indices, uint32& out, const char* func) {
+	if (indices.empty())
+		return false;
+
+	// Compatibilité 1D : un accès purement numérique à une seule dimension
+	// reste stocké dans le slot rAthena natif pour les variables classiques.
+	// Exception importante : pour une variable déclarée dyn, le slot 0 est
+	// réservé au scalaire racine (.@a). Donc .@a[0] doit être une vraie
+	// cellule enfant distincte, hashée comme les clés string. Sans cette
+	// exception, .@a[0] et .@a deviennent le même emplacement interne :
+	// .@a[0] = 123; .@a["name"] = "Bob" supprime alors .@a[0] en effaçant
+	// le scalaire racine.
+	if (indices.size() == 1 && !indices[0].is_string) {
+		if (indices[0].num >= SCRIPT_MAX_ARRAYSIZE) {
+			ShowWarning("script:%s: 1D array index out of range (%" PRIu64 ").\n", func, indices[0].num);
+			return false;
+		}
+
+		script_array_shape_info* existing_shape = script_array_shape_get(st, sd, data);
+		if (existing_shape == nullptr || !existing_shape->dynamic) {
+			out = (uint32)indices[0].num;
+			return true;
+		}
+
+	}
+
+	bool uses_dictionary_syntax = indices.size() > 1;
+	for (const script_array_key& key : indices) {
+		if (key.is_string) {
+			uses_dictionary_syntax = true;
+			break;
+		}
+	}
+
+	if (uses_dictionary_syntax) {
+		if (!script_array_allows_string_keys(name)) {
+			ShowError("script:%s: multidimensional/string-key arrays are only supported for temporary variables (.@, @, ., $@, ') for now. Variable '%s' is persistent.\n", func, name);
+			st->state = END;
+			return false;
+		}
+
+		script_array_shape_info* existing_shape = script_array_shape_get(st, sd, data);
+		if (existing_shape == nullptr || !existing_shape->dynamic) {
+			// Keep resolving the reference so setarraydyn can turn the root into dyn,
+			// but normal reads/writes through this non-dyn reference will be rejected.
+		}
+	}
+
+	if (indices.size() > SCRIPT_MAX_ARRAY_DIMENSIONS) {
+		ShowWarning("script:%s: too many array dimensions (max %u).\n", func, SCRIPT_MAX_ARRAY_DIMENSIONS);
+		return false;
+	}
+
+	script_array_shape_info& shape = script_array_shape_ensure(st, sd, data);
+
+	// Dictionary semantics: arrays are sparse and non-rectangular.
+	// A previous access like .@a[2][101] must not force every later access
+	// to have exactly two indices. Keep dims only as a best-effort max-depth
+	// helper for legacy nd commands.
+	if (shape.dims.size() < indices.size())
+		shape.dims.resize(indices.size(), 0);
+
+	for (size_t i = 0; i < indices.size(); ++i) {
+		if (indices[i].is_string)
+			continue;
+
+		if (indices[i].num == UINT64_MAX) {
+			ShowWarning("script:%s: multidimensional array index is too large.\n", func);
+			return false;
+		}
+
+		uint64 required = indices[i].num + 1;
+		if (shape.dims[i] < required)
+			shape.dims[i] = required;
+	}
+
+	auto it = shape.coord_to_slot.find(indices);
+	if (it != shape.coord_to_slot.end()) {
+		out = it->second;
+		return true;
+	}
+
+	// Les slots multidimensionnels partagent le meme espace d'index que les
+	// arrays 1D historiques. On les alloue depuis le haut de la plage et on
+	// saute les slots deja utilises, sinon .@a[2][101] pourrait ecraser .@a[1].
+	if (shape.next_slot == 1 || shape.next_slot > SCRIPT_ARRAY_MD_SLOT_START)
+		shape.next_slot = SCRIPT_ARRAY_MD_SLOT_START;
+
+	while (shape.next_slot > 0) {
+		uint32 slot = shape.next_slot--;
+
+		// Ne jamais réutiliser un slot déjà associé à une coordonnée hashée.
+		if (shape.slot_to_coord.find(slot) != shape.slot_to_coord.end())
+			continue;
+
+		// Ne jamais écraser un élément 1D classique déjà présent. C'est
+		// important pour les scripts qui mélangent .@a[1] et .@a[2][101].
+		if (script_array_member_exists(st, sd, name, reference_getref(data), id, slot))
+			continue;
+
+		shape.coord_to_slot[indices] = slot;
+		shape.slot_to_coord[slot] = indices;
+		out = slot;
+		return true;
+ 	}
+
+	ShowWarning("script:%s: multidimensional array has too many used cells (max %u).\n", func, SCRIPT_ARRAY_MD_SLOT_START);
+	return false;
+}
+
+static bool script_array_resolve_hash_auto(script_state* st, map_session_data* sd, script_data* data, int32 first_arg, int32 last_arg, uint32& out, const char* func) {
+	const char* name = get_str(reference_getid(data));
+	std::vector<script_array_key> indices;
+	if (!script_array_collect_keys(st, first_arg, last_arg, name, indices, func))
+		return false;
+
+	return script_array_resolve_hash_auto(st, sd, data, name, reference_getid(data), indices, out, func);
+}
+
+static bool script_array_advance_last_dimension(std::vector<script_array_key>& coords, const std::vector<uint64>& dims, uint64 add) {
+	if (coords.empty() || dims.empty() || coords.size() != dims.size() || coords.back().is_string)
+		return false;
+
+	if (UINT64_MAX - coords.back().num < add)
+		return false;
+
+	coords.back().num += add;
+	if (dims.back() != 0 && coords.back().num >= dims.back())
+		return false;
+
+	return true;
+}
+
+
+static bool script_array_member_exists(script_state* st, map_session_data* sd, const char* name, reg_db* ref, int32 id, uint32 idx) {
+	reg_db* src = script_array_src(st, sd, name, ref);
+	if (src == nullptr || src->arrays == nullptr)
+		return false;
+
+	script_array* sa = static_cast<script_array*>(idb_get(src->arrays, id));
+	if (sa == nullptr)
+		return false;
+
+	for (uint32 i = 0; i < sa->size; ++i) {
+		if (sa->members[i] == idx)
+			return true;
+	}
+
+	return false;
+}
+
+static uint32 script_array_member_count(script_state* st, map_session_data* sd, const char* name, reg_db* ref, int32 id) {
+	reg_db* src = script_array_src(st, sd, name, ref);
+	if (src == nullptr || src->arrays == nullptr)
+		return 0;
+
+	script_array* sa = static_cast<script_array*>(idb_get(src->arrays, id));
+	return sa != nullptr ? sa->size : 0;
+}
+
+// Renvoie vrai si la cellule racine / index 0 contient une valeur non-defaut.
+// En rAthena legacy, var et var[0] designent le meme emplacement, mais cet
+// emplacement n'est pas toujours enregistre dans script_array.members. Sans ce
+// correctif, getarraysize(.@a) peut retourner 0 apres ".@a = 99" ou
+// ".@a[0] = 123", alors que le comportement attendu est 1.
+static bool script_array_root_value_nondefault(script_state* st, map_session_data* sd, const char* name, reg_db* ref, int32 id) {
+	if (name == nullptr)
+		return false;
+
+	int64 uid = reference_uid(id, 0);
+
+	// Les variables dynamiques stockent aussi le scalaire racine dans le slot 0.
+	if (script_array_is_dynamic_ref(st, sd, uid, name, ref)) {
+		script_array_dynamic_value* dyn = script_array_dynamic_get_value(st, sd, uid, name, ref);
+		if (dyn == nullptr)
+			return false;
+		return dyn->is_string ? !dyn->str.empty() : dyn->num != 0;
+	}
+
+	char prefix = name[0];
+	char postfix = name[strlen(name) - 1];
+
+	if (postfix == '$') {
+		const char* value = nullptr;
+
+		switch (prefix) {
+			case '@':
+				if (sd != nullptr)
+					value = pc_readregstr(sd, uid);
+				break;
+			case '$':
+				value = mapreg_readregstr(uid);
+				break;
+			case '#':
+				if (sd != nullptr)
+					value = (name[1] == '#') ? pc_readaccountreg2str(sd, uid) : pc_readaccountregstr(sd, uid);
+				break;
+			case '.': {
+				struct DBMap* n = ref ? ref->vars : name[1] == '@' ? st->stack->scope.vars : st->script->local.vars;
+				if (n)
+					value = (const char*)i64db_get(n, uid);
+				break;
+			}
+			case '\'': {
+				struct DBMap* n = nullptr;
+				if (ref)
+					n = ref->vars;
+				else {
+					std::shared_ptr<s_instance_data> idata = util::umap_find(instances, script_instancegetid(st));
+					if (idata)
+						n = idata->regs.vars;
+				}
+				if (n)
+					value = (const char*)i64db_get(n, uid);
+				break;
+			}
+			default:
+				if (sd != nullptr)
+					value = pc_readglobalreg_str(sd, uid);
+				break;
+		}
+
+		return value != nullptr && value[0] != '\0';
+	}
+
+	int64 value = 0;
+
+	switch (prefix) {
+		case '@':
+			if (sd != nullptr)
+				value = pc_readreg(sd, uid);
+			break;
+		case '$':
+			value = mapreg_readreg(uid);
+			break;
+		case '#':
+			if (sd != nullptr)
+				value = (name[1] == '#') ? pc_readaccountreg2(sd, uid) : pc_readaccountreg(sd, uid);
+			break;
+		case '.': {
+			struct DBMap* n = ref ? ref->vars : name[1] == '@' ? st->stack->scope.vars : st->script->local.vars;
+			if (n)
+				value = i64db_i64get(n, uid);
+			break;
+		}
+		case '\'': {
+			struct DBMap* n = nullptr;
+			if (ref)
+				n = ref->vars;
+			else {
+				std::shared_ptr<s_instance_data> idata = util::umap_find(instances, script_instancegetid(st));
+				if (idata)
+					n = idata->regs.vars;
+			}
+			if (n)
+				value = i64db_i64get(n, uid);
+			break;
+		}
+		default:
+			if (sd != nullptr)
+				value = pc_readglobalreg(sd, uid);
+			break;
+	}
+
+	return value != 0;
+}
+
+static uint32 script_array_native_member_count(script_state* st, map_session_data* sd, const char* name, reg_db* ref, int32 id, script_array_shape_info* shape) {
+	reg_db* src = script_array_src(st, sd, name, ref);
+	if (src == nullptr || src->arrays == nullptr)
+		return 0;
+
+	script_array* sa = static_cast<script_array*>(idb_get(src->arrays, id));
+	if (sa == nullptr)
+		return 0;
+
+	uint32 count = 0;
+	for (uint32 i = 0; i < sa->size; ++i) {
+		uint32 slot = sa->members[i];
+		// Les cellules multidimensionnelles ont aussi un slot dans script_array.members.
+		// On ne doit pas les compter comme des enfants 1D directs.
+		if (shape != nullptr && shape->slot_to_coord.find(slot) != shape->slot_to_coord.end())
+			continue;
+		count++;
+	}
+
+	return count;
+}
+
+// Indique si une coordonnée appartient à une branche donnée.
+// Exemple : ["truc"][101] commence par ["truc"].
+static bool script_array_coord_starts_with(const std::vector<script_array_key>& coords, const std::vector<script_array_key>& prefix) {
+	if (coords.size() < prefix.size())
+		return false;
+
+	for (size_t i = 0; i < prefix.size(); ++i) {
+		if (!(coords[i] == prefix[i]))
+			return false;
+	}
+
+	return true;
+}
+
+static bool script_array_coord_has_live_subtree(script_state* st, map_session_data* sd, const char* name, reg_db* ref, int32 id, script_array_shape_info* shape, const std::vector<script_array_key>& prefix) {
+	if (shape == nullptr)
+		return false;
+
+	for (const auto& entry : shape->coord_to_slot) {
+		const std::vector<script_array_key>& coords = entry.first;
+
+		if (!script_array_coord_starts_with(coords, prefix))
+			continue;
+
+		if (shape->dynamic) {
+			if (shape->dynamic_values.find(entry.second) != shape->dynamic_values.end())
+				return true;
+			if (shape->dynamic_empty_dicts.find(entry.second) != shape->dynamic_empty_dicts.end())
+				return true;
+		}
+		else if (script_array_member_exists(st, sd, name, ref, id, entry.second))
+			return true;
+	}
+
+	return false;
+}
+
+// Compte uniquement les enfants directs réellement stockés sous un préfixe.
+// Les valeurs par défaut lues implicitement ne sont pas comptées.
+static uint32 script_array_count_child_keys(script_state* st, map_session_data* sd, const char* name, reg_db* ref, int32 id, script_array_shape_info* shape, const std::vector<script_array_key>& prefix) {
+	if (shape == nullptr)
+		return 0;
+
+	std::vector<script_array_key> keys;
+
+	for (const auto& entry : shape->coord_to_slot) {
+		const std::vector<script_array_key>& coords = entry.first;
+
+		if (coords.size() <= prefix.size() || !script_array_coord_starts_with(coords, prefix))
+			continue;
+
+		std::vector<script_array_key> child_prefix = prefix;
+		child_prefix.push_back(coords[prefix.size()]);
+
+		if (!script_array_coord_has_live_subtree(st, sd, name, ref, id, shape, child_prefix))
+			continue;
+
+		bool exists = false;
+		for (const script_array_key& key : keys) {
+			if (key == coords[prefix.size()]) {
+				exists = true;
+				break;
+			}
+		}
+
+		if (!exists)
+			keys.push_back(coords[prefix.size()]);
+	}
+
+	return (uint32)keys.size();
+}
+
+static bool script_array_md_pruning = false;
+
+static void script_array_prepare_dict_assignment(script_state* st, map_session_data* sd, int64 num, const char* name, struct reg_db* ref, bool nondefault_value) {
+	if (script_array_md_pruning || script_getvaridx(num) == 0)
+		return;
+
+	reg_db* src = script_array_src(st, sd, name, ref);
+	if (src == nullptr)
+		return;
+
+	auto shape_it = script_array_shapes.find(script_array_shape_key(src, script_getvarid(num)));
+	if (shape_it == script_array_shapes.end())
+		return;
+
+	script_array_shape_info& shape = shape_it->second;
+	auto coord_it = shape.slot_to_coord.find(script_getvaridx(num));
+	std::vector<script_array_key> coord;
+
+	if (coord_it != shape.slot_to_coord.end()) {
+		coord = coord_it->second;
+	} else if (!shape.dynamic && script_getvaridx(num) != 0) {
+		// Les indices 1D numeriques restent stockes dans leur slot natif.
+		// Pour appliquer la semantique dictionnaire, on reconstruit donc le
+		// prefixe [idx] meme s'il n'existe pas dans slot_to_coord.
+		script_array_key native_key;
+		native_key.is_string = false;
+		native_key.num = script_getvaridx(num);
+		coord.push_back(native_key);
+	} else {
+ 		return;
+	}
+	std::vector<uint32> slots_to_delete;
+
+	// Cas particulier des variables dynamiques : leurs valeurs ne sont pas
+	// stockees dans les registres numeriques/string classiques, mais dans
+	// shape.dynamic_values. Si un chemin non-dyn passe tout de meme par ici
+	// (ancien opcode, setarray, ou fallback), il faut supprimer les scalaires
+	// parents/enfants dans dynamic_values, sinon .@a["truc"] garde son
+	// ancienne valeur apres .@a["truc"][101] = 8.
+	if (shape.dynamic) {
+		for (size_t len = 1; len < coord.size(); ++len) {
+			std::vector<script_array_key> parent(coord.begin(), coord.begin() + len);
+			auto parent_it = shape.coord_to_slot.find(parent);
+			if (parent_it != shape.coord_to_slot.end() && shape.dynamic_values.find(parent_it->second) != shape.dynamic_values.end())
+				slots_to_delete.push_back(parent_it->second);
+		}
+
+		for (const auto& entry : shape.coord_to_slot) {
+			if (entry.first.size() > coord.size() && script_array_coord_starts_with(entry.first, coord))
+				slots_to_delete.push_back(entry.second);
+		}
+
+		for (uint32 slot : slots_to_delete) {
+			shape.dynamic_values.erase(slot);
+			shape.dynamic_empty_dicts.erase(slot);
+			auto old = shape.slot_to_coord.find(slot);
+			if (old != shape.slot_to_coord.end()) {
+				shape.coord_to_slot.erase(old->second);
+				shape.slot_to_coord.erase(old);
+			}
+		}
+
+		if (!nondefault_value) {
+			shape.dynamic_values.erase(script_getvaridx(num));
+			shape.dynamic_empty_dicts.erase(script_getvaridx(num));
+			shape.coord_to_slot.erase(coord);
+			shape.slot_to_coord.erase(script_getvaridx(num));
+		}
+
+		return;
+	}
+
+	// Python-like semantics: when a child is assigned, parent scalar values become dictionaries.
+	for (size_t len = 1; len < coord.size(); ++len) {
+		std::vector<script_array_key> parent(coord.begin(), coord.begin() + len);
+		
+		if (parent.size() == 1 && !parent[0].is_string && parent[0].num < SCRIPT_MAX_ARRAYSIZE) {
+			uint32 native_parent = (uint32)parent[0].num;
+			if (script_array_member_exists(st, sd, name, ref, script_getvarid(num), native_parent))
+				slots_to_delete.push_back(native_parent);
+			continue;
+		}
+
+		auto parent_it = shape.coord_to_slot.find(parent);
+		if (parent_it != shape.coord_to_slot.end() && script_array_member_exists(st, sd, name, ref, script_getvarid(num), parent_it->second)) {
+			slots_to_delete.push_back(parent_it->second);
+		}
+		else if (parent.size() == 1 && !parent[0].is_string && parent[0].num < SCRIPT_MAX_ARRAYSIZE) {
+			uint32 parent_slot = (uint32)parent[0].num;
+			if (script_array_member_exists(st, sd, name, ref, script_getvarid(num), parent_slot))
+				slots_to_delete.push_back(parent_slot);
+		}
+	}
+
+	// When a scalar is assigned, all previous children below that key disappear.
+	for (const auto& entry : shape.coord_to_slot) {
+		if (entry.first.size() > coord.size() && script_array_coord_starts_with(entry.first, coord))
+			slots_to_delete.push_back(entry.second);
+	}
+
+	script_array_md_pruning = true;
+	for (uint32 slot : slots_to_delete)
+		clear_reg(st, sd, reference_uid(script_getvarid(num), slot), name, ref);
+	script_array_md_pruning = false;
+
+	for (uint32 slot : slots_to_delete) {
+		auto old = shape.slot_to_coord.find(slot);
+		if (old != shape.slot_to_coord.end()) {
+			shape.coord_to_slot.erase(old->second);
+			shape.slot_to_coord.erase(old);
+		}
+	}
+
+	if (!nondefault_value) {
+		shape.coord_to_slot.erase(coord);
+		shape.slot_to_coord.erase(script_getvaridx(num));
+	}
+}
+
+
+static bool script_array_dynamic_reference_is_child(script_array_shape_info* shape, uint32 idx) {
+	return shape != nullptr && idx != 0 && shape->slot_to_coord.find(idx) != shape->slot_to_coord.end();
+}
+
+static bool script_array_dynamic_stop_bad_state(script_state* st, const char* func, const char* name, const char* what) {
+	ShowError("script:%s: invalid access to dynamic variable '%s': %s.\n", func, name ? name : "<unknown>", what);
+	script_reportsrc(st);
+	st->state = END;
+	return false;
+}
+
+static void script_array_clear_all_members(script_state* st, map_session_data* sd, const char* name, reg_db* ref, int32 id) {
+	reg_db* src = script_array_src(st, sd, name, ref);
+	if (src == nullptr)
+		return;
+
+	std::vector<uint32> members;
+	if (src->arrays != nullptr) {
+		script_array* sa = static_cast<script_array*>(idb_get(src->arrays, id));
+		if (sa != nullptr) {
+			for (uint32 i = 0; i < sa->size; ++i)
+				members.push_back(sa->members[i]);
+		}
+	}
+
+	// The legacy root value (index 0) may exist without being listed in sa->members.
+	members.push_back(0);
+
+	script_array_md_pruning = true;
+	for (uint32 slot : members)
+		clear_reg(st, sd, reference_uid(id, slot), name, ref);
+	script_array_md_pruning = false;
+}
+
+static bool script_array_dynamic_store_value(script_state* st, map_session_data* sd, int64 uid, const char* name, reg_db* ref, script_data* value) {
+	script_array_shape_info* shape = script_array_dynamic_shape_get(st, sd, uid, name, ref);
+	if (shape == nullptr)
+		return false;
+
+	uint32 slot = script_getvaridx(uid);
+	bool nondefault = true;
+	script_array_dynamic_value dyn;
+	script_data* val = get_val(st, value);
+
+	if (data_isstring(val)) {
+		dyn.is_string = true;
+		dyn.str = conv_str(st, val);
+		nondefault = !dyn.str.empty();
+	}
+	else {
+		dyn.is_string = false;
+		dyn.num = conv_num64(st, val);
+		nondefault = dyn.num != 0;
+	}
+
+	if (slot == 0) {
+		ShowError("script:set: dynamic variable '%s' is a dictionary and cannot be assigned a scalar value. Use [] or del for dictionary operations.\n", name);
+		script_reportsrc(st);
+		st->state = END;
+		return false;
+	} else {
+		// Writing any child makes the variable a dictionary and removes the root scalar.
+		shape->dynamic_dict = true;
+		shape->dynamic_values.erase(0);
+		shape->dynamic_empty_dicts.erase(0);
+
+		auto coord_it = shape->slot_to_coord.find(slot);
+		if (coord_it != shape->slot_to_coord.end()) {
+			const std::vector<script_array_key>& coord = coord_it->second;
+			std::vector<uint32> slots_to_delete;
+
+			// Parent scalars become dictionaries.
+			for (size_t len = 1; len < coord.size(); ++len) {
+				std::vector<script_array_key> parent(coord.begin(), coord.begin() + len);
+				auto parent_it = shape->coord_to_slot.find(parent);
+				if (parent_it != shape->coord_to_slot.end() && shape->dynamic_values.find(parent_it->second) != shape->dynamic_values.end())
+					slots_to_delete.push_back(parent_it->second);
+			}
+
+			// A scalar overwrite removes its children.
+			for (const auto& entry : shape->coord_to_slot) {
+				if (entry.first.size() > coord.size() && script_array_coord_starts_with(entry.first, coord))
+					slots_to_delete.push_back(entry.second);
+			}
+
+			for (uint32 delete_slot : slots_to_delete) {
+				shape->dynamic_values.erase(delete_slot);
+				shape->dynamic_empty_dicts.erase(delete_slot);
+				auto old = shape->slot_to_coord.find(delete_slot);
+				if (old != shape->slot_to_coord.end()) {
+					shape->coord_to_slot.erase(old->second);
+					shape->slot_to_coord.erase(old);
+				}
+			}
+		}
+	}
+
+	shape->dynamic_empty_dicts.erase(slot);
+	if (nondefault)
+		shape->dynamic_values[slot] = dyn;
+	else
+		shape->dynamic_values.erase(slot);
+
+	return true;
+}
+
+static bool script_array_dyn_string_append(std::string& out, const std::string& text, bool& truncated) {
+	if (truncated)
+		return true;
+
+	if (out.size() + text.size() > SCRIPT_DYN_STRING_MAX_BYTES) {
+		const char* suffix = "\n...<truncated>";
+		size_t suffix_len = strlen(suffix);
+		if (out.size() < SCRIPT_DYN_STRING_MAX_BYTES) {
+			size_t remaining = SCRIPT_DYN_STRING_MAX_BYTES - out.size();
+			if (remaining > suffix_len)
+				out.append(text, 0, remaining - suffix_len);
+			out += suffix;
+		}
+		truncated = true;
+		return true;
+	}
+
+	out += text;
+	return true;
+}
+
+static std::string script_array_dyn_string_indent(uint32 depth) {
+	return std::string((size_t)depth, '\t');
+}
+
+static std::string script_array_dyn_string_escape(const std::string& text) {
+	std::string out;
+	out.reserve(text.size() + 8);
+
+	for (unsigned char c : text) {
+		switch (c) {
+			case '\\': out += "\\\\"; break;
+			case '"': out += "\\\""; break;
+			case '\n': out += "\\n"; break;
+			case '\r': out += "\\r"; break;
+			case '\t': out += "\\t"; break;
+			default:
+				if (c < 32) {
+					char buf[8];
+					snprintf(buf, sizeof(buf), "\\x%02X", c);
+					out += buf;
+				} else {
+					out += (char)c;
+				}
+				break;
+		}
+	}
+
+	return out;
+}
+
+static std::string script_array_dyn_key_to_string(const script_array_key& key) {
+	if (key.is_string)
+		return "\"" + script_array_dyn_string_escape(key.str) + "\"";
+
+	char buf[32];
+	snprintf(buf, sizeof(buf), "%" PRIu64, key.num);
+	return std::string(buf);
+}
+
+static bool script_array_dyn_key_less(const script_array_key& a, const script_array_key& b) {
+	if (a.is_string != b.is_string)
+		return !a.is_string; // integer keys first, then string keys.
+
+	if (a.is_string)
+		return a.str < b.str;
+
+	return a.num < b.num;
+}
+
+static std::vector<script_array_key> script_array_dyn_direct_child_keys(script_state* st, map_session_data* sd, const char* name, reg_db* ref, int32 id, script_array_shape_info* shape, const std::vector<script_array_key>& prefix) {
+	std::vector<script_array_key> keys;
+
+	if (shape == nullptr)
+		return keys;
+
+	for (const auto& entry : shape->coord_to_slot) {
+		const std::vector<script_array_key>& coords = entry.first;
+
+		if (coords.size() <= prefix.size() || !script_array_coord_starts_with(coords, prefix))
+			continue;
+
+		std::vector<script_array_key> child_prefix = prefix;
+		child_prefix.push_back(coords[prefix.size()]);
+
+		if (!script_array_coord_has_live_subtree(st, sd, name, ref, id, shape, child_prefix))
+			continue;
+
+		bool exists = false;
+		for (const script_array_key& key : keys) {
+			if (key == coords[prefix.size()]) {
+				exists = true;
+				break;
+			}
+		}
+
+		if (!exists)
+			keys.push_back(coords[prefix.size()]);
+	}
+
+	std::sort(keys.begin(), keys.end(), script_array_dyn_key_less);
+	return keys;
+}
+
+static bool script_array_dyn_serialize_value(script_state* st, map_session_data* sd, const char* name, reg_db* ref, int32 id, script_array_shape_info* shape, const std::vector<script_array_key>& prefix, std::string& out, uint32 depth, uint32& nodes, bool& truncated);
+
+static bool script_array_dyn_serialize_scalar(const script_array_dynamic_value& value, std::string& out, bool& truncated) {
+	if (value.is_string)
+		return script_array_dyn_string_append(out, "\"" + script_array_dyn_string_escape(value.str) + "\"", truncated);
+
+	char buf[32];
+	snprintf(buf, sizeof(buf), "%" PRId64, value.num);
+	return script_array_dyn_string_append(out, buf, truncated);
+}
+
+static bool script_array_dyn_serialize_table(script_state* st, map_session_data* sd, const char* name, reg_db* ref, int32 id, script_array_shape_info* shape, const std::vector<script_array_key>& prefix, std::string& out, uint32 depth, uint32& nodes, bool& truncated) {
+	std::vector<script_array_key> keys = script_array_dyn_direct_child_keys(st, sd, name, ref, id, shape, prefix);
+
+	if (!script_array_dyn_string_append(out, "[", truncated))
+		return false;
+
+	if (keys.empty())
+		return script_array_dyn_string_append(out, "]", truncated);
+
+	if (!script_array_dyn_string_append(out, "\n", truncated))
+		return false;
+
+	for (const script_array_key& key : keys) {
+		if (nodes >= SCRIPT_DYN_STRING_MAX_NODES) {
+			ShowWarning("script:dyntostring: output truncated after %u dynamic nodes.\n", SCRIPT_DYN_STRING_MAX_NODES);
+			script_array_dyn_string_append(out, script_array_dyn_string_indent(depth + 1) + "\"...\": \"<max nodes reached>\",\n", truncated);
+			truncated = true;
+			break;
+		}
+
+		std::vector<script_array_key> child_prefix = prefix;
+		child_prefix.push_back(key);
+
+		++nodes;
+		if (!script_array_dyn_string_append(out, script_array_dyn_string_indent(depth + 1) + script_array_dyn_key_to_string(key) + ": ", truncated))
+			return false;
+
+		if (!script_array_dyn_serialize_value(st, sd, name, ref, id, shape, child_prefix, out, depth + 1, nodes, truncated))
+			return false;
+
+		if (!script_array_dyn_string_append(out, ",\n", truncated))
+			return false;
+	}
+
+	return script_array_dyn_string_append(out, script_array_dyn_string_indent(depth) + "]", truncated);
+}
+
+static bool script_array_dyn_serialize_value(script_state* st, map_session_data* sd, const char* name, reg_db* ref, int32 id, script_array_shape_info* shape, const std::vector<script_array_key>& prefix, std::string& out, uint32 depth, uint32& nodes, bool& truncated) {
+	if (shape == nullptr || !shape->dynamic)
+		return script_array_dyn_string_append(out, "0", truncated);
+
+	if (depth > SCRIPT_MAX_ARRAY_DIMENSIONS) {
+		ShowWarning("script:dyntostring: maximum dynamic depth %u reached.\n", SCRIPT_MAX_ARRAY_DIMENSIONS);
+		script_array_dyn_string_append(out, "\"<max depth reached>\"", truncated);
+		truncated = true;
+		return true;
+	}
+
+	uint32 slot = 0;
+	bool has_slot = prefix.empty();
+
+	if (!prefix.empty()) {
+		auto slot_it = shape->coord_to_slot.find(prefix);
+		if (slot_it != shape->coord_to_slot.end()) {
+			slot = slot_it->second;
+			has_slot = true;
+		}
+	}
+
+	if (has_slot) {
+		auto value_it = shape->dynamic_values.find(slot);
+		if (value_it != shape->dynamic_values.end())
+			return script_array_dyn_serialize_scalar(value_it->second, out, truncated);
+	}
+
+	std::vector<script_array_key> keys = script_array_dyn_direct_child_keys(st, sd, name, ref, id, shape, prefix);
+	if (!keys.empty() || prefix.empty() || (has_slot && shape->dynamic_empty_dicts.find(slot) != shape->dynamic_empty_dicts.end()))
+		return script_array_dyn_serialize_table(st, sd, name, ref, id, shape, prefix, out, depth, nodes, truncated);
+
+	return script_array_dyn_string_append(out, "0", truncated);
+}
+
+static bool script_array_dyn_build_string(script_state* st, map_session_data* sd, script_data* data, const char* name, int32 id, uint32 idx, std::string& out, bool& truncated) {
+	script_array_shape_info* shape = script_array_dynamic_shape_get(st, sd, reference_uid(id, 0), name, reference_getref(data));
+	if (shape == nullptr || !shape->dynamic) {
+		ShowError("script:dyntostring: variable '%s' is not dynamic.\n", name);
+		st->state = END;
+		return false;
+	}
+
+	std::vector<script_array_key> prefix;
+	if (idx != 0) {
+		auto prefix_it = shape->slot_to_coord.find(idx);
+		if (prefix_it == shape->slot_to_coord.end()) {
+			// Missing dynamic path: keep read-default behavior for debug output.
+			out = "0";
+			return true;
+		}
+		prefix = prefix_it->second;
+	}
+
+	uint32 nodes = 0;
+	return script_array_dyn_serialize_value(st, sd, name, reference_getref(data), id, shape, prefix, out, 0, nodes, truncated);
+}
+
+static bool script_array_builtin_resolve_ref(script_state* st, int32 arg, script_data*& data, const char*& name, int32& id, uint32& idx, map_session_data*& sd, const char* func) {
+	data = script_getdata(st, arg);
+	if (!data_isreference(data)) {
+		ShowError("script:%s: not a variable\n", func);
+		script_reportdata(data);
+		script_pushnil(st);
+		st->state = END;
+		return false;
+	}
+
+	id = reference_getid(data);
+	idx = reference_getindex(data);
+	name = get_str(id);
+
+	if (not_server_variable(*name)) {
+		if (!script_rid2sd(sd))
+			return false;
+	}
+
+	return true;
+}
+
 /**
  * Processes a array member modification, and update data accordingly
  *
@@ -3150,6 +4815,9 @@ bool set_reg_str( struct script_state* st, map_session_data* sd, int64 num, cons
 		// integer variable
 		return false;
 	}
+
+	if (script_getvaridx(num) != 0)
+		script_array_prepare_dict_assignment(st, sd, num, name, ref, value != nullptr && value[0] != '\0');
 
 	switch( prefix ){
 		case '@':
@@ -3244,6 +4912,9 @@ bool set_reg_num( struct script_state* st, map_session_data* sd, int64 num, cons
 
 		return true;
 	}
+
+	if (script_getvaridx(num) != 0)
+		script_array_prepare_dict_assignment(st, sd, num, name, ref, value != 0);
 
 	switch( prefix ){
 		case '@':
@@ -3455,9 +5126,6 @@ void stack_expand(struct script_stack* stack)
 			64 * sizeof(stack->stack_data[0]) );
 }
 
-/// Pushes a value into the stack
-#define push_val(stack,type,val) push_val2(stack, type, val, nullptr)
-
 /// Pushes a value into the stack (with reference)
 struct script_data* push_val2(struct script_stack* stack, enum c_op type, int64 val, struct reg_db *ref)
 {
@@ -3518,6 +5186,69 @@ struct script_data* push_copy(struct script_stack* stack, int32 pos)
 	}
 }
 
+static void script_return_value_free(script_data& data)
+{
+	if (data.type == C_STR && data.u.str != nullptr) {
+		aFree(data.u.str);
+		data.u.str = nullptr;
+	}
+	data.type = C_NOP;
+	data.ref = nullptr;
+}
+
+static void script_return_values_clear(script_state* st)
+{
+	auto it = script_return_values.find(st);
+	if (it == script_return_values.end())
+		return;
+
+	for (script_data& data : it->second)
+		script_return_value_free(data);
+
+	it->second.clear();
+}
+
+static script_data script_data_make_owned_copy(script_data* src)
+{
+	script_data out = {};
+	out.type = src->type;
+	out.ref = src->ref;
+
+	if (src->type == C_STR) {
+		out.u.str = aStrdup(src->u.str ? src->u.str : "");
+		out.ref = nullptr;
+	} else if (src->type == C_CONSTSTR) {
+		out.u.str = src->u.str;
+		out.ref = nullptr;
+	} else {
+		out.u.num = src->u.num;
+	}
+
+	return out;
+}
+
+static void script_push_return_value(script_state* st, const script_data& data)
+{
+	switch (data.type) {
+		case C_STR:
+			script_pushstrcopy(st, data.u.str ? data.u.str : "");
+			break;
+		case C_CONSTSTR:
+			script_pushconststr(st, data.u.str ? data.u.str : "");
+			break;
+		case C_INT:
+		case C_POS:
+			script_pushint64(st, data.u.num);
+			break;
+		case C_NAME:
+			push_val2(st->stack, data.type, data.u.num, data.ref);
+			break;
+		default:
+			script_pushnil(st);
+			break;
+	}
+}
+
 /// Removes the values in indexes [start,end] from the stack.
 /// Adjusts all stack pointers.
 void pop_stack(struct script_state* st, int32 start, int32 end)
@@ -3543,6 +5274,7 @@ void pop_stack(struct script_state* st, int32 start, int32 end)
 			struct script_retinfo* ri = data->u.ri;
 
 			if (ri->scope.vars) {
+				script_array_shape_erase_src(&ri->scope);
 				script_free_vars(ri->scope.vars);
 				ri->scope.vars = nullptr;
 			}
@@ -3608,6 +5340,8 @@ void script_free_code(struct script_code* code)
 
 	if (code->instances)
 		script_stop_scriptinstances(code);
+	script_code_label_positions.erase(code);
+	script_array_shape_erase_src(&code->local);
 	script_free_vars(code->local.vars);
 	if (code->local.arrays)
 		code->local.arrays->destroy(code->local.arrays, script_free_array_db);
@@ -3684,6 +5418,7 @@ void script_free_state(struct script_state* st)
 		if (st->sleep.timer != INVALID_TIMER)
 			delete_timer(st->sleep.timer, run_script_timer);
 		if (st->stack) {
+			script_array_shape_erase_src(&st->stack->scope);
 			script_free_vars(st->stack->scope.vars);
 			if (st->stack->scope.arrays)
 				st->stack->scope.arrays->destroy(st->stack->scope.arrays, script_free_array_db);
@@ -3703,6 +5438,8 @@ void script_free_state(struct script_state* st)
 			}
 		}
 		st->pos = -1;
+		script_return_values_clear(st);
+		script_return_values.erase(st);
 
 		idb_remove(st_db, st->id);
 		ers_free(st_ers, st);
@@ -4160,6 +5897,7 @@ int32 run_func(struct script_state *st)
 			st->state = END;
 			return 1;
 		}
+		script_array_shape_erase_src(&st->stack->scope);
 		script_free_vars(st->stack->scope.vars);
 		st->stack->scope.arrays->destroy(st->stack->scope.arrays, script_free_array_db);
 
@@ -5543,6 +7281,115 @@ BUILDIN_FUNC(getarg)
 	return SCRIPT_CMD_SUCCESS;
 }
 
+
+/// Retrieves a value from the last return statement.
+/// getreturn(<index>) -> <value>
+BUILDIN_FUNC(getreturn)
+{
+	int32 idx = script_getnum(st, 2);
+	auto it = script_return_values.find(st);
+
+	if (idx < 0 || it == script_return_values.end() || idx >= (int32)it->second.size()) {
+		ShowError("script:getreturn: index %d out of range (count=%d).\n", idx, it == script_return_values.end() ? 0 : (int32)it->second.size());
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	script_push_return_value(st, it->second[idx]);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/// Retrieves the number of values returned by the last return statement.
+/// getreturncount() -> <count>
+BUILDIN_FUNC(getreturncount)
+{
+	auto it = script_return_values.find(st);
+	script_pushint(st, it == script_return_values.end() ? 0 : (int32)it->second.size());
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/*==========================================
+ * NPC-local subroutine call.
+ * callnpcsub "NPCName", "Label"{, args...};
+ *------------------------------------------*/
+BUILDIN_FUNC(callnpcsub)
+{
+	const char* npc_name = script_getstr(st, 2);
+	const char* label_name = script_getstr(st, 3);
+	npc_data* nd = npc_name2id(npc_name);
+	struct script_retinfo* ri;
+	struct reg_db* ref = nullptr;
+	int32 i, j;
+
+	if (label_name == nullptr || strncasecmp(label_name, "On", 2) == 0) {
+		ShowError("script:callnpcsub: event labels starting with 'On' are not allowed ('%s').\n", label_name ? label_name : "");
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	if (nd == nullptr || nd->subtype != NPCTYPE_SCRIPT || nd->u.scr.script == nullptr) {
+		ShowError("script:callnpcsub: NPC '%s' not found or has no script.\n", npc_name);
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	auto script_it = script_code_label_positions.find(nd->u.scr.script);
+	if (script_it == script_code_label_positions.end()) {
+		ShowError("script:callnpcsub: no labels registered for NPC '%s'.\n", npc_name);
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	auto label_it = script_it->second.find(label_name);
+	if (label_it == script_it->second.end()) {
+		ShowError("script:callnpcsub: label '%s' not found in NPC '%s'.\n", label_name, npc_name);
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	ref = (struct reg_db*)aCalloc(sizeof(struct reg_db), 2);
+	ref[0].vars = st->stack->scope.vars;
+	if (!st->stack->scope.arrays)
+		st->stack->scope.arrays = idb_alloc(DB_OPT_BASE);
+	ref[0].arrays = st->stack->scope.arrays;
+	ref[1].vars = st->script->local.vars;
+	if (!st->script->local.arrays)
+		st->script->local.arrays = idb_alloc(DB_OPT_BASE);
+	ref[1].arrays = st->script->local.arrays;
+
+	for (i = st->start + 4, j = 0; i < st->end; i++, j++) {
+		struct script_data* data = push_copy(st->stack, i);
+
+		if (data_isreference(data) && !data->ref) {
+			const char* name = reference_getname(data);
+
+			if (name[0] == '.')
+				data->ref = (name[1] == '@' ? &ref[0] : &ref[1]);
+		}
+	}
+
+	CREATE(ri, struct script_retinfo, 1);
+	ri->script       = st->script;
+	ri->scope.vars   = st->stack->scope.vars;
+	ri->scope.arrays = st->stack->scope.arrays;
+	ri->pos          = st->pos;
+	ri->nargs        = j;
+	ri->defsp        = st->stack->defsp;
+	push_retinfo(st->stack, ri, ref);
+
+	st->pos = label_it->second;
+	st->script = nd->u.scr.script;
+	st->stack->defsp = st->stack->sp;
+	st->state = GOTO;
+	st->stack->scope.vars = i64db_alloc(DB_OPT_RELEASE_DATA);
+	st->stack->scope.arrays = idb_alloc(DB_OPT_BASE);
+
+	if (!st->script->local.vars)
+		st->script->local.vars = i64db_alloc(DB_OPT_RELEASE_DATA);
+
+	return SCRIPT_CMD_SUCCESS;
+}
+
 /// Returns from the current function, optionaly returning a value from the functions.
 /// Don't use outside script functions.
 ///
@@ -5550,25 +7397,33 @@ BUILDIN_FUNC(getarg)
 /// return <value>;
 BUILDIN_FUNC(return)
 {
-	if( script_hasdata(st,2) )
-	{// return value
-		struct script_data* data;
-		script_pushcopy(st, 2);
-		data = script_getdatatop(st, -1);
-		if( data_isreference(data) ) {
-			const char* name = reference_getname(data);
-			if( name[0] == '.' && name[1] == '@' ) { // scope variable
-				if( !data->ref || data->ref->vars == st->stack->scope.vars )
-					get_val(st, data); // current scope, convert to value
-				if( data->ref && data->ref->vars == st->stack->stack_data[st->stack->defsp-1].u.ri->scope.vars )
-					data->ref = nullptr; // Reference to the parent scope, remove reference pointer
-			}
+	script_return_values_clear(st);
+
+	if (script_hasdata(st, 2)) {
+		std::vector<script_data>& values = script_return_values[st];
+
+		for (int32 i = 2; i <= script_lastdata(st); ++i) {
+			script_pushcopy(st, i);
+			script_data* data = script_getdatatop(st, -1);
+
+			// Return values are stored as values, not dangling references to a
+			// disappearing .@ scope.
+			if (data_isreference(data))
+				get_val(st, data);
+
+			values.push_back(script_data_make_owned_copy(data));
+			script_removetop(st, -1, 0);
 		}
-	}
-	else
-	{// no return value
+
+		if (!values.empty())
+			script_push_return_value(st, values[0]);
+		else
+			script_pushnil(st);
+	} else {
+		script_return_values[st].clear();
 		script_pushnil(st);
 	}
+
 	st->state = RETFUNC;
 	return SCRIPT_CMD_SUCCESS;
 }
@@ -6193,6 +8048,15 @@ BUILDIN_FUNC(input)
 
 // declare the copyarray method here for future reference
 BUILDIN_FUNC(copyarray);
+BUILDIN_FUNC(deletearray);
+BUILDIN_FUNC(getarraydims);
+BUILDIN_FUNC(dyn);
+BUILDIN_FUNC(setarraydyn);
+BUILDIN_FUNC(getarraysizedyn);
+BUILDIN_FUNC(getdyntype);
+BUILDIN_FUNC(getarraykeys);
+BUILDIN_FUNC(dyntostring);
+BUILDIN_FUNC(debugdyn);
 
 /// Sets the value of a variable.
 /// The value is converted to the type of the variable.
@@ -6258,6 +8122,55 @@ BUILDIN_FUNC(setr)
 	}
 #endif
 
+	{
+		script_array_shape_info* non_dyn_shape = script_array_shape_get_by_name(st, sd, name, script_getref(st, 2), script_getvarid(num));
+		if (non_dyn_shape != nullptr && !non_dyn_shape->dynamic && script_array_dynamic_reference_is_child(non_dyn_shape, script_getvaridx(num))) {
+			ShowError("script:set: multidimensional/string-key array access on '%s' requires dyn.\n", name);
+			st->state = END;
+			return SCRIPT_CMD_FAILURE;
+		}
+	}
+
+	if (script_array_is_dynamic_ref(st, sd, num, name, script_getref(st, 2))) {
+		// Store the dynamic value before pushing the command return value.
+		// Some assignments push a copy of the destination reference on the stack;
+		// doing that first can make the RHS access fragile for dynamic scalar strings.
+		script_data old_ret;
+		bool has_old_ret = false;
+
+		if (!strcmp(command, "setr") && script_hasdata(st, 4)) {
+			old_ret = *script_getdata(st, 4);
+			has_old_ret = true;
+		}
+
+		if (!script_array_dynamic_store_value(st, sd, num, name, script_getref(st, 2), script_getdata(st, 3)))
+			return SCRIPT_CMD_FAILURE;
+
+		if (has_old_ret) {
+			script_data* old_val = get_val(st, &old_ret);
+			if (data_isstring(old_val))
+				script_pushstrcopy(st, conv_str(st, old_val));
+			else
+				script_pushint(st, conv_num64(st, old_val));
+		}
+		else
+			script_pushcopy(st, 2);
+
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	if (!is_string_variable(name)) {
+		script_data* value = get_val(st, script_getdata(st, 3));
+		script_array_shape_info* shape = script_array_shape_get_by_name(st, sd, name, script_getref(st, 2), script_getvarid(num));
+
+		// Une variable declaree avec `dyn` accepte les valeurs string et int
+		// dans le meme conteneur. Le warning "il manque $" ne doit donc
+		// s'appliquer qu'aux tableaux numeriques classiques, non dynamiques.
+		if ((shape == nullptr || !shape->dynamic) && data_isstring(value) && script_array_slot_has_string_key(shape, script_getvaridx(num))) {
+			ShowWarning("script:set: assigning a string value to numeric array '%s'. Use '%s$' or declare it with dyn before storing strings.\n", name, name);
+		}
+	}
+
 	if( !strcmp(command, "setr") && script_hasdata(st, 4) ) { // Optional argument used by post-increment/post-decrement constructs to return the previous value
 		if( is_string_variable(name) )
 			script_pushstrcopy(st,script_getstr(st, 4));
@@ -6277,6 +8190,495 @@ BUILDIN_FUNC(setr)
 /////////////////////////////////////////////////////////////////////
 /// Array variables
 ///
+
+/// Declares a temporary variable as dynamic. Dynamic values may be either int or string.
+/// dyn <variable>;
+BUILDIN_FUNC(dyn)
+{
+	script_data* data;
+	const char* name;
+	int32 id;
+	uint32 idx;
+	map_session_data* sd = nullptr;
+
+	if (!script_array_builtin_resolve_ref(st, 2, data, name, id, idx, sd, "dyn"))
+		return SCRIPT_CMD_FAILURE;
+
+	if (idx != 0) {
+		ShowError("script:dyn: declaration must target the root variable, not an array element.\n");
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	if (!script_array_allows_string_keys(name)) {
+		ShowError("script:dyn: dynamic variables are only supported for temporary variables (.@, @, ., $@, ') for now.\n");
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	script_array_shape_info* existing = script_array_shape_get_by_name(st, sd, name, reference_getref(data), id);
+	if (existing != nullptr && existing->dynamic)
+		return SCRIPT_CMD_SUCCESS;
+
+	// First dyn declaration on a legacy variable: clear previous 1D legacy
+	// contents, then initialize as an empty dynamic dictionary.
+	script_array_clear_all_members(st, sd, name, reference_getref(data), id);
+
+	script_array_shape_info& shape = script_array_shape_ensure_by_name(st, sd, name, reference_getref(data), id);
+	shape.dims.clear();
+	shape.coord_to_slot.clear();
+	shape.slot_to_coord.clear();
+	shape.next_slot = SCRIPT_ARRAY_MD_SLOT_START;
+	shape.dynamic_values.clear();
+	shape.dynamic_empty_dicts.clear();
+	shape.dynamic = true;
+	shape.dynamic_dict = true;
+	return SCRIPT_CMD_SUCCESS;
+}
+
+
+/// Converts a dynamic variable or branch into a readable dyn literal string.
+/// dyntostring(<dyn variable or branch>) -> <string>
+BUILDIN_FUNC(dyntostring)
+{
+	script_data* data;
+	const char* name;
+	int32 id;
+	uint32 idx;
+	map_session_data* sd = nullptr;
+
+	if (!script_array_builtin_resolve_ref(st, 2, data, name, id, idx, sd, "dyntostring"))
+		return SCRIPT_CMD_FAILURE;
+
+	std::string out;
+	bool truncated = false;
+	if (!script_array_dyn_build_string(st, sd, data, name, id, idx, out, truncated))
+		return SCRIPT_CMD_FAILURE;
+
+	if (truncated)
+		ShowWarning("script:dyntostring: output was truncated.\n");
+
+	script_pushstrcopy(st, out.c_str());
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/// Dumps a dynamic variable or branch to the map-server console.
+/// debugdyn <dyn variable or branch>;
+BUILDIN_FUNC(debugdyn)
+{
+	script_data* data;
+	const char* name;
+	int32 id;
+	uint32 idx;
+	map_session_data* sd = nullptr;
+
+	if (!script_array_builtin_resolve_ref(st, 2, data, name, id, idx, sd, "debugdyn"))
+		return SCRIPT_CMD_FAILURE;
+
+	std::string out;
+	bool truncated = false;
+	if (!script_array_dyn_build_string(st, sd, data, name, id, idx, out, truncated))
+		return SCRIPT_CMD_FAILURE;
+
+	if (truncated)
+		ShowWarning("script:debugdyn: output was truncated.\n");
+
+	ShowDebug("script dyn : %d %d : %s\n", st->rid, st->oid, out.c_str());
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/// Returns the amount of dimensions known for a multidimensional array.
+/// getarraydims(<array variable>) -> <int>
+BUILDIN_FUNC(getarraydims)
+{
+	script_data* data;
+	const char* name;
+	int32 id;
+	uint32 idx;
+	map_session_data* sd = nullptr;
+
+	if (!script_array_builtin_resolve_ref(st, 2, data, name, id, idx, sd, "getarraydims"))
+		return SCRIPT_CMD_FAILURE;
+
+	script_array_shape_info* shape = script_array_shape_get(st, sd, data);
+	script_pushint(st, shape ? (int32)shape->dims.size() : 1);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+
+/// Retrieves the immediate child keys under an array or multidimensional prefix.
+/// getarraykeys(<array or prefix>,<out_keys$>{,<out_types>}) -> key count
+/// out_types: 0 = integer key, 1 = string key.
+BUILDIN_FUNC(getarraykeys)
+{
+	script_data* data;
+	script_data* out_keys;
+	script_data* out_types = nullptr;
+	const char* name;
+	const char* out_keys_name;
+	const char* out_types_name = nullptr;
+	int32 id, out_keys_id, out_types_id = 0;
+	uint32 idx, out_keys_idx, out_types_idx = 0;
+	map_session_data* sd = nullptr;
+
+	if (!script_array_builtin_resolve_ref(st, 2, data, name, id, idx, sd, "getarraykeys"))
+		return SCRIPT_CMD_FAILURE;
+	if (!script_array_builtin_resolve_ref(st, 3, out_keys, out_keys_name, out_keys_id, out_keys_idx, sd, "getarraykeys"))
+		return SCRIPT_CMD_FAILURE;
+	if (!is_string_variable(out_keys_name)) {
+		ShowError("script:getarraykeys: output keys array must be a string array.\n");
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	if (script_hasdata(st, 4)) {
+		if (!script_array_builtin_resolve_ref(st, 4, out_types, out_types_name, out_types_id, out_types_idx, sd, "getarraykeys"))
+			return SCRIPT_CMD_FAILURE;
+		if (is_string_variable(out_types_name)) {
+			ShowError("script:getarraykeys: output types array must be numeric.\n");
+			st->state = END;
+			return SCRIPT_CMD_FAILURE;
+		}
+	}
+
+	script_array_shape_info* shape = script_array_dynamic_shape_get(st, sd, reference_uid(id, 0), name, reference_getref(data));
+	if (shape == nullptr || !shape->dynamic) {
+		ShowError("script:getarraykeys: variable '%s' is not dynamic.\n", name);
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+	if (idx == 0 && !shape->dynamic_dict) {
+		ShowError("script:getarraykeys: dynamic variable '%s' is scalar, not a dictionary.\n", name);
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	std::vector<script_array_key> prefix;
+	if (idx != 0) {
+		auto prefix_it = shape->slot_to_coord.find(idx);
+		if (prefix_it != shape->slot_to_coord.end()) {
+			prefix = prefix_it->second;
+		} else {
+			// Reference 1D native utilisee comme prefixe, par exemple getarraykeys(.@a[2]).
+			script_array_key native_key;
+			native_key.is_string = false;
+			native_key.num = idx;
+			prefix.push_back(native_key);
+ 		}
+	}
+
+	if (!prefix.empty() && script_array_count_child_keys(st, sd, name, reference_getref(data), id, shape, prefix) == 0 && shape->dynamic_empty_dicts.find(idx) == shape->dynamic_empty_dicts.end()) {
+		ShowError("script:getarraykeys: dynamic branch '%s' is scalar, not a dictionary.\n", name);
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	std::vector<script_array_key> keys;
+	for (const auto& entry : shape->coord_to_slot) {
+		const std::vector<script_array_key>& coords = entry.first;
+		if (coords.size() <= prefix.size())
+			continue;
+
+		bool matches = true;
+		for (size_t i = 0; i < prefix.size(); ++i) {
+			if (!(coords[i] == prefix[i])) {
+				matches = false;
+				break;
+			}
+		}
+		if (!matches)
+			continue;
+
+		const script_array_key& child = coords[prefix.size()];
+		std::vector<script_array_key> child_prefix = prefix;
+		child_prefix.push_back(child);
+		if (!script_array_coord_has_live_subtree(st, sd, name, reference_getref(data), id, shape, child_prefix))
+			continue;
+		bool exists = false;
+		for (const script_array_key& key : keys) {
+			if (key == child) {
+				exists = true;
+				break;
+			}
+		}
+		if (!exists)
+			keys.push_back(child);
+	}
+
+	for (size_t i = 0; i < keys.size(); ++i) {
+		if (keys[i].is_string) {
+			set_reg_str(st, sd, reference_uid(out_keys_id, out_keys_idx + (uint32)i), out_keys_name, keys[i].str.c_str(), reference_getref(out_keys));
+		}
+		else {
+			char buf[32];
+			snprintf(buf, sizeof(buf), "%" PRIu64, keys[i].num);
+			set_reg_str(st, sd, reference_uid(out_keys_id, out_keys_idx + (uint32)i), out_keys_name, buf, reference_getref(out_keys));
+		}
+
+		if (out_types != nullptr)
+			set_reg_num(st, sd, reference_uid(out_types_id, out_types_idx + (uint32)i), out_types_name, keys[i].is_string ? 1 : 0, reference_getref(out_types));
+	}
+
+	script_pushint(st, (int32)keys.size());
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/// Deletes a dynamic dictionary branch or clears a dynamic dictionary root.
+/// del <dyn variable or branch>;
+BUILDIN_FUNC(del)
+{
+	script_data* data;
+	const char* name;
+	int32 id;
+	uint32 idx;
+	map_session_data* sd = nullptr;
+
+	if (!script_array_builtin_resolve_ref(st, 2, data, name, id, idx, sd, "del"))
+		return SCRIPT_CMD_FAILURE;
+
+	script_array_shape_info* shape = script_array_dynamic_shape_get(st, sd, reference_uid(id, 0), name, reference_getref(data));
+	if (shape == nullptr || !shape->dynamic) {
+		ShowError("script:del: variable '%s' is not dynamic.\n", name);
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	if (idx == 0) {
+		shape->dynamic = false;
+		shape->dynamic_dict = false;
+		shape->dynamic_values.clear();
+		shape->dynamic_empty_dicts.clear();
+		shape->coord_to_slot.clear();
+		shape->slot_to_coord.clear();
+		shape->dims.clear();
+		shape->next_slot = SCRIPT_ARRAY_MD_SLOT_START;
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	auto coord_it = shape->slot_to_coord.find(idx);
+	if (coord_it == shape->slot_to_coord.end())
+		return SCRIPT_CMD_SUCCESS; // deleting a missing key is a no-op
+
+	std::vector<script_array_key> prefix = coord_it->second;
+	std::vector<uint32> slots_to_delete;
+	slots_to_delete.push_back(idx);
+
+	for (const auto& entry : shape->coord_to_slot) {
+		if (entry.second != idx && entry.first.size() > prefix.size() && script_array_coord_starts_with(entry.first, prefix))
+			slots_to_delete.push_back(entry.second);
+	}
+
+	for (uint32 slot : slots_to_delete) {
+		shape->dynamic_values.erase(slot);
+		shape->dynamic_empty_dicts.erase(slot);
+
+		auto old = shape->slot_to_coord.find(slot);
+		if (old != shape->slot_to_coord.end()) {
+			shape->coord_to_slot.erase(old->second);
+			shape->slot_to_coord.erase(old);
+		}
+	}
+
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/// Returns the type of a dynamic variable or branch.
+/// getdyntype(<variable or branch>) -> 0 not dynamic/dictionary, 1 dynamic dictionary
+BUILDIN_FUNC(getdyntype)
+{
+	script_data* data;
+	const char* name;
+	int32 id;
+	uint32 idx;
+	map_session_data* sd = nullptr;
+
+	if (!script_array_builtin_resolve_ref(st, 2, data, name, id, idx, sd, "getdyntype"))
+		return SCRIPT_CMD_FAILURE;
+
+	script_array_shape_info* shape = script_array_dynamic_shape_get(st, sd, reference_uid(id, 0), name, reference_getref(data));
+	if (shape == nullptr || !shape->dynamic) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	if (idx == 0) {
+		script_pushint(st, 1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	auto coord_it = shape->slot_to_coord.find(idx);
+	if (coord_it == shape->slot_to_coord.end()) {
+		script_pushint(st, 0);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	if (shape->dynamic_empty_dicts.find(idx) != shape->dynamic_empty_dicts.end() ||
+		script_array_count_child_keys(st, sd, name, reference_getref(data), id, shape, coord_it->second) > 0) {
+		script_pushint(st, 1);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	script_pushint(st, 0);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/// Returns the amount of direct child keys in a dynamic dictionary.
+/// getarraysizedyn(<dyn dictionary or branch>) -> <int>
+BUILDIN_FUNC(getarraysizedyn)
+{
+	script_data* data;
+	const char* name;
+	int32 id;
+	uint32 idx;
+	map_session_data* sd = nullptr;
+
+	if (!script_array_builtin_resolve_ref(st, 2, data, name, id, idx, sd, "getarraysizedyn"))
+		return SCRIPT_CMD_FAILURE;
+
+	script_array_shape_info* shape = script_array_dynamic_shape_get(st, sd, reference_uid(id, 0), name, reference_getref(data));
+	if (shape == nullptr || !shape->dynamic) {
+		ShowError("script:getarraysizedyn: variable '%s' is not dynamic.\n", name);
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	std::vector<script_array_key> prefix;
+	if (idx == 0) {
+		// A dynamic root is always a dictionary in the strict dyn model.
+	} else {
+		auto prefix_it = shape->slot_to_coord.find(idx);
+		if (prefix_it == shape->slot_to_coord.end()) {
+			ShowError("script:getarraysizedyn: invalid dynamic reference for '%s'.\n", name);
+			st->state = END;
+			return SCRIPT_CMD_FAILURE;
+		}
+		prefix = prefix_it->second;
+		if (script_array_count_child_keys(st, sd, name, reference_getref(data), id, shape, prefix) == 0 && shape->dynamic_empty_dicts.find(idx) == shape->dynamic_empty_dicts.end()) {
+			ShowError("script:getarraysizedyn: dynamic branch '%s' is scalar, not a dictionary.\n", name);
+			st->state = END;
+			return SCRIPT_CMD_FAILURE;
+		}
+	}
+
+	script_pushint(st, script_array_count_child_keys(st, sd, name, reference_getref(data), id, shape, prefix));
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/// Sets values under a dynamic dictionary branch, from a numeric child key.
+/// setarraydyn <dyn variable or branch>,<value>{,<value>...};
+BUILDIN_FUNC(setarraydyn)
+{
+	script_data* data;
+	const char* name;
+	int32 id;
+	uint32 start;
+	map_session_data* sd = nullptr;
+
+	if (!script_array_builtin_resolve_ref(st, 2, data, name, id, start, sd, "setarraydyn"))
+		return SCRIPT_CMD_FAILURE;
+
+	if (!script_array_allows_string_keys(name)) {
+		ShowError("script:setarraydyn: dynamic variables are only supported for temporary variables (.@, @, ., $@, ') for now.\n");
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	script_array_shape_info& shape = script_array_shape_ensure_by_name(st, sd, name, reference_getref(data), id);
+	if (!shape.dynamic) {
+		script_array_clear_all_members(st, sd, name, reference_getref(data), id);
+		shape.dims.clear();
+		shape.coord_to_slot.clear();
+		shape.slot_to_coord.clear();
+		shape.next_slot = SCRIPT_ARRAY_MD_SLOT_START;
+		shape.dynamic_values.clear();
+		shape.dynamic_empty_dicts.clear();
+		shape.dynamic = true;
+		shape.dynamic_dict = true;
+	}
+
+	std::vector<script_array_key> prefix;
+	uint64 dyn_start = 0;
+	bool has_values = script_lastdata(st) >= 3;
+	if (start != 0) {
+		auto prefix_it = shape.slot_to_coord.find(start);
+		if (prefix_it != shape.slot_to_coord.end()) {
+			prefix = prefix_it->second;
+			if (has_values && !prefix.empty() && !prefix.back().is_string) {
+				dyn_start = prefix.back().num;
+				prefix.pop_back();
+			}
+		} else {
+			ShowError("script:setarraydyn: invalid dynamic reference for '%s'.\n", name);
+			st->state = END;
+			return SCRIPT_CMD_FAILURE;
+		}
+	}
+
+	if (!has_values) {
+		// Empty dynamic table assignment. This is used by dyn literals such as:
+		//   dyn .@a = [];
+		//   dyn .@a = [ "empty": [] ];
+		if (start == 0) {
+			shape.dynamic_dict = true;
+			shape.dynamic_values.clear();
+			shape.dynamic_empty_dicts.clear();
+			shape.coord_to_slot.clear();
+			shape.slot_to_coord.clear();
+			shape.dims.clear();
+			shape.next_slot = SCRIPT_ARRAY_MD_SLOT_START;
+			return SCRIPT_CMD_SUCCESS;
+		}
+
+		shape.dynamic_dict = true;
+		shape.dynamic_values.erase(0);
+		shape.dynamic_empty_dicts.erase(0);
+
+		std::vector<uint32> slots_to_delete;
+		for (size_t len = 1; len < prefix.size(); ++len) {
+			std::vector<script_array_key> parent(prefix.begin(), prefix.begin() + len);
+			auto parent_it = shape.coord_to_slot.find(parent);
+			if (parent_it != shape.coord_to_slot.end())
+				shape.dynamic_values.erase(parent_it->second);
+		}
+
+		for (const auto& entry : shape.coord_to_slot) {
+			if (entry.first.size() > prefix.size() && script_array_coord_starts_with(entry.first, prefix))
+				slots_to_delete.push_back(entry.second);
+		}
+
+		shape.dynamic_values.erase(start);
+		shape.dynamic_empty_dicts.erase(start);
+		for (uint32 delete_slot : slots_to_delete) {
+			shape.dynamic_values.erase(delete_slot);
+			shape.dynamic_empty_dicts.erase(delete_slot);
+			auto old = shape.slot_to_coord.find(delete_slot);
+			if (old != shape.slot_to_coord.end()) {
+				shape.coord_to_slot.erase(old->second);
+				shape.slot_to_coord.erase(old);
+			}
+		}
+
+		shape.dynamic_empty_dicts.insert(start);
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	for (int32 i = 3; i <= script_lastdata(st); ++i) {
+		std::vector<script_array_key> coords = prefix;
+		script_array_key key;
+		key.is_string = false;
+		key.num = dyn_start + (uint64)(i - 3);
+		coords.push_back(key);
+
+		uint32 slot;
+		if (!script_array_resolve_hash_auto(st, sd, data, name, id, coords, slot, "setarraydyn"))
+			return SCRIPT_CMD_FAILURE;
+
+		if (!script_array_dynamic_store_value(st, sd, reference_uid(id, slot), name, reference_getref(data), script_getdata(st, i)))
+			return SCRIPT_CMD_FAILURE;
+	}
+
+	return SCRIPT_CMD_SUCCESS;
+}
 
 /// Sets values of an array, from the starting index.
 /// ex: setarray arr[1],1,2,3;
@@ -6309,6 +8711,64 @@ BUILDIN_FUNC(setarray)
 	{
 		if( !script_rid2sd(sd) )
 			return SCRIPT_CMD_SUCCESS;// no player attached
+	}
+
+	if (script_array_is_dynamic_ref(st, sd, reference_uid(id, 0), name, reference_getref(data))) {
+		ShowError("script:setarray: dynamic variables require setarraydyn.\n");
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	script_array_shape_info* shape = script_array_shape_get(st, sd, data);
+	if (shape != nullptr && script_array_dynamic_reference_is_child(shape, start)) {
+		ShowError("script:setarray: multidimensional/string-key array access requires setarraydyn and a dyn variable.\n");
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	if (false) {
+		std::vector<script_array_key> base;
+		uint64 start_index = 0;
+
+		if (start != 0) {
+			auto it = shape->slot_to_coord.find(start);
+			if (it != shape->slot_to_coord.end())
+				base = it->second;
+		}
+
+		// setarray .@a["truc"], "a", "b" writes .@a["truc"][0..1].
+		// setarray .@a["truc"][5], "a", "b" writes .@a["truc"][5..6].
+		if (!base.empty() && !base.back().is_string) {
+			start_index = base.back().num;
+			base.pop_back();
+		}
+
+		for (i = 3; i <= script_lastdata(st); ++i) {
+			uint64 offset = (uint64)(i - 3);
+			if (UINT64_MAX - start_index < offset) {
+				ShowWarning("script:setarray: multidimensional array index is too large.\n");
+				break;
+			}
+
+			std::vector<script_array_key> coords = base;
+			script_array_key key;
+			key.is_string = false;
+			key.num = start_index + offset;
+			coords.push_back(key);
+
+			uint32 slot;
+			if (!script_array_resolve_hash_auto(st, sd, data, name, id, coords, slot, "setarray")) {
+				st->state = END;
+				return SCRIPT_CMD_FAILURE;
+			}
+
+			if (is_string_variable(name))
+				set_reg_str(st, sd, reference_uid(id, slot), name, script_getstr(st, i), reference_getref(data));
+			else
+				set_reg_num(st, sd, reference_uid(id, slot), name, script_getnum64(st, i), reference_getref(data));
+		}
+
+		return SCRIPT_CMD_SUCCESS;
 	}
 
 	end = start + script_lastdata(st) - 2;
@@ -6358,6 +8818,12 @@ BUILDIN_FUNC(cleararray)
 	{
 		if( !script_rid2sd(sd) )
 			return SCRIPT_CMD_SUCCESS;// no player attached
+	}
+
+	if (script_array_is_dynamic_ref(st, sd, reference_uid(id, 0), name, reference_getref(data))) {
+		ShowError("script:cleararray: dynamic variables are not supported by cleararray.\n");
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
 	}
 
 	end = start + script_getnum(st, 4);
@@ -6433,6 +8899,12 @@ BUILDIN_FUNC(copyarray)
 			return SCRIPT_CMD_SUCCESS;// no player attached
 	}
 
+	if (script_array_is_dynamic_ref(st, sd, reference_uid(id1, 0), name1, reference_getref(data1)) || script_array_is_dynamic_ref(st, sd, reference_uid(id2, 0), name2, reference_getref(data2))) {
+		ShowError("script:copyarray: dynamic variables are not supported by copyarray.\n");
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
+
 	count = script_getnum(st, 4);
 	if( count > SCRIPT_MAX_ARRAYSIZE - idx1 )
 		count = SCRIPT_MAX_ARRAYSIZE - idx1;
@@ -6483,26 +8955,80 @@ BUILDIN_FUNC(getarraysize)
 {
 	struct script_data* data;
 	const char* name;
+	int32 id;
+	uint32 idx;
 	map_session_data* sd = nullptr;
 
-	data = script_getdata(st, 2);
-	if( !data_isreference(data) )
-	{
-		ShowError("script:getarraysize: not a variable\n");
-		script_reportdata(data);
+	if (!script_array_builtin_resolve_ref(st, 2, data, name, id, idx, sd, "getarraysize")) {
+		// ShowError("script:getarraysize: not a variable\n");
+		// script_reportdata(data);
 		script_pushnil(st);
 		st->state = END;
 		return SCRIPT_CMD_FAILURE;// not a variable
 	}
 
-	name = reference_getname(data);
-
-	if( not_server_variable(*name) ){
-		if (!script_rid2sd(sd))
-			return SCRIPT_CMD_SUCCESS;// no player attached
+	script_array_shape_info* dyn_shape = script_array_dynamic_shape_get(st, sd, reference_uid(id, 0), name, reference_getref(data));
+	if (dyn_shape != nullptr && dyn_shape->dynamic) {
+		ShowError("script:getarraysize: dynamic variables require getarraysizedyn.\n");
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
 	}
 
-	script_pushint(st, script_array_highest_key(st, sd, reference_getname(data), reference_getref(data)));
+	std::vector<script_array_key> prefix;
+	script_array_shape_info* shape = script_array_shape_get(st, sd, data);
+
+	if (idx != 0) {
+		if (shape != nullptr) {
+			auto prefix_it = shape->slot_to_coord.find(idx);
+			if (prefix_it != shape->slot_to_coord.end()) {
+				prefix = prefix_it->second;
+			} else {
+				// Reference 1D native utilisee comme prefixe, par ex. getarraysize(.@a[2])
+				// apres .@a[2][101] = 7.
+				script_array_key native_key;
+				native_key.is_string = false;
+				native_key.num = idx;
+				prefix.push_back(native_key);
+			}
+		} else {
+			script_array_key native_key;
+			native_key.is_string = false;
+			native_key.num = idx;
+			prefix.push_back(native_key);
+		}
+	}
+
+	if (script_hasdata(st, 3)) {
+		std::vector<script_array_key> extra;
+		if (!script_array_collect_keys(st, 3, script_lastdata(st), name, extra, "getarraysize")) {
+			script_pushint(st, 0);
+			return SCRIPT_CMD_SUCCESS;
+		}
+		prefix.insert(prefix.end(), extra.begin(), extra.end());
+	}
+
+	if (shape != nullptr) {
+		uint32 count = script_array_count_child_keys(st, sd, name, reference_getref(data), id, shape, prefix);
+
+		if (prefix.empty()) {
+			if (!shape->dynamic)
+				count += script_array_native_member_count(st, sd, name, reference_getref(data), id, shape);
+			// var et var[0] sont identiques en rAthena legacy. Le slot 0 peut
+			// contenir une valeur sans apparaitre dans script_array.members, donc
+			// on l'ajoute explicitement si elle est non-defaut et pas deja comptee.
+			if (!script_array_member_exists(st, sd, name, reference_getref(data), id, 0) && script_array_root_value_nondefault(st, sd, name, reference_getref(data), id))
+				count++;
+		}
+		script_pushint(st, count);
+	}
+	else {
+		uint32 count = prefix.empty() ? script_array_member_count(st, sd, name, reference_getref(data), id) : 0;
+		if (prefix.empty() && !script_array_member_exists(st, sd, name, reference_getref(data), id, 0) && script_array_root_value_nondefault(st, sd, name, reference_getref(data), id))
+			count++;
+		script_pushint(st, count);
+	}
+
+
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -6540,6 +9066,12 @@ BUILDIN_FUNC(deletearray)
 	if( not_server_variable(*name) ) {
 		if( !script_rid2sd(sd) )
 			return SCRIPT_CMD_SUCCESS;// no player attached
+	}
+
+	if (script_array_is_dynamic_ref(st, sd, reference_uid(id, 0), name, reference_getref(data))) {
+		ShowError("script:deletearray: dynamic variables are not supported by deletearray.\n");
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
 	}
 
 	if (!(src = script_array_src(st, sd, name, reference_getref(data)))) {
@@ -6638,31 +9170,85 @@ BUILDIN_FUNC(deletearray)
 BUILDIN_FUNC(getelementofarray)
 {
 	struct script_data* data;
+	const char* name;
 	int32 id;
-	int64 i;
+	uint32 idx;
+	map_session_data* sd = nullptr;
 
-	data = script_getdata(st, 2);
-	if( !data_isreference(data) )
-	{
-		ShowError("script:getelementofarray: not a variable\n");
-		script_reportdata(data);
+	if (!script_array_builtin_resolve_ref(st, 2, data, name, id, idx, sd, "getelementofarray")) {
+		// ShowError("script:getelementofarray: not a variable\n");
+		// script_reportdata(data);
 		script_pushnil(st);
 		st->state = END;
-		return SCRIPT_CMD_SUCCESS;// not a variable
+		// return SCRIPT_CMD_SUCCESS;
+		return SCRIPT_CMD_FAILURE;
 	}
 
-	id = reference_getid(data);
+	std::vector<script_array_key> indices;
+	if (!script_array_collect_keys(st, 3, script_lastdata(st), name, indices, "getelementofarray")) {
+		script_pushnil(st);
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
 
-	i = script_getnum(st, 3);
-	if (i < 0 || i >= SCRIPT_MAX_ARRAYSIZE) {
-		ShowWarning("script:getelementofarray: index out of range (%" PRId64 ")\n", i);
-		script_reportdata(data);
+	/*
+	 * Important : le parseur peut produire des appels imbriques a getelementofarray
+	 * pour une expression comme .@a[2][101] :
+	 *
+	 *   getelementofarray( getelementofarray(.@a, 2), 101 )
+	 *
+	 * Dans ce cas, l'argument <array variable> recu ici n'est plus la racine .@a,
+	 * mais une reference partielle .@a[2]. Il faut donc reconstruire le prefixe
+	 * deja contenu dans idx avant d'ajouter les nouveaux indices. Sans cela, le
+	 * second appel resout seulement [101], ce qui lit/ecrit une autre cellule et
+	 * donne des symptomes comme .@a[2][101] qui vaut 0 apres l'assignation.
+	 */
+	if (idx != 0) {
+		script_array_shape_info* shape = script_array_shape_get(st, sd, data);
+		std::vector<script_array_key> prefix;
+
+		if (shape != nullptr) {
+			auto prefix_it = shape->slot_to_coord.find(idx);
+			if (prefix_it != shape->slot_to_coord.end())
+				prefix = prefix_it->second;
+		}
+
+		if (prefix.empty()) {
+			// Reference 1D native, par exemple le premier appel .@a[2].
+			script_array_key native_key;
+			native_key.is_string = false;
+			native_key.num = idx;
+			prefix.push_back(native_key);
+		}
+
+		prefix.insert(prefix.end(), indices.begin(), indices.end());
+		indices.swap(prefix);
+	}
+
+	// Compatibilite rAthena : un seul index numerique depuis la racine reste un
+	// tableau 1D natif. Les references partielles reconstruites ci-dessus ont au
+	// moins deux cles et passent donc par le stockage multidimensionnel.
+	if (indices.size() == 1 && !indices[0].is_string && !script_array_is_dynamic_ref(st, sd, reference_uid(id, 0), name, reference_getref(data))) {
+		if (indices[0].num >= SCRIPT_MAX_ARRAYSIZE) {
+			ShowWarning("script:getelementofarray: array index out of range (%" PRIu64 ").\n", indices[0].num);
+			script_pushnil(st);
+			st->state = END;
+			return SCRIPT_CMD_FAILURE;
+		}
+
+		push_val2(st->stack, C_NAME, reference_uid(id, (uint32)indices[0].num), reference_getref(data));
+		return SCRIPT_CMD_SUCCESS;
+	}
+
+	uint32 linear = 0;
+
+	if (!script_array_resolve_hash_auto(st, sd, data, name, id, indices, linear, "getelementofarray")) {
 		script_pushnil(st);
 		st->state = END;
 		return SCRIPT_CMD_FAILURE;// out of range
 	}
 
-	push_val2(st->stack, C_NAME, reference_uid(id, i), reference_getref(data));
+	push_val2(st->stack, C_NAME, reference_uid(id, linear), reference_getref(data));
 	return SCRIPT_CMD_SUCCESS;
 }
 
@@ -6689,6 +9275,12 @@ BUILDIN_FUNC(inarray)
 
 	name = reference_getname(data);
 	ref = reference_getref(data);
+
+	if (script_array_is_dynamic_ref(st, sd, reference_uid(reference_getid(data), 0), name, ref)) {
+		ShowError("buildin_inarray: dynamic variables are not supported by inarray; use getarraykeys and explicit loops.\n");
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
 
 	if (not_server_variable(*name) && !script_rid2sd(sd))
 		return SCRIPT_CMD_FAILURE;
@@ -6775,6 +9367,13 @@ BUILDIN_FUNC(countinarray)
 
 	if (not_server_variable(*name1) && not_server_variable(*name2) && !script_rid2sd(sd))
 		return SCRIPT_CMD_FAILURE;
+
+	if (script_array_is_dynamic_ref(st, sd, reference_uid(reference_getid(data1), 0), name1, ref1) ||
+	    script_array_is_dynamic_ref(st, sd, reference_uid(reference_getid(data2), 0), name2, ref2)) {
+		ShowError("buildin_countinarray: dynamic variables are not supported by countinarray; use getarraykeys and explicit loops.\n");
+		st->state = END;
+		return SCRIPT_CMD_FAILURE;
+	}
 
 	const uint32 array_size1 = script_array_highest_key(st, sd, name1, ref1);
 	const uint32 array_size2 = script_array_highest_key(st, sd, name2, ref2);
@@ -27940,7 +30539,7 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(goto,"l"),
 	BUILDIN_DEF(callsub,"l*"),
 	BUILDIN_DEF(callfunc,"s*"),
-	BUILDIN_DEF(return,"?"),
+	BUILDIN_DEF(return,"*"),
 	BUILDIN_DEF(getarg,"i?"),
 	BUILDIN_DEF(jobchange,"i??"),
 	BUILDIN_DEF(jobname,"i"),
@@ -27957,9 +30556,9 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(setarray,"rv*"),
 	BUILDIN_DEF(cleararray,"rvi"),
 	BUILDIN_DEF(copyarray,"rri"),
-	BUILDIN_DEF(getarraysize,"r"),
+	BUILDIN_DEF(getarraysize,"r*"),
 	BUILDIN_DEF(deletearray,"r?"),
-	BUILDIN_DEF(getelementofarray,"ri"),
+	BUILDIN_DEF(getelementofarray,"r*"),
 	BUILDIN_DEF(inarray,"rv"),
 	BUILDIN_DEF(countinarray,"rr"),
 	BUILDIN_DEF(getitem,"vi?"),
@@ -28653,6 +31252,19 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF( mesitemicon, "v??" ),
 	BUILDIN_DEF(meshyperlink, "ss"),
 	BUILDIN_DEF(mesemotion,"i"),
+
+	BUILDIN_DEF(getarraydims,"r"),
+	BUILDIN_DEF(getarraysizedyn,"r"),
+	BUILDIN_DEF(getarraykeys,"rr?"),
+	BUILDIN_DEF(dyn,"r"),
+	BUILDIN_DEF(dyntostring,"r"),
+	BUILDIN_DEF(debugdyn,"r"),
+	BUILDIN_DEF(getdyntype,"r"),
+	BUILDIN_DEF(del,"r"),
+	BUILDIN_DEF(setarraydyn,"rv*"),
+	BUILDIN_DEF(getreturn,"i"),
+	BUILDIN_DEF(getreturncount,""),
+	BUILDIN_DEF(callnpcsub,"ss*"),
 
 #include <custom/script_def.inc>
 
