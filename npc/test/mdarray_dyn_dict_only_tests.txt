@@ -1,0 +1,293 @@
+//============================================================
+// npc/custom/mdarray_dyn_dict_only_tests.txt
+// Regression tests for strict dictionary-only dyn model.
+//============================================================
+//
+// Requires:
+// - dyn creates an empty dictionary
+// - getdyntype: 0 = not dyn, 1 = dyn dictionary
+// - scalar assignment to dyn root is forbidden
+// - path = [] creates/clears an empty dynamic dictionary branch
+// - del deletes a dynamic key/branch or clears the root dictionary
+//
+// Load with:
+// npc: npc/custom/mdarray_dyn_dict_only_tests.txt
+//============================================================
+
+function	script	MD_DICT_ONLY_ASSERT	{
+	.@ok = getarg(0);
+	.@msg$ = getarg(1);
+
+	if (.@ok)
+		debugmes "[OK] " + .@msg$;
+	else
+		debugmes "[FAIL] " + .@msg$;
+
+	return;
+}
+
+prontera,155,184,4	script	mdarray_dyn_dict_only	4_F_KAFRA1,{
+	mes "[mdarray_dyn_dict_only]";
+	mes "Runs strict dyn dictionary-only tests.";
+	next;
+
+OnInit:
+	callsub S_DynCreatesEmptyDict;
+	callsub S_DynIsIdempotent;
+	callsub S_String;
+	callsub S_ChildAssignment;
+	callsub S_EmptyBranchAssignment;
+	callsub S_DelBranch;
+	callsub S_DelRoot;
+	callsub S_DelMissing;
+	callsub S_NestedDel;
+	callsub S_SetArrayDynStillWorks;
+	callsub S_GetArrayKeysAfterDel;
+	callsub S_ManualErrorChecks;
+	end;
+
+	mes "Done. Check the console for [OK]/[FAIL].";
+	close;
+
+//------------------------------------------------------------
+// dyn .@a creates an empty dictionary, not a scalar.
+//------------------------------------------------------------
+S_DynCreatesEmptyDict:
+	debugmes "-- S_DynCreatesEmptyDict";
+
+	.@legacy = 123;
+	callfunc "MD_DICT_ONLY_ASSERT", getdyntype(.@legacy) == 0, "legacy variable is not dyn";
+
+	dyn .@a;
+
+	callfunc "MD_DICT_ONLY_ASSERT", getdyntype(.@a) == 1, "dyn root is dictionary";
+	callfunc "MD_DICT_ONLY_ASSERT", getarraysizedyn(.@a) == 0, "new dyn dictionary is empty";
+
+	return;
+
+//------------------------------------------------------------
+// dyn .@a is idempotent when .@a is already dyn.
+//------------------------------------------------------------
+S_DynIsIdempotent:
+	debugmes "-- S_DynIsIdempotent";
+
+	dyn .@a;
+	.@a["x"] = 1;
+
+	dyn .@a;
+
+	callfunc "MD_DICT_ONLY_ASSERT", getarraysizedyn(.@a) == 1, "dyn redeclare does not clear existing dyn";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["x"] == 1, "dyn redeclare keeps value";
+
+	return;
+
+//------------------------------------------------------------
+// dyn .@a = [...] is assignment and overwrites previous dyn.
+//------------------------------------------------------------
+S_String:
+	debugmes "-- S_String";
+
+	dyn .@a;
+	.@a["old"] = 1;
+
+	dyn .@a = [
+		"new": 2,
+	];
+
+	callfunc "MD_DICT_ONLY_ASSERT", getarraysizedyn(.@a) == 1, "literal assignment resets previous dyn dictionary";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["old"] == 0, "old key removed by literal assignment";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["new"] == 2, "new key exists after literal assignment";
+
+	return;
+
+//------------------------------------------------------------
+// Indexed assignment auto-creates dictionary branches.
+//------------------------------------------------------------
+S_ChildAssignment:
+	debugmes "-- S_ChildAssignment";
+
+	dyn .@a;
+
+	.@a["list"][0] = "a";
+	.@a["list"][1] = "b";
+	.@a["meta"]["count"] = 2;
+
+	callfunc "MD_DICT_ONLY_ASSERT", getarraysizedyn(.@a) == 2, "root has list and meta";
+	callfunc "MD_DICT_ONLY_ASSERT", getarraysizedyn(.@a["list"]) == 2, "list has two numeric children";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["list"][0] == "a", "list[0] == a";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["list"][1] == "b", "list[1] == b";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["meta"]["count"] == 2, "meta.count == 2";
+
+	return;
+
+//------------------------------------------------------------
+// path = [] creates or clears an empty dictionary branch.
+//------------------------------------------------------------
+S_EmptyBranchAssignment:
+	debugmes "-- S_EmptyBranchAssignment";
+
+	dyn .@a;
+
+	.@a["list"][0] = "a";
+	.@a["list"][1] = "b";
+
+	callfunc "MD_DICT_ONLY_ASSERT", getarraysizedyn(.@a["list"]) == 2, "list starts with two children";
+
+	.@a["list"] = [];
+
+	callfunc "MD_DICT_ONLY_ASSERT", getdyntype(.@a["list"]) == 1, "list remains a dictionary after []";
+	callfunc "MD_DICT_ONLY_ASSERT", getarraysizedyn(.@a["list"]) == 0, "list is now empty";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["list"][0] == 0, "old list[0] removed";
+	callfunc "MD_DICT_ONLY_ASSERT", getarraysizedyn(.@a) == 1, "root still has explicit empty list branch";
+
+	.@a["list"][0] = "c";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["list"][0] == "c", "empty branch can be filled again";
+
+	return;
+
+//------------------------------------------------------------
+// del removes a scalar leaf key.
+//------------------------------------------------------------
+S_DelBranch:
+	debugmes "-- S_DelBranch";
+
+	dyn .@a;
+
+	.@a["list"] = "a";
+	.@a["truc"] = "b";
+
+	callfunc "MD_DICT_ONLY_ASSERT", getarraysizedyn(.@a) == 2, "root starts with two scalar leaves";
+
+	del .@a["truc"];
+
+	callfunc "MD_DICT_ONLY_ASSERT", getarraysizedyn(.@a) == 1, "root has one key after del";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["list"] == "a", "list leaf remains";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["truc"] == 0, "deleted key reads as default 0";
+
+	return;
+
+//------------------------------------------------------------
+// del .@a clears the root dictionary but keeps it dynamic.
+//------------------------------------------------------------
+S_DelRoot:
+	debugmes "-- S_DelRoot";
+
+	dyn .@a;
+
+	.@a["x"] = 1;
+	.@a["y"][0] = 2;
+
+	callfunc "MD_DICT_ONLY_ASSERT", getarraysizedyn(.@a) == 2, "root starts with two keys";
+
+	del .@a;
+
+	callfunc "MD_DICT_ONLY_ASSERT", getdyntype(.@a) == 0, "root is no longer dyn after del";
+
+	return;
+
+//------------------------------------------------------------
+// Deleting a missing key is a no-op.
+//------------------------------------------------------------
+S_DelMissing:
+	debugmes "-- S_DelMissing";
+
+	dyn .@a;
+
+	.@a["x"] = 1;
+
+	del .@a["missing"];
+	del .@a["missing"]["deep"];
+
+	callfunc "MD_DICT_ONLY_ASSERT", getarraysizedyn(.@a) == 1, "missing del does not create or remove keys";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["x"] == 1, "existing key remains after missing del";
+
+	return;
+
+//------------------------------------------------------------
+// Deleting a dictionary branch removes all descendants.
+//------------------------------------------------------------
+S_NestedDel:
+	debugmes "-- S_NestedDel";
+
+	dyn .@a;
+
+	.@a["user"]["name"] = "Bob";
+	.@a["user"]["age"] = 20;
+	.@a["other"] = 5;
+
+	callfunc "MD_DICT_ONLY_ASSERT", getarraysizedyn(.@a["user"]) == 2, "user starts with two children";
+
+	del .@a["user"];
+
+	callfunc "MD_DICT_ONLY_ASSERT", getarraysizedyn(.@a) == 1, "only other remains at root";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["user"]["name"] == 0, "user.name removed";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["user"]["age"] == 0, "user.age removed";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["other"] == 5, "other remains";
+
+	return;
+
+//------------------------------------------------------------
+// setarraydyn with values remains valid.
+//------------------------------------------------------------
+S_SetArrayDynStillWorks:
+	debugmes "-- S_SetArrayDynStillWorks";
+
+	dyn .@a;
+
+	setarraydyn .@a["list"], "a", "b", "c";
+
+	callfunc "MD_DICT_ONLY_ASSERT", getarraysizedyn(.@a["list"]) == 3, "setarraydyn created three children";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["list"][0] == "a", "list[0] == a";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["list"][1] == "b", "list[1] == b";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["list"][2] == "c", "list[2] == c";
+
+	.@a["list"] = [];
+
+	callfunc "MD_DICT_ONLY_ASSERT", getarraysizedyn(.@a["list"]) == 0, "[] clears setarraydyn branch";
+
+	return;
+
+//------------------------------------------------------------
+// getarraykeys should reflect del and [] accurately.
+//------------------------------------------------------------
+S_GetArrayKeysAfterDel:
+	debugmes "-- S_GetArrayKeysAfterDel";
+
+	dyn .@a;
+
+	.@a[0] = "zero";
+	.@a["0"] = "string-zero";
+	.@a["empty"] = [];
+	.@a["remove"] = 1;
+
+	del .@a["remove"];
+
+	.@count = getarraykeys(.@a, .@keys$, .@types);
+
+	debugmes "root key count after del = " + .@count;
+	for (.@i = 0; .@i < .@count; .@i++)
+		debugmes "key[" + .@i + "]=" + .@keys$[.@i] + " type=" + .@types[.@i];
+
+	callfunc "MD_DICT_ONLY_ASSERT", .@count == 3, "root has int 0, string 0, and empty";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a[0] == "zero", "integer key 0 remains";
+	callfunc "MD_DICT_ONLY_ASSERT", .@a["0"] == "string-zero", "string key 0 remains";
+	callfunc "MD_DICT_ONLY_ASSERT", getarraysizedyn(.@a["empty"]) == 0, "empty branch remains";
+
+	return;
+
+//------------------------------------------------------------
+// Manual error checks. Do not run here because they stop the script.
+//------------------------------------------------------------
+S_ManualErrorChecks:
+	debugmes "-- S_ManualErrorChecks";
+	debugmes "Manual checks that should ERROR + stop script:";
+	debugmes "  dyn .@bad; .@bad = 1;";
+	debugmes "  dyn .@bad; mes .@bad;";
+	debugmes "  dyn .@bad; .@bad[0] = 1; mes .@bad;";
+	debugmes "  dyn .@bad; setarray .@bad, 1, 2;";
+	debugmes "  dyn .@bad; getarraysize(.@bad);";
+	debugmes "  dyn .@bad; inarray(.@bad, 1);";
+	debugmes "  dyn .@bad; countinarray(.@bad, 1);";
+	debugmes "  dyn .@bad[0];";
+	return;
+}

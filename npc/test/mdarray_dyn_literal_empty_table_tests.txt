@@ -1,0 +1,243 @@
+//============================================================
+// npc/custom/mdarray_dyn_literal_empty_table_tests.txt
+// Regression tests for dyn literal empty tables and unsigned integer keys.
+//============================================================
+//
+// Requires:
+// - dyn literal support
+// - integer literal keys
+// - empty table literals []
+//
+// Load with:
+// npc: npc/custom/mdarray_dyn_literal_empty_table_tests.txt
+//============================================================
+
+function	script	MD_EMPTY_ASSERT	{
+	.@ok = getarg(0);
+	.@msg$ = getarg(1);
+
+	if (.@ok)
+		debugmes "[OK] " + .@msg$;
+	else
+		debugmes "[FAIL] " + .@msg$;
+
+	return;
+}
+
+prontera,154,184,4	script	mdlit_empty_table_test	4_F_KAFRA1,{
+	mes "[mdlit_empty_table_test]";
+	mes "Runs dyn literal empty-table tests.";
+	next;
+OnInit:
+	callsub S_RootEmpty;
+	callsub S_NestedEmpty;
+	callsub S_IntegerKeys;
+	callsub S_StringZeroVsIntegerZero;
+	callsub S_ExpressionKeys;
+	callsub S_EmptyThenFill;
+	callsub S_FillThenEmptyOverwrite;
+	callsub S_WoeLikeConfig;
+	callsub S_ManualNegativeKeyChecks;
+	end;
+
+	mes "Done. Check the console for [OK]/[FAIL].";
+	close;
+
+S_RootEmpty:
+	debugmes "-- S_RootEmpty";
+
+	dyn .@a = [];
+
+	callfunc "MD_EMPTY_ASSERT", getdyntype(.@a) == 2, "root [] creates a dyn dictionary";
+	callfunc "MD_EMPTY_ASSERT", getarraysizedyn(.@a) == 0, "root [] has size 0";
+
+	return;
+
+S_NestedEmpty:
+	debugmes "-- S_NestedEmpty";
+
+	dyn .@a = [
+		"empty": [],
+		"container": [
+			"child": [],
+		],
+	];
+
+	callfunc "MD_EMPTY_ASSERT", getdyntype(.@a) == 2, "root is dict";
+	callfunc "MD_EMPTY_ASSERT", getarraysizedyn(.@a) == 2, "root has two keys";
+	callfunc "MD_EMPTY_ASSERT", getdyntype(.@a["empty"]) == 2, "nested empty branch is dict";
+	callfunc "MD_EMPTY_ASSERT", getarraysizedyn(.@a["empty"]) == 0, "nested empty branch size 0";
+	callfunc "MD_EMPTY_ASSERT", getdyntype(.@a["container"]["child"]) == 2, "deep empty branch is dict";
+	callfunc "MD_EMPTY_ASSERT", getarraysizedyn(.@a["container"]["child"]) == 0, "deep empty branch size 0";
+
+	return;
+
+S_IntegerKeys:
+	debugmes "-- S_IntegerKeys";
+
+	dyn .@a = [
+		0: "zero",
+		1: "one",
+		123: "one-two-three",
+		0x10: "sixteen",
+	];
+
+	callfunc "MD_EMPTY_ASSERT", .@a[0] == "zero", "integer key 0";
+	callfunc "MD_EMPTY_ASSERT", .@a[1] == "one", "integer key 1";
+	callfunc "MD_EMPTY_ASSERT", .@a[123] == "one-two-three", "integer key 123";
+	callfunc "MD_EMPTY_ASSERT", .@a[16] == "sixteen", "hex integer key 0x10";
+	callfunc "MD_EMPTY_ASSERT", getarraysizedyn(.@a) == 4, "root has 4 integer keys";
+
+	return;
+
+S_StringZeroVsIntegerZero:
+	debugmes "-- S_StringZeroVsIntegerZero";
+
+	dyn .@a = [
+		0: "integer-zero",
+		"0": "string-zero",
+	];
+
+	callfunc "MD_EMPTY_ASSERT", .@a[0] == "integer-zero", "integer 0 value";
+	callfunc "MD_EMPTY_ASSERT", .@a["0"] == "string-zero", "string \"0\" value";
+	callfunc "MD_EMPTY_ASSERT", .@a[0] != .@a["0"], "integer 0 and string \"0\" are distinct";
+
+	return;
+
+S_ExpressionKeys:
+	debugmes "-- S_ExpressionKeys";
+
+	.@i = 5;
+	.@k$ = "name";
+
+	dyn .@a = [
+		(.@i): "five",
+		(.@i + 1): "six",
+		(.@k$): "Bob",
+	];
+
+	callfunc "MD_EMPTY_ASSERT", .@a[5] == "five", "parenthesized integer expression key";
+	callfunc "MD_EMPTY_ASSERT", .@a[6] == "six", "parenthesized arithmetic expression key";
+	callfunc "MD_EMPTY_ASSERT", .@a["name"] == "Bob", "parenthesized string expression key";
+
+	return;
+
+S_EmptyThenFill:
+	debugmes "-- S_EmptyThenFill";
+
+	dyn .@a = [
+		"list": [],
+	];
+
+	callfunc "MD_EMPTY_ASSERT", getdyntype(.@a["list"]) == 2, "list starts as empty dict";
+	callfunc "MD_EMPTY_ASSERT", getarraysizedyn(.@a["list"]) == 0, "list empty size 0";
+	debugmes "size test = " + getarraysizedyn(.@a);
+
+	.@a["list"][0] = "a";
+	.@a["list"][1] = "b";
+
+	callfunc "MD_EMPTY_ASSERT", getdyntype(.@a["list"]) == 2, "		getdyntype is dict";
+
+	callfunc "MD_EMPTY_ASSERT", .@a["list"][0] == "a", "empty dict later receives child 0";
+	callfunc "MD_EMPTY_ASSERT", .@a["list"][1] == "b", "empty dict later receives child 1";
+	callfunc "MD_EMPTY_ASSERT", getarraysizedyn(.@a["list"]) == 2, "list size after fill is 2";
+
+	.@a["list"] = 0;
+	callfunc "MD_EMPTY_ASSERT", getdyntype(.@a["list"]) == 2, "list starts as empty dict";
+	callfunc "MD_EMPTY_ASSERT", getarraysizedyn(.@a["list"]) == 0, "list empty size 0";
+	debugmes "size test = " + getarraysizedyn(.@a);
+
+je voudrais changer 3 choses:
+1. ne plus autoriser le scalaire avec dyn
+```
+dyn .@a;
+
+.@a = 1;	// error
+.@a[0] = 1;	// ok
+```
+(donc ajuster aussi getdyntype)
+
+2. à la place de `= 0` pour supprimer une valeur/dictionnaire, je veux implementer une commande. On pourrait l'appeler `del`?
+```
+dyn .@a;
+
+.@a["list"] = "a";
+.@a["truc"] = "b";
+
+del .@a["truc"];// "truc" supprimé, il ne reste que "list"
+del .@a;// tout est supprimé
+```
+c'est l'équivalent de `deletearray`, mais pour dyn
+
+3. Implenter `[]`
+```
+dyn .@a;
+
+.@a["list"][0] = "a";
+.@a["list"][0] = "b";
+
+.@a["list"] = [];	// la clé "list" existe mais array vide
+```
+
+Fourni moi un patch basé sur le fichier joint. Mais avant cela, as tu besoin de clarifications?
+
+	return;
+
+S_FillThenEmptyOverwrite:
+	debugmes "-- S_FillThenEmptyOverwrite";
+
+	dyn .@a = [
+		"list": [
+			0: "a",
+			1: "b",
+		],
+	];
+
+	callfunc "MD_EMPTY_ASSERT", getarraysizedyn(.@a["list"]) == 2, "list starts with 2 children";
+
+	// setarraydyn .@a["list"];
+	// .@a = [];
+
+	callfunc "MD_EMPTY_ASSERT", getdyntype(.@a["list"]) == 2, "setarraydyn without values keeps branch as dict";
+	callfunc "MD_EMPTY_ASSERT", getarraysizedyn(.@a["list"]) == 0, "setarraydyn without values clears branch to empty dict";
+
+	return;
+
+S_WoeLikeConfig:
+	debugmes "-- S_WoeLikeConfig";
+
+	.@region$ = "Prontera";
+	.@castle$ = "prtg_cas01";
+
+	dyn .data = [
+		(.@region$): [
+			(.@castle$): [
+				"agitend": "Agit#prtg_cas01::OnAgitEnd",
+				"eventkillmob": "Agit#prtg_cas01::OnAgitBreak",
+				"warp": [
+					"map": "prt_gld",
+					"x": 134,
+					"y": 65,
+				],
+				"empty_meta": [],
+				0: "integer-child",
+			],
+		],
+	];
+
+	callfunc "MD_EMPTY_ASSERT", .data["Prontera"]["prtg_cas01"]["agitend"] == "Agit#prtg_cas01::OnAgitEnd", "woe-like agitend";
+	callfunc "MD_EMPTY_ASSERT", .data["Prontera"]["prtg_cas01"]["warp"]["map"] == "prt_gld", "woe-like warp map";
+	callfunc "MD_EMPTY_ASSERT", .data["Prontera"]["prtg_cas01"]["warp"]["x"] == 134, "woe-like warp x";
+	callfunc "MD_EMPTY_ASSERT", .data["Prontera"]["prtg_cas01"][0] == "integer-child", "integer child under string path";
+	callfunc "MD_EMPTY_ASSERT", getdyntype(.data["Prontera"]["prtg_cas01"]["empty_meta"]) == 2, "empty_meta is dict";
+	callfunc "MD_EMPTY_ASSERT", getarraysizedyn(.data["Prontera"]["prtg_cas01"]["empty_meta"]) == 0, "empty_meta size 0";
+
+	return;
+
+S_ManualNegativeKeyChecks:
+	debugmes "-- S_ManualNegativeKeyChecks";
+	debugmes "The following scripts should fail at parse/runtime and are not executed here:";
+	debugmes "  dyn .@bad = [ -1: \"bad\" ];     // parse error: negative literal key";
+	debugmes "  .@i = -1; dyn .@bad = [ (.@i): \"bad\" ]; // runtime error: negative key";
+	return;
+}

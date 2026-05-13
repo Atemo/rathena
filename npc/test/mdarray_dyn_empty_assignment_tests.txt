@@ -1,0 +1,112 @@
+//============================================================
+// npc/custom/mdarray_dyn_empty_assignment_tests.txt
+// Regression tests for dynamic empty table assignment: path = [];
+//============================================================
+//
+// Load with:
+// npc: npc/custom/mdarray_dyn_empty_assignment_tests.txt
+//============================================================
+
+function	script	MD_EMPTY_ASSIGN_ASSERT	{
+	.@ok = getarg(0);
+	.@msg$ = getarg(1);
+
+	if (.@ok)
+		debugmes "[OK] " + .@msg$;
+	else
+		debugmes "[FAIL] " + .@msg$;
+
+	return;
+}
+
+prontera,156,184,4	script	mdemptyassign_test	4_F_KAFRA1,{
+	mes "[mdemptyassign_test]";
+	mes "Runs dyn empty assignment tests.";
+	next;
+
+OnInit:
+	sleep 1000;
+	callsub S_String1;
+	callsub S_String2;
+	callsub S_String3;
+	callsub S_ClearExistingBranch;
+	callsub S_String5;
+	end;
+
+	mes "Done. Check the console for [OK]/[FAIL].";
+	close;
+
+S_String1:
+	debugmes "-- S_String1";
+
+	dyn .@a;
+	.@a["old"] = 1;
+
+	.@a = [];
+
+	callfunc "MD_EMPTY_ASSIGN_ASSERT", getdyntype(.@a) == 1, ".@a = [] keeps/creates dyn dict";
+	callfunc "MD_EMPTY_ASSIGN_ASSERT", getarraysizedyn(.@a) == 0, ".@a = [] clears root dict";
+	callfunc "MD_EMPTY_ASSIGN_ASSERT", .@a["old"] == 0, "old key removed";
+
+	return;
+
+S_String2:
+	debugmes "-- S_String2";
+
+	dyn .@a;
+	.@a["list"][0] = "a";
+	.@a["list"][1] = "b";
+
+	.@a["list"] = [];
+
+	callfunc "MD_EMPTY_ASSIGN_ASSERT", getdyntype(.@a["list"]) == 1, "branch is dyn dict after []";
+	callfunc "MD_EMPTY_ASSIGN_ASSERT", getarraysizedyn(.@a["list"]) == 0, "branch is empty after []";
+	callfunc "MD_EMPTY_ASSIGN_ASSERT", .@a["list"][0] == 0, "old child 0 removed";
+	callfunc "MD_EMPTY_ASSIGN_ASSERT", getarraysizedyn(.@a) == 1, "root still has explicit empty branch";
+
+	return;
+
+S_String3:
+	debugmes "-- S_String3";
+
+	dyn .@a;
+	.@a["user"]["items"][0]["id"] = 501;
+	.@a["user"]["items"][1]["id"] = 502;
+
+	.@a["user"]["items"] = [];
+
+	callfunc "MD_EMPTY_ASSIGN_ASSERT", getdyntype(.@a["user"]["items"]) == 1, "deep branch is dict after []";
+	callfunc "MD_EMPTY_ASSIGN_ASSERT", getarraysizedyn(.@a["user"]["items"]) == 0, "deep branch empty after []";
+	callfunc "MD_EMPTY_ASSIGN_ASSERT", .@a["user"]["items"][0]["id"] == 0, "deep old child removed";
+
+	return;
+
+S_ClearExistingBranch:
+	debugmes "-- S_ClearExistingBranch";
+
+	dyn .@a;
+	setarraydyn .@a["letters"], "a", "b", "c";
+
+	callfunc "MD_EMPTY_ASSIGN_ASSERT", getarraysizedyn(.@a["letters"]) == 3, "letters starts with 3 values";
+
+	.@a["letters"] = [];
+
+	callfunc "MD_EMPTY_ASSIGN_ASSERT", getarraysizedyn(.@a["letters"]) == 0, "letters cleared by []";
+	.@a["letters"][0] = "z";
+	callfunc "MD_EMPTY_ASSIGN_ASSERT", .@a["letters"][0] == "z", "letters can be filled again";
+
+	return;
+
+S_String5:
+	debugmes "-- S_String5";
+
+	dyn .@a;
+
+	// This is a normal string, not a table literal.
+	.@a["text"] = "[]";
+
+	callfunc "MD_EMPTY_ASSIGN_ASSERT", .@a["text"] == "[]", "string \"[]\" remains a scalar string";
+	callfunc "MD_EMPTY_ASSIGN_ASSERT", getarraysizedyn(.@a) == 1, "root has one scalar key";
+
+	return;
+}

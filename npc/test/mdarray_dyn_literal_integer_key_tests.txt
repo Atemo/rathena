@@ -1,0 +1,146 @@
+//============================================================
+// npc/custom/mdarray_dyn_literal_integer_key_tests.txt
+// Regression tests for dyn literal integer keys.
+//============================================================
+//
+// Requires dyn literal support.
+// Tests:
+// - integer literal keys: 0, 1, 123
+// - signed integer keys: -1
+// - string key "0" remains distinct from integer key 0
+// - parenthesized expression keys still work
+// - nested integer keys
+//
+// Load with:
+// npc: npc/custom/mdarray_dyn_literal_integer_key_tests.txt
+//============================================================
+
+function	script	MD_LIT_INT_ASSERT	{
+	.@ok = getarg(0);
+	.@msg$ = getarg(1);
+
+	if (.@ok)
+		debugmes "[OK] " + .@msg$;
+	else
+		debugmes "[FAIL] " + .@msg$;
+
+	return;
+}
+
+prontera,153,184,4	script	mdlit_intkey_test	4_F_KAFRA1,{
+	mes "[mdlit_intkey_test]";
+	mes "Runs dyn literal integer-key tests.";
+	next;
+OnInit:
+	callsub S_IntegerRootKeys;
+	callsub S_IntegerNestedKeys;
+	callsub S_StringZeroVsIntegerZero;
+	callsub S_ExpressionKeys;
+	callsub S_MixedLiteral;
+	end;
+
+	mes "Done. Check the console for [OK]/[FAIL].";
+	close;
+
+S_IntegerRootKeys:
+	debugmes "-- S_IntegerRootKeys";
+
+	dyn .@a = [
+		0: "zero",
+		1: "one",
+		123: "one-two-three",
+		// -1: "minus-one",
+	];
+	// dyn .@a;
+	// .@a[-1] = 1;
+	
+
+	callfunc "MD_LIT_INT_ASSERT", .@a[0] == "zero", "integer key 0";
+	callfunc "MD_LIT_INT_ASSERT", .@a[1] == "one", "integer key 1";
+	callfunc "MD_LIT_INT_ASSERT", .@a[123] == "one-two-three", "integer key 123";
+	// callfunc "MD_LIT_INT_ASSERT", .@a[-1] == "minus-one", "integer key -1 if negative keys are enabled";
+
+	callfunc "MD_LIT_INT_ASSERT", getarraysizedyn(.@a) == 3, "root has 3 integer keys";
+
+	return;
+
+S_IntegerNestedKeys:
+	debugmes "-- S_IntegerNestedKeys";
+
+	dyn .@a = [
+		0: [
+			1: [
+				2: "deep",
+			],
+		],
+		10: [
+			20: 30,
+		],
+	];
+
+	callfunc "MD_LIT_INT_ASSERT", .@a[0][1][2] == "deep", "nested integer path [0][1][2]";
+	callfunc "MD_LIT_INT_ASSERT", .@a[10][20] == 30, "nested integer path [10][20]";
+	callfunc "MD_LIT_INT_ASSERT", getarraysizedyn(.@a[0][1]) == 1, "nested branch [0][1] has one key";
+
+	return;
+
+S_StringZeroVsIntegerZero:
+	debugmes "-- S_StringZeroVsIntegerZero";
+
+	dyn .@a = [
+		0: "integer-zero",
+		"0": "string-zero",
+	];
+
+	callfunc "MD_LIT_INT_ASSERT", .@a[0] == "integer-zero", "integer 0 value";
+	callfunc "MD_LIT_INT_ASSERT", .@a["0"] == "string-zero", "string \"0\" value";
+	callfunc "MD_LIT_INT_ASSERT", .@a[0] != .@a["0"], "integer 0 and string \"0\" are distinct";
+
+	return;
+
+S_ExpressionKeys:
+	debugmes "-- S_ExpressionKeys";
+
+	.@i = 5;
+	.@k$ = "name";
+
+	dyn .@a = [
+		(.@i): "five",
+		(.@i + 1): "six",
+		(.@k$): "Bob",
+	];
+
+	callfunc "MD_LIT_INT_ASSERT", .@a[5] == "five", "parenthesized integer expression key";
+	callfunc "MD_LIT_INT_ASSERT", .@a[6] == "six", "parenthesized arithmetic expression key";
+	callfunc "MD_LIT_INT_ASSERT", .@a["name"] == "Bob", "parenthesized string expression key";
+
+	return;
+
+S_MixedLiteral:
+	debugmes "-- S_MixedLiteral";
+
+	.@region$ = "Prontera";
+	.@castle$ = "prtg_cas01";
+
+	dyn .data = [
+		(.@region$): [
+			(.@castle$): [
+				"agitend": "Agit#prtg_cas01::OnAgitEnd",
+				"eventkillmob": "Agit#prtg_cas01::OnAgitBreak",
+				"warp": [
+					"map": "prt_gld",
+					"x": 134,
+					"y": 65,
+				],
+				0: "integer-child",
+			],
+		],
+	];
+
+	callfunc "MD_LIT_INT_ASSERT", .data["Prontera"]["prtg_cas01"]["agitend"] == "Agit#prtg_cas01::OnAgitEnd", "string/expression region path";
+	callfunc "MD_LIT_INT_ASSERT", .data["Prontera"]["prtg_cas01"]["warp"]["map"] == "prt_gld", "nested warp map";
+	callfunc "MD_LIT_INT_ASSERT", .data["Prontera"]["prtg_cas01"]["warp"]["x"] == 134, "nested warp x";
+	callfunc "MD_LIT_INT_ASSERT", .data["Prontera"]["prtg_cas01"][0] == "integer-child", "integer child under string path";
+
+	return;
+}

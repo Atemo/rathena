@@ -581,6 +581,37 @@ variables. Once you set it to that, the variable is as good as forgotten
 forever, and no trace remains of it even if it was stored with character or
 account data.
 
+Dynamic variables
+-----------------
+
+A variable can be declared as dynamic with the 'dyn' command. Dynamic variables
+are intended for temporary script data that may contain both integer and string
+values under the same base variable, including multidimensional dictionary-like
+arrays.
+
+Example:
+	dyn .@user;
+	.@user["name"] = "Bob";
+	.@user["age"] = 20;
+
+Unlike normal variables, the value type of each dynamic element is decided by
+the value assigned to that element. A dynamic variable does not need the '$'
+postfix to store strings.
+
+Dynamic variables currently only support temporary scopes:
+	.@name  - scope dynamic variable
+	@name   - temporary character dynamic variable
+	.name   - NPC dynamic variable
+	$@name  - temporary global dynamic variable
+	'name   - instance variable
+
+Permanent variables ('name', '$name', '#name', '##name') should not be used as
+dynamic multidimensional arrays unless persistence support has explicitly been
+implemented for them.
+
+Reading a missing dynamic value returns 0. Use 'getarraykeys' or
+'getarraysize' to test which dictionary entries actually exist.
+
 Some variables are special, that is, they are already defined for you by the
 scripting engine. You can see the full list in 'src/map/script_constants.hpp', which
 is a file you should read, since it also allows you to replace lots of numbered
@@ -672,6 +703,14 @@ Note:
  !! In order to copy arrays between variables the use of 'copyarray' function is still
  !! required.
 
+Dynamic dictionaries declared with 'dyn' support assigning the empty dictionary
+literal '[]' to create or clear a branch:
+
+	dyn .@a;
+	.@a["list"] = [];
+
+Other dynamic literals are normally used with 'dyn <variable> = [ ... ];'.
+
 Strings
 -------
 
@@ -687,7 +726,8 @@ same name. You can tell between the specific variables of an array with an
 
 <variable name>[<array index>]
 
-All variable types can be used as arrays.
+All variable types can be used as arrays. Integer arrays return 0 for missing
+elements and string arrays return an empty string.
 
 Variables stored in this way, inside an array, are also called 'array elements'.
 Arrays are specifically useful for storing a set of similar data (like several
@@ -717,6 +757,91 @@ Arrays can naturally store strings:
 .@menulines$[0] is the 0th element of the .@menulines$ array of strings. Notice
 the '$', normally denoting a string variable, before the square brackets that
 denotes an array index.
+
+
+Dynamic dictionary variables
+----------------------------
+
+Traditional rAthena arrays remain one-dimensional and keep the legacy behavior
+where a variable without an explicit index refers to index 0:
+
+	.@a = 1;
+	.@a[0] == .@a; // true for legacy arrays
+
+Dynamic dictionaries are a separate runtime storage declared with the 'dyn'
+command. They are intended for temporary, dictionary-like data that may contain
+integer values, string values, empty dictionaries and nested dictionaries under
+the same base variable.
+
+	dyn .@user;
+	.@user["name"] = "Bob";
+	.@user["age"] = 20;
+	.@user["items"][0]["id"] = 501;
+
+Dynamic variables are dictionaries only. The root itself is not a scalar value,
+and assigning a scalar directly to a dynamic variable is an error:
+
+	dyn .@a;
+	.@a = 1; // error
+
+Use an indexed path to store values:
+
+	.@a[0] = 1;
+	.@a["key"] = "value";
+
+Dynamic dictionaries are sparse and non-rectangular. A path may exist without
+requiring any sibling or parent scalar value to exist:
+
+	dyn .@a;
+	.@a[1] = 5;
+	.@a[2][101] = 7;
+	.@a["config"]["map"] = "prt_gld";
+
+Keys are typed. Integer key 0 and string key "0" are different keys:
+
+	dyn .@a;
+	.@a[0] = "integer key";
+	.@a["0"] = "string key";
+
+Empty dictionary branches can be created or cleared with the empty dynamic
+literal '[]':
+
+	dyn .@a;
+	.@a["list"] = [];
+	getarraysizedyn(.@a["list"]); // returns 0
+
+Dynamic literals can be used to initialize large dictionary structures. They use
+square brackets with key/value pairs. Keys may be string literals, non-negative
+integer literals or parenthesized expressions that evaluate to a string or
+non-negative integer key.
+
+	dyn .data = [
+		"Prontera": [
+			"prtg_cas01": [
+				"agitend": "Agit#prtg_cas01::OnAgitEnd",
+				"eventkillmob": "Agit#prtg_cas01::OnAgitBreak",
+				"warp": [
+					"map": "prt_gld",
+					"x": 134,
+					"y": 65,
+				],
+			],
+		],
+	];
+
+	.@region$ = "Prontera";
+	dyn .@cfg = [
+		(.@region$): [
+			0: "integer child",
+			"0": "string child",
+		],
+	];
+
+A missing dynamic leaf reads as the default value 0. Reading a missing path does
+not create it. Use 'getarraykeys', 'getarraysizedyn' or 'getdyntype' to inspect
+which dictionary branches actually exist.
+
+Use 'del' to remove a dynamic key or branch.
 
 Variable References
 -------------------
@@ -1402,6 +1527,164 @@ Examples:
 
 ---------------------------------------
 
+*dyn <temporary variable>;
+*dyn <temporary variable> = [<dynamic literal>];
+
+Declares a variable as dynamic. Dynamic variables are dictionary-only values and
+are separate from legacy one-dimensional arrays. A dynamic variable does not use
+the '$' postfix to decide the type of its values; each leaf value keeps the type
+of the value assigned to it.
+
+Only root variables can be declared dynamic. Indexed declarations are invalid:
+
+	dyn .@a;      // OK
+	dyn .@a[0];   // error
+	dyn .@a["x"]; // error
+
+Supported temporary scopes are:
+	.@var, @var, .var, $@var, 'var
+
+Permanent variables are not supported as dynamic dictionaries unless persistence
+support has explicitly been implemented for them.
+
+If the variable is not already dynamic, 'dyn' clears any previous legacy array
+content and creates an empty dynamic dictionary. If the variable is already
+dynamic, 'dyn <variable>;' is idempotent and does not clear it.
+
+	.@a = 1;
+	dyn .@a;
+	getdyntype(.@a);        // 1
+	getarraysizedyn(.@a);   // 0
+
+	dyn .@a;
+	.@a["x"] = 1;
+	dyn .@a;                // does not clear .@a
+	.@a["x"];              // still 1
+
+When a dynamic literal is supplied, the previous dynamic dictionary is replaced:
+
+	dyn .@a;
+	.@a["old"] = 1;
+	dyn .@a = [
+		"new": 2,
+	];
+	.@a["old"]; // 0
+	.@a["new"]; // 2
+
+Dynamic variables are dictionaries only. Direct scalar assignment to the root is
+an error:
+
+	dyn .@a;
+	.@a = 1; // error
+
+Store values under keys instead:
+
+	.@a[0] = 1;
+	.@a["name"] = "Bob";
+
+Dynamic literal syntax:
+
+	dyn .@a = [
+		"string_key": "value",
+		0: "integer key",
+		0x10: "hex integer key",
+		(.@expr$): "expression key",
+		"empty": [],
+	];
+
+Integer literal keys must be non-negative. Parenthesized key expressions must
+evaluate to either a string key or a non-negative integer key.
+
+---------------------------------------
+
+*setarraydyn <dynamic variable or branch>,<value>{,<value>...<value>};
+
+Writes a sequence of values under a dynamic dictionary branch using consecutive
+integer keys. The target must be dynamic. Use this for dynamic dictionaries; use
+'setarray' for legacy one-dimensional arrays.
+
+	dyn .@a;
+	setarraydyn .@a["list"], "a", "b", "c";
+
+This is equivalent to:
+
+	.@a["list"][0] = "a";
+	.@a["list"][1] = "b";
+	.@a["list"][2] = "c";
+
+A starting numeric child key may be supplied:
+
+	setarraydyn .@a["list"][5], "x", "y";
+
+This writes:
+
+	.@a["list"][5] = "x";
+	.@a["list"][6] = "y";
+
+To create or clear an empty dictionary branch, assign the empty literal '[]':
+
+	.@a["list"] = [];
+
+---------------------------------------
+
+*getarraysizedyn(<dynamic variable or branch>)
+
+Returns the number of direct keys under a dynamic dictionary path. The target
+must be dynamic. Use 'getarraysize' for legacy one-dimensional arrays.
+
+	dyn .@a;
+	.@a[1] = 5;
+	.@a[2][101] = 7;
+	getarraysizedyn(.@a);    // returns 2: keys 1 and 2
+	getarraysizedyn(.@a[2]); // returns 1: key 101
+
+Empty dictionary branches have size 0:
+
+	.@a["empty"] = [];
+	getarraysizedyn(.@a["empty"]); // returns 0
+
+---------------------------------------
+
+*getdyntype(<variable>)
+
+Returns whether a variable is dynamic.
+
+Return values:
+	0 - not dynamic
+	1 - dynamic dictionary
+
+Examples:
+
+	.@a = 1;
+	getdyntype(.@a); // 0
+
+	dyn .@a;
+	getdyntype(.@a); // 1
+
+---------------------------------------
+
+*del <dynamic variable or branch>;
+
+Deletes a dynamic dictionary branch or leaf. Deleting a missing key is allowed
+and does nothing.
+
+	dyn .@a;
+	.@a["list"] = "a";
+	.@a["truc"] = "b";
+	del .@a["truc"];
+
+After this, only the 'list' key remains under .@a.
+
+Deleting the root dynamic variable removes the dynamic dictionary itself. After
+that, getdyntype() returns 0 for that variable.
+
+	dyn .@a;
+	.@a["x"] = 1;
+	del .@a;
+	getdyntype(.@a); // 0
+
+---------------------------------------
+
 *getvariableofnpc(<variable>,"<npc name>")
 
 Returns a reference to a NPC variable (. prefix) from the target NPC.
@@ -1730,6 +2013,21 @@ Note:
  !! call it. That is to say, any functions should be placed above scripts or NPCs
  !! (or loaded in a separate file first) before attempting to call them directly.
 
+
+Multiple return values are supported through 'return' and can be read with
+'getreturn' and 'getreturncount'. When a function is used in an expression, only
+the first returned value is used for compatibility.
+
+	function%TAB%script%TAB%F_GetInfo%TAB%{
+		return "Bob", 20, "Knight";
+	}
+
+	.@name$ = callfunc("F_GetInfo"); // receives only "Bob"
+	callfunc "F_GetInfo";
+	debugmes getreturn(0); // Bob
+	debugmes getreturn(1); // 20
+	debugmes getreturn(2); // Knight
+
 ---------------------------------------
 
 *callsub <label>{,<argument>,...<argument>};
@@ -1787,6 +2085,31 @@ S_DunWarp:
 		mes "Dungeon warp costs 100 Zeny.";
 	}
 	close;
+
+
+---------------------------------------
+
+*callnpcsub "<npc name>","<label>"{,<argument>,...<argument>};
+
+Calls a label from another NPC as a subroutine. Arguments are available in the
+called label through 'getarg', and the label must return with 'return' to resume
+the caller. The attached RID is preserved, and the called NPC receives its own
+isolated .@ scope.
+
+Labels whose name starts with 'On' are not allowed through this command. Event
+labels should continue to be triggered through the normal event system.
+
+Example:
+
+	callnpcsub "WOE_CONTROL", "S_GetCastleInfo", "prtg_cas01";
+	.@castle$ = getreturn(0);
+	.@owner = getreturn(1);
+
+In the target NPC:
+
+	S_GetCastleInfo:
+		.@map$ = getarg(0);
+		return getcastlename(.@map$), getcastledata(.@map$, 1);
 
 ---------------------------------------
 
@@ -1861,18 +2184,53 @@ Example:
 
 ---------------------------------------
 
-*return {<value>};
+*return {<value>{,<value>...}};
 
-This command causes the script execution to leave previously called function
-with callfunc or script with callsub and return to the location, where the call
-originated from. Optionally a return value can be supplied, when the call was
-done using the function form.
+This command causes the script execution to leave a previously called function
+with callfunc, a label called with callsub, or a label called with callnpcsub,
+and return to the location where the call originated from.
 
-Using this command outside of functions or scripts referenced by callsub will
-result in error and termination of the script.
+A return statement may supply no value, one value, or multiple values. Returned
+values replace the previous return buffer. The first returned value remains
+compatible with the traditional function-call form:
 
-	callfunc "<your function>";// when nothing is returned
-	set <variable>,callfunc("<your function>");// when a value is being returned
+	function%TAB%script%TAB%F_Test%TAB%{
+		return 10, "text", 30;
+	}
+
+	.@first = callfunc("F_Test"); // receives 10
+	callfunc "F_Test";
+	debugmes getreturncount(); // 3
+	debugmes getreturn(0);     // 10
+	debugmes getreturn(1);     // text
+	debugmes getreturn(2);     // 30
+
+Using this command outside of functions or labels referenced by callsub or
+callnpcsub will result in an error and termination of the script.
+
+---------------------------------------
+
+*getreturn(<index>)
+
+Returns a value from the most recent return buffer. The return buffer is replaced
+by each callfunc, callsub or callnpcsub call. Indexes start at 0.
+
+	callsub S_Info;
+	.@name$ = getreturn(0);
+	.@level = getreturn(1);
+
+	S_Info:
+		return "Bob", 99;
+
+---------------------------------------
+
+*getreturncount()
+
+Returns the number of values in the most recent return buffer.
+
+	callfunc "F_Test";
+	for (.@i = 0; .@i < getreturncount(); .@i++)
+		debugmes getreturn(.@i);
 
 ---------------------------------------
 
@@ -2299,8 +2657,8 @@ Example:
 
 *setarray <array name>[<first value>],<value>{,<value>...<value>};
 
-This command will allow you to quickly fill up an array in one go. Check the
-Kafra scripts in the distribution to see this used a lot.
+This command will allow you to quickly fill up a legacy one-dimensional array in
+one go. Check the Kafra scripts in the distribution to see this used a lot.
 
     setarray .@array[0], 100, 200, 300, 400, 500, 600;
 
@@ -2316,6 +2674,9 @@ will produce:
  .@array[1]=300
  .@array[2]=150
 
+This command is legacy 1D only. It must not be used with dynamic dictionaries.
+Use 'setarraydyn' for variables declared with 'dyn'.
+
 ---------------------------------------
 
 *cleararray <array name>[<first value to alter>],<value>,<number of values to set>;
@@ -2329,6 +2690,10 @@ This command will change many array values at the same time to the same value.
     cleararray .@array[0],245,1;
     // This will make elements 1 and 2 change to 345
     cleararray .@array[1],345,2;
+
+For dictionary-style multidimensional arrays, this command remains intended for
+linear integer ranges. Prefer assigning individual dictionary entries or using
+'setarray' on a dictionary path when filling sequential children.
 
 See 'setarray'.
 
@@ -2363,21 +2728,31 @@ New Array:
 Notice that .@array[4] and .@array[5] won't be copied to the second array, and it will return a
 0.
 
+This command copies linear integer array ranges. For dictionary-style
+multidimensional arrays, copy individual entries or copy a sequential child
+range by addressing the corresponding integer child path. Destination and source
+variables must still have compatible value types unless they are dynamic
+variables.
+
 ---------------------------------------
 
 *deletearray <array name>[<first value>]{,<how much to delete>};
 
-This command will delete a specified number of array elements totally from an
-array, shifting all the elements beyond this towards the beginning.
+This command will delete a specified number of array elements totally from a
+legacy one-dimensional array, shifting all the elements beyond this towards the
+beginning.
 
     // This will delete array element 0, and move all the other array elements
     // up one place.
     deletearray .@array[0],1
 
 // This would delete array elements numbered 1, 2 and 3, leave element 0 in its
-// place, and move the other elements ups, so there are no gaps.
+// place, and move the other elements up, so there are no gaps.
 
     deletearray .@array[1],3
+
+This command is legacy 1D only. Use 'del' to remove keys or branches from a
+dynamic dictionary.
 
 ---------------------------------------
 
@@ -2401,6 +2776,8 @@ It will return -1 if the value is not found.
 
 	inarray(.@array[0], 800);
 	//return -1 because 800 is not an element of the array .@array
+
+This command is legacy 1D only and must not be used with dynamic dictionaries.
 
 For more details, see the sample in 'doc/sample/inarray.txt'.
 
@@ -2490,37 +2867,100 @@ Whatever it returns is determined by type.
 
 *getarraysize(<array name>)
 
-This function returns highest index of the array that is filled.
-Notice that zeros and empty strings at the end of this array are not
-counted towards this number.
+For legacy one-dimensional arrays, this function returns the highest filled
+index plus one. Zeros and empty strings at the end of the array are not counted.
 
-For example:
+Examples:
 
-    setarray .@array[0], 100, 200, 300, 400, 500, 600;
-    set .@arraysize,getarraysize(.@array);
+    .@a[0] = 10;
+    .@a[2] = 30;
+    getarraysize(.@a); // returns 3
 
-This will make .@arraysize == 6. But if you try this:
-
-    setarray .@array[0], 100, 200, 300, 400, 500, 600, 0;
-    set .@arraysize,getarraysize(.@array);
-
-.@arraysize will still equal 6, even though you've set 7 values.
+This command is legacy 1D only. It must not be used with dynamic dictionaries.
+Use 'getarraysizedyn' for variables declared with 'dyn'.
 
 ---------------------------------------
 
-*getelementofarray(<array name>,<index>)
+*getelementofarray(<array name>,<key>{,<key>...})
 
-This command retrieves the value of the element of given array at given index.
-This is equivalent to using:
+This command retrieves the value of the element of the given array at the given
+index or key path. This is equivalent to using bracket syntax:
 
-    <array name>[<index>]
+    <array name>[<key>]
+    <array name>[<key0>][<key1>]
 
-The reason for this is, that this short form is internally converted into a call
-to getelementofarray, when the script is loaded.
+The short bracket form is internally converted into a call to
+getelementofarray when the script is loaded.
 
-Also useful when passing arrays to functions or accessing another npc's arrays:
+Examples:
+
+    .@a[0][1] = 10;
+    getelementofarray(.@a, 0, 1);
+
+    .@a["truc"]["age"] = 20;
+    getelementofarray(.@a, "truc", "age");
+
+This command is also useful when passing arrays to functions or accessing
+another NPC's arrays:
+
     getelementofarray(getarg(0),<index>)
     getelementofarray(getvariableofnpc(.var, "testNPC"),<index>)
+
+---------------------------------------
+
+*getarraykeys(<dynamic variable or branch>,<output keys array$>{,<output types array>})
+
+Returns the direct child keys that exist below a dynamic dictionary path. The
+keys are written into <output keys array$> and the return value is the number of
+keys written. If <output types array> is supplied, it receives the type of each
+key. This command is intended for dynamic dictionaries declared with 'dyn'.
+
+Key type values:
+	0 - integer key
+	1 - string key
+
+Examples:
+
+    dyn .@a;
+    .@a["truc"][0]["age"] = 20;
+    .@a["truc"][0]["level"] = 99;
+
+    .@count = getarraykeys(.@a["truc"][0], .@keys$, .@types);
+
+After this call, .@keys$ contains the direct keys under .@a["truc"][0], and
+.@types contains their key types. Integer keys are returned as strings in the
+keys array, with type 0 in the type array.
+
+The order of returned keys is not guaranteed. Sort them in script if a stable
+order is required.
+
+---------------------------------------
+
+*dyntostring(<dynamic variable or branch>)
+
+Returns a debug string representation of a dynamic dictionary branch or leaf,
+using the same format as the dynamic literal syntax. This is intended for
+debugging and inspection.
+
+	dyn .@a = [
+		"name": "Bob",
+		"items": [
+			0: 501,
+		],
+	];
+	debugmes dyntostring(.@a);
+
+Example output:
+
+	[
+		"name": "Bob",
+		"items": [
+			0: 501,
+		],
+	]
+
+The output is limited for safety. Very large structures may be truncated and a
+warning may be printed to the server console.
 
 ---------------------------------------
 
@@ -8243,6 +8683,20 @@ will not be displayed anywhere else.
 
     // Displays "NAME has clicked me!" in the map-server window.
     debugmes strcharinfo(0) + " has clicked me!";
+
+---------------------------------------
+
+*debugdyn <dynamic variable or branch>;
+
+Prints a dynamic dictionary branch or leaf to the server console using the same
+format as 'dyntostring'. This is useful when inspecting large dynamic
+structures without storing the result in a script string first.
+
+	dyn .@a = [
+		"name": "Bob",
+		"age": 20,
+	];
+	debugdyn .@a;
 
 ---------------------------------------
 
