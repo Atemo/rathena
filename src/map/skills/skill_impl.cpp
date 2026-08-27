@@ -50,6 +50,61 @@ void SkillImpl::modifyElement(const Damage&, const block_list&, const block_list
 	// no-op
 }
 
+static int32 skill_ratio_get_stat(const status_data* sstatus, int32 stat_constant) {
+	switch (stat_constant) {
+		case SP_STR: return sstatus->str;
+		case SP_AGI: return sstatus->agi;
+		case SP_VIT: return sstatus->vit;
+		case SP_INT: return sstatus->int_;
+		case SP_DEX: return sstatus->dex;
+		case SP_LUK: return sstatus->luk;
+		case SP_POW: return sstatus->pow;
+		case SP_STA: return sstatus->sta;
+		case SP_WIS: return sstatus->wis;
+		case SP_SPL: return sstatus->spl;
+		case SP_CON: return sstatus->con;
+		case SP_CRT: return sstatus->crt;
+		default:      return 0;
+	}
+}
+
+void SkillImpl::applySkillRatioFromDB(const Damage* wd, const block_list* src, const block_list* target, uint16 skill_lv, int32& skillratio, int32 mflag) const {
+	std::shared_ptr<s_skill_db> skill = skill_db.find(getSkillId());
+
+	if (skill == nullptr || !skill->ratio_defined || skill_lv == 0 || skill_lv > MAX_SKILL_LEVEL)
+		return;
+
+	int32 idx = skill_lv - 1;
+	int32 base = skill->ratio[idx];
+
+	if (target != nullptr && !skill->ratio_race.empty()) {
+		const status_data* tstatus = status_get_status_data(*target);
+		auto it = skill->ratio_race.find(tstatus->race);
+
+		if (it != skill->ratio_race.end())
+			base = it->second[idx];
+	}
+
+	skillratio += -100 + base;
+
+	if (!skill->ratio_skillmod.empty()) {
+		const map_session_data* sd = BL_CAST(BL_PC, src);
+
+		for (const auto& [mod_skill_id, arr] : skill->ratio_skillmod)
+			skillratio += arr[idx] * pc_checkskill(sd, mod_skill_id);
+	}
+
+	if (!skill->ratio_statmod.empty()) {
+		const status_data* sstatus = status_get_status_data(*src);
+
+		for (const auto& [stat, multiplier] : skill->ratio_statmod)
+			skillratio += multiplier * skill_ratio_get_stat(sstatus, stat);
+	}
+
+	if (skill->ratio_baselvmod)
+		RE_LVL_DMOD(100);
+}
+
 StatusSkillImpl::StatusSkillImpl(e_skill skillId, bool end_if_running) : SkillImpl(skillId) {
 	this->end_if_running = end_if_running;
 };

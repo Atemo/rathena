@@ -23,12 +23,12 @@ void SkillAbyssSquare::castendPos2(block_list* src, int32 x, int32 y, uint16 ski
 }
 
 void SkillAbyssSquare::calculateSkillRatio(const Damage* wd, const block_list* src, const block_list* target, uint16 skill_lv, int32& skillratio, int32 mflag) const {
-	const map_session_data* sd = BL_CAST(BL_PC, src);
-	const status_data* sstatus = status_get_status_data(*src);
+	// const map_session_data* sd = BL_CAST(BL_PC, src);
+	// const status_data* sstatus = status_get_status_data(*src);
 
-	skillratio += -100 + 900 * skill_lv;
-	skillratio += 50 * pc_checkskill(sd, ABC_MAGIC_SWORD_M) * skill_lv;
-	skillratio += 5 * sstatus->spl;
+	// skillratio += -100 + 900 * skill_lv;
+	// skillratio += 50 * pc_checkskill(sd, ABC_MAGIC_SWORD_M) * skill_lv;
+	// skillratio += 5 * sstatus->spl;
 
-	RE_LVL_DMOD(100);
+	// RE_LVL_DMOD(100);
 }

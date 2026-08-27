@@ -319,6 +319,13 @@ struct s_skill_db {
 	uint16 improvisedsong_rate;
 	sc_type sc;									///< Default SC for skill
 
+	bool ratio_defined;
+	int32 ratio[MAX_SKILL_LEVEL];
+	std::unordered_map<uint8, std::array<int32, MAX_SKILL_LEVEL>> ratio_race;     // key: e_race
+	std::unordered_map<uint16, std::array<int32, MAX_SKILL_LEVEL>> ratio_skillmod; // key: skill_id
+	std::unordered_map<int32, int32> ratio_statmod;                               // key: SP_* constant
+	bool ratio_baselvmod;
+
 	std::unique_ptr<const SkillImpl> impl;
 };
 

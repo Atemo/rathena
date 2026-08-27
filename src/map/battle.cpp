@@ -4466,6 +4466,7 @@ static int32 battle_calc_attack_skill_ratio(struct Damage* wd, block_list *src,b
 
 	std::shared_ptr<s_skill_db> skill = skill_db.find(skill_id);
 	if (skill != nullptr && skill->impl != nullptr) {
+		skill->impl->applySkillRatioFromDB(wd, src, target, skill_lv, skillratio, 0);
 		skill->impl->calculateSkillRatio(wd, src, target, skill_lv, skillratio, 0);
 	}
 
@@ -5980,6 +5981,7 @@ struct Damage battle_calc_magic_attack(block_list *src,block_list *target,uint16
 				}
 
 				if (skill != nullptr && skill->impl != nullptr) {
+					skill->impl->applySkillRatioFromDB(&ad, src, target, skill_lv, skillratio, mflag);
 					skill->impl->calculateSkillRatio(&ad, src, target, skill_lv, skillratio, mflag);
 				}
 

@@ -38467,6 +38467,14 @@ Body:
       Target: Enemy
       Flag:
         PathCheck: true
+    SkillRatio:
+      Base: [2650, 5300, 7950, 10600, 13250, 15900, 18550, 21200, 23850, 26500]
+      BaseAgainstRace:
+        Demon: [2850, 5700, 8550, 11400, 14250, 17100, 19950, 22800, 25650, 28500]
+        Angel: [2850, 5700, 8550, 11400, 14250, 17100, 19950, 22800, 25650, 28500]
+      Stat:
+        Spl: 10
+      BaseLevel: true
   - Id: 5320
     Name: ABC_DEFT_STAB
     Description: Deft Stab
@@ -38560,6 +38568,13 @@ Body:
       Flag:
         NoOverlap: true
         PathCheck: true
+    SkillRatio:
+      Base: [900, 1800, 2700, 3600, 4500]
+      SkillMod:
+        ABC_MAGIC_SWORD_M: [50, 100, 150, 200, 250]
+      Stat:
+        Spl: 5
+      BaseLevel: true
   - Id: 5322
     Name: ABC_FRENZY_SHOT
     Description: Frenzy Shot

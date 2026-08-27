@@ -14705,6 +14705,29 @@ const std::string SkillDatabase::getDefaultLocation() {
 	return std::string(db_path) + "/skill_db.yml";
 }
 
+static bool parseRatioArray(const ryml::NodeRef& seqNode, int32* out, size_t max_size) {
+	memset(out, 0, sizeof(int32) * max_size);
+
+	if (!seqNode.is_seq())
+		return false;
+
+	size_t i = 0;
+
+	for (const auto& it : seqNode) {
+		if (i >= max_size)
+			break;
+
+		int32 value;
+
+		if (!c4::from_chars(it.val(), &value))
+			return false;
+
+		out[i++] = value;
+	}
+
+	return true;
+}
+
 template<typename T, size_t S> bool SkillDatabase::parseNode(const std::string& nodeName, const std::string& subNodeName, const ryml::NodeRef& node, T (&arr)[S]) {
 	int32 value;
 	const auto& skNode = node[c4::to_csubstr(nodeName)];
@@ -15737,6 +15760,128 @@ uint64 SkillDatabase::parseBodyNode(const ryml::NodeRef& node) {
 	} else {
 		if (!exists)
 			skill->sc = SC_NONE;
+	}
+
+	if (this->nodeExists(node, "SkillRatio")) {
+		const auto& srNode = node["SkillRatio"];
+
+		skill->ratio_defined = true;
+
+		if (this->nodeExists(srNode, "Base")) {
+			if (!parseRatioArray(srNode["Base"], skill->ratio, MAX_SKILL_LEVEL)) {
+				this->invalidWarning(srNode["Base"], "SkillRatio Base is invalid.\n");
+				return 0;
+			}
+		} else {
+			if (!exists) {
+				memset(skill->ratio, 0, sizeof(skill->ratio));
+			}
+		}
+
+		if (this->nodeExists(srNode, "BaseAgainstRace")) {
+			const auto& raceNode = srNode["BaseAgainstRace"];
+
+			skill->ratio_race.clear();
+
+			for (const auto& it : raceNode) {
+				std::string race;
+				c4::from_chars(it.key(), &race);
+				std::string race_constant = "RC_" + race;
+				int64 constant;
+
+				if (!script_get_constant(race_constant.c_str(), &constant)) {
+					this->invalidWarning(raceNode, "SkillRatio BaseAgainstRace %s is invalid.\n", race.c_str());
+					return 0;
+				}
+
+				std::array<int32, MAX_SKILL_LEVEL> arr{};
+
+				if (!parseRatioArray(it, arr.data(), MAX_SKILL_LEVEL)) {
+					this->invalidWarning(it, "SkillRatio BaseAgainstRace %s array is invalid.\n", race.c_str());
+					return 0;
+				}
+
+				skill->ratio_race[static_cast<uint8>(constant)] = arr;
+			}
+		} else {
+			if (!exists)
+				skill->ratio_race.clear();
+		}
+
+		if (this->nodeExists(srNode, "SkillMod")) {
+			const auto& modNode = srNode["SkillMod"];
+
+			skill->ratio_skillmod.clear();
+
+			for (const auto& it : modNode) {
+				std::string skill_name;
+				c4::from_chars(it.key(), &skill_name);
+
+				uint16 mod_skill_id = skill_name2id(skill_name.c_str());
+
+				if (mod_skill_id == 0) {
+					this->invalidWarning(modNode, "SkillRatio SkillMod %s does not exist.\n", skill_name.c_str());
+					return 0;
+				}
+
+				std::array<int32, MAX_SKILL_LEVEL> arr{};
+
+				if (!parseRatioArray(it, arr.data(), MAX_SKILL_LEVEL)) {
+					this->invalidWarning(it, "SkillRatio SkillMod %s array is invalid.\n", skill_name.c_str());
+					return 0;
+				}
+
+				skill->ratio_skillmod[mod_skill_id] = arr;
+			}
+		} else {
+			if (!exists)
+				skill->ratio_skillmod.clear();
+		}
+
+		if (this->nodeExists(srNode, "Stat")) {
+			const auto& statNode = srNode["Stat"];
+
+			skill->ratio_statmod.clear();
+
+			for (const auto& it : statNode) {
+				std::string stat;
+				c4::from_chars(it.key(), &stat);
+				std::string stat_constant = "b" + stat;
+				int64 constant;
+
+				if (!script_get_constant(stat_constant.c_str(), &constant)) {
+					this->invalidWarning(statNode, "SkillRatio Stat %s is invalid.\n", stat.c_str());
+					return 0;
+				}
+
+				int32 multiplier;
+
+				if (!this->asInt32(statNode, stat, multiplier))
+					return 0;
+
+				skill->ratio_statmod[static_cast<int32>(constant)] = multiplier;
+			}
+		} else {
+			if (!exists)
+				skill->ratio_statmod.clear();
+		}
+
+		if (this->nodeExists(srNode, "BaseLevel")) {
+			if (!this->asBool(srNode, "BaseLevel", skill->ratio_baselvmod))
+				return 0;
+		} else {
+			if (!exists)
+				skill->ratio_baselvmod = false;
+		}
+	} else {
+		if (!exists) {
+			skill->ratio_defined = false;
+			memset(skill->ratio, 0, sizeof(skill->ratio));
+			skill->ratio_race.clear();
+			skill->ratio_skillmod.clear();
+			skill->ratio_statmod.clear();
+			skill->ratio_baselvmod = false;
+		}
 	}
 
 	if (!exists) {
