@@ -1272,6 +1272,26 @@ enum e_mado_type : uint16 {
     )
 #endif
 
+struct s_private_airship {
+	int16 mapid;
+	bool source;
+	bool destination;
+	uint16 level;
+	uint32 quest_id;
+};
+
+class PrivateAirshipDatabase : public TypesafeYamlDatabase<uint32, s_private_airship> {
+public:
+	PrivateAirshipDatabase() : TypesafeYamlDatabase("PRIVATEAIRSHIP_DB", 1) {
+
+	}
+
+	const std::string getDefaultLocation() override;
+	uint64 parseBodyNode(const ryml::NodeRef& node) override;
+};
+
+extern PrivateAirshipDatabase privateairship_db;
+
 struct s_attendance_reward {
 	t_itemid item_id;
 	uint16 amount;

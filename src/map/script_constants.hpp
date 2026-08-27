@@ -522,8 +522,6 @@
 	export_constant(MF_HIDEMOBHPBAR);
 	export_constant(MF_NOLOOT);
 	export_constant(MF_NOEXP);
-	export_constant(MF_PRIVATEAIRSHIP_SOURCE);
-	export_constant(MF_PRIVATEAIRSHIP_DESTINATION);
 	export_constant(MF_SKILL_DURATION);
 	export_constant(MF_NOCASHSHOP);
 	export_constant(MF_NORODEX);

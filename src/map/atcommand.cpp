@@ -4819,9 +4819,11 @@ ACMD_FUNC(mapinfo) {
 		strcat(atcmd_output, " NoGo |"); //
 	if (map_getmapflag(m_id, MF_NOMEMO))
 		strcat(atcmd_output, "  NoMemo |");
-	if (map_getmapflag(m_id, MF_PRIVATEAIRSHIP_SOURCE))
+
+	std::shared_ptr<s_private_airship> pa = privateairship_db.find(m_id);
+	if (pa != nullptr && pa->source)
 		strcat(atcmd_output, " PrivateAirship_Source |");
-	if (map_getmapflag(m_id, MF_PRIVATEAIRSHIP_DESTINATION))
+	if (pa != nullptr && pa->destination)
 		strcat(atcmd_output, " PrivateAirship_Destination |");
 	clif_displaymessage(fd, atcmd_output);
 

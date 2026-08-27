@@ -93,6 +93,82 @@ struct fame_list smith_fame_list[MAX_FAME_LIST];
 struct fame_list chemist_fame_list[MAX_FAME_LIST];
 struct fame_list taekwon_fame_list[MAX_FAME_LIST];
 
+
+const std::string PrivateAirshipDatabase::getDefaultLocation() {
+	return std::string(db_path) + "/private_airship.yml";
+}
+
+uint64 PrivateAirshipDatabase::parseBodyNode(const ryml::NodeRef& node) {
+	std::string map_name;
+
+	if (!this->asString(node, "Map", map_name))
+		return 0;
+
+	int16 mapid = map_mapname2mapid(map_name.c_str());
+
+	if (mapid < 0) {
+		this->invalidWarning(node["Map"], "Unknown map %s.\n", map_name.c_str());
+		return 0;
+	}
+
+	std::shared_ptr<s_private_airship> entry = this->find(mapid);
+	bool exists = entry != nullptr;
+
+	if (!exists) {
+		entry = std::make_shared<s_private_airship>();
+		entry->mapid = mapid;
+
+		entry->source = true;
+		entry->destination = true;
+		entry->level = 0;
+		entry->quest_id = 0;
+	}
+
+	if (this->nodeExists(node, "Source")) {
+		bool source;
+
+		if (!this->asBool(node, "Source", source))
+			return 0;
+
+		entry->source = source;
+	}
+
+	if (this->nodeExists(node, "Destination")) {
+		bool destination;
+
+		if (!this->asBool(node, "Destination", destination))
+			return 0;
+
+		entry->destination = destination;
+	}
+
+	if (this->nodeExists(node, "BaseLevel")) {
+		uint16 level;
+
+		if (!this->asUInt16(node, "BaseLevel", level))
+			return 0;
+
+		entry->level = level;
+	}
+
+	if (this->nodeExists(node, "Quest")) {
+		uint32 quest_id;
+
+		if (!this->asUInt32(node, "Quest", quest_id))
+			return 0;
+
+		entry->quest_id = quest_id;
+	}
+
+	if (!exists)
+		this->put(mapid, entry);
+
+	return 1;
+}
+
+PrivateAirshipDatabase privateairship_db;
+
+
 const std::string AttendanceDatabase::getDefaultLocation(){
 	return std::string(db_path) + "/attendance.yml";
 }

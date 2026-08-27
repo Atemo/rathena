@@ -22056,7 +22056,10 @@ enum e_private_airship_response : uint32{
 	PRIVATEAIRSHIP_ITEM_NOT_ENOUGH,
 	PRIVATEAIRSHIP_DESTINATION_MAP_INVALID,
 	PRIVATEAIRSHIP_SOURCE_MAP_INVALID,
-	PRIVATEAIRSHIP_ITEM_UNAVAILABLE
+	PRIVATEAIRSHIP_ITEM_UNAVAILABLE,
+
+	PRIVATEAIRSHIP_LEVEL_NOT_ENOUGH,
+	PRIVATEAIRSHIP_MISSING_QUEST,
 };
 
 /// Send out the response to a private airship request
@@ -22075,7 +22078,7 @@ void clif_private_airship_response( map_session_data* sd, enum e_private_airship
 }
 
 /// Parses a request for a private airship
-/// 0A49 <mapname>.16B <itemid>.W
+/// 0A49 <mapname>.16B <itemid>.W (CZ_PRIVATE_AIRSHIP_REQUEST)
 void clif_parse_private_airship_request( int32 fd, map_session_data* sd ){
 #if PACKETVER >= 20180321
 	// Check if the feature is enabled
@@ -22085,7 +22088,7 @@ void clif_parse_private_airship_request( int32 fd, map_session_data* sd ){
 	}
 
 	// Check if the player is allowed to warp from the source map
-	if( !map_getmapflag( sd->m, MF_PRIVATEAIRSHIP_SOURCE ) ){
+	if( std::shared_ptr<s_private_airship> pa_source = privateairship_db.find(sd->m); pa_source != nullptr && pa_source->source ){
 		clif_private_airship_response( sd, PRIVATEAIRSHIP_SOURCE_MAP_INVALID );
 		return;
 	}
@@ -22125,7 +22128,14 @@ void clif_parse_private_airship_request( int32 fd, map_session_data* sd ){
 	}
 
 	// Check if the player is allowed to warp to the target map
-	if( !map_getmapflag( mapid, MF_PRIVATEAIRSHIP_DESTINATION ) ){
+	std::shared_ptr<s_private_airship> pa_destination = privateairship_db.find(mapid);
+
+	if( pa_destination == nullptr ){
+		clif_private_airship_response( sd, PRIVATEAIRSHIP_DESTINATION_MAP_INVALID );
+		return;
+	}
+
+	if( !pa_destination->destination ){
 		clif_private_airship_response( sd, PRIVATEAIRSHIP_DESTINATION_MAP_INVALID );
 		return;
 	}
@@ -22143,6 +22153,18 @@ void clif_parse_private_airship_request( int32 fd, map_session_data* sd ){
 	// Check if the player has the item at all
 	if( idx < 0 ){
 		clif_private_airship_response( sd, PRIVATEAIRSHIP_ITEM_NOT_ENOUGH );
+		return;
+	}
+
+	// todo order
+	if( pa_destination->level > sd->status.base_level ){
+		clif_private_airship_response( sd, PRIVATEAIRSHIP_LEVEL_NOT_ENOUGH );
+		return;
+	}
+
+	// todo any quest id sent from client?
+	if (pa_destination->quest_id && quest_check(sd, pa_destination->quest_id, HAVEQUEST) != 2) {
+		clif_private_airship_response( sd, PRIVATEAIRSHIP_MISSING_QUEST );
 		return;
 	}
 
